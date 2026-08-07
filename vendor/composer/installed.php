@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'kangpcode/papastro',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => null,
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => '5215ccfe4950461b36cc099c94a048ba427b8f58',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'kangpcode/papastro' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => null,
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '5215ccfe4950461b36cc099c94a048ba427b8f58',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
