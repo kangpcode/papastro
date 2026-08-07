@@ -1,0 +1,48 @@
+<!--
+  Papastro Framework — created by kangpcode (Dhafa Nazula Permadi)
+  Free to use & extend. This watermark must remain in source code.
+-->
+<!DOCTYPE html>
+<html lang="{{ config('app.locale', 'en') }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {!! app(\Papastro\SEO\SeoManager::class)->render() !!}
+    {!! \Papastro\SEO\SeoManager::pwaHead() !!}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/app.css">
+    @yield('head')
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container navbar-inner">
+            <a href="/" class="navbar-brand">
+                <span class="brand-icon">🌟</span>
+                <span>{{ config('app.name', 'Papastro') }}</span>
+            </a>
+            <div class="navbar-links">
+                <a href="/blog" class="nav-link">Blog</a>
+                <a href="/login" class="nav-link">Login</a>
+                <a href="/register" class="nav-btn btn btn-primary">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        @yield('content')
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>Built with <span class="brand-icon">🌟</span> Papastro Framework &middot; &copy; {{ date('Y') }}</p>
+        </div>
+    </footer>
+
+    {!! \Papastro\Island\IslandRenderer::generateHydrationScript() !!}
+    {!! \Papastro\SEO\SeoManager::swScript() !!}
+
+    @yield('scripts')
+</body>
+</html>

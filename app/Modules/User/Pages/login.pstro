@@ -1,0 +1,40 @@
+<!--
+  Papastro Framework — created by kangpcode (Dhafa Nazula Permadi)
+  Free to use & extend. This watermark must remain in source code.
+-->
+---
+$pageTitle = 'Login';
+---
+@layout('layouts.base')
+
+@section('content')
+<div style="padding: calc(var(--navbar-height) + 60px) 0; min-height: 80vh; display: flex; align-items: center; justify-content: center;">
+    <div style="background: var(--color-bg-2); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: 40px; width: 100%; max-width: 420px; box-shadow: var(--shadow-glow);">
+        <h1 style="font-size: 28px; font-weight: 800; margin-bottom: 8px; text-align: center;">Welcome Back</h1>
+        <p style="color: var(--color-muted); text-align: center; margin-bottom: 32px; font-size: 14px;">Sign in to your Papastro account</p>
+
+        @if(!empty($error))
+            <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #f87171; padding: 12px 16px; border-radius: 8px; font-size: 14px; margin-bottom: 20px;">
+                {{ $error }}
+            </div>
+        @endif
+
+        <form action="/login" method="POST">
+            @csrf
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--color-muted);">Email Address</label>
+                <input type="email" name="email" required style="width: 100%; background: var(--color-bg-3); border: 1px solid var(--color-border); border-radius: 8px; padding: 12px 16px; color: #fff; font-size: 14px; outline: none;">
+            </div>
+            <div style="margin-bottom: 24px;">
+                <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--color-muted);">Password</label>
+                <input type="password" name="password" required style="width: 100%; background: var(--color-bg-3); border: 1px solid var(--color-border); border-radius: 8px; padding: 12px 16px; color: #fff; font-size: 14px; outline: none;">
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px;">Sign In</button>
+        </form>
+
+        <p style="text-align: center; margin-top: 24px; font-size: 14px; color: var(--color-muted);">
+            Don't have an account? <a href="/register" style="color: var(--color-primary); text-decoration: none;">Register →</a>
+        </p>
+    </div>
+</div>
+@endsection

@@ -1,0 +1,16 @@
+<!--
+  Papastro Framework — created by kangpcode (Dhafa Nazula Permadi)
+  Free to use & extend. This watermark must remain in source code.
+-->
+---
+// Product Module — index page
+$pageTitle = 'Product';
+---
+@layout('layouts.base')
+
+@section('content')
+<div class="container">
+    <h1>{{ $pageTitle }}</h1>
+    <p>Welcome to the Product module.</p>
+</div>
+@endsection

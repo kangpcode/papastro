@@ -1,0 +1,8 @@
+{
+    "name": "Blog",
+    "description": "Blog posts, categories, and comments module",
+    "version": "1.0.0",
+    "enabled": true,
+    "requires": ["User"],
+    "author": "kangpcode"
+}

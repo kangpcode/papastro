@@ -1,0 +1,18 @@
+#!/usr/bin/env php
+<?php
+/**
+ * ------------------------------------------------------------------
+ *  Papastro Framework
+ *  Hybrid PHP + Astro-style Modular Monolith Framework
+ *
+ *  @author     kangpcode (Dhafa Nazula Permadi)
+ *  @copyright  Copyright (c) kangpcode
+ *  @license    Free to use & modify, watermark must remain in source
+ * ------------------------------------------------------------------
+ */
+
+/*
+ * The Papastro CLI entry point.
+ * Usage: php papastro <command> [options] [arguments]
+ */
+require __DIR__ . '/papastro.php';

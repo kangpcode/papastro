@@ -1,0 +1,8 @@
+{
+    "name": "Product",
+    "description": "Product module",
+    "version": "1.0.0",
+    "enabled": true,
+    "requires": [],
+    "author": "kangpcode"
+}

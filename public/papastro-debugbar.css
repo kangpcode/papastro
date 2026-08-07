@@ -1,0 +1,223 @@
+/*
+ * Papastro Framework — Debugbar Styles
+ * created by kangpcode (Dhafa Nazula Permadi)
+ * Free to use & extend. This watermark must remain in source code.
+ */
+
+#papastro-debugbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 99999;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+    font-size: 12px;
+    background: #0f172a;
+    color: #e2e8f0;
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.5);
+    transition: transform 0.2s ease;
+}
+
+#papastro-debugbar.pdb--minimized .pdb-panels {
+    display: none;
+}
+
+#papastro-debugbar.pdb--minimized .pdb-close {
+    transform: rotate(180deg);
+}
+
+/* ── Bar ── */
+.pdb-bar {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 0 12px;
+    height: 32px;
+    background: #020617;
+    border-top: 2px solid #6366f1;
+    overflow-x: auto;
+}
+
+.pdb-brand {
+    font-weight: 700;
+    color: #a5b4fc;
+    margin-right: 16px;
+    white-space: nowrap;
+    letter-spacing: 0.05em;
+}
+
+.pdb-tab {
+    padding: 0 14px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    color: #64748b;
+    border-right: 1px solid #1e293b;
+    white-space: nowrap;
+    transition: color 0.15s, background 0.15s;
+}
+
+.pdb-tab:hover {
+    color: #e2e8f0;
+    background: #1e293b;
+}
+
+.pdb-tab--active {
+    color: #e2e8f0;
+    background: #1e293b;
+    border-bottom: 2px solid #6366f1;
+}
+
+.pdb-badge {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 9999px;
+    font-size: 10px;
+    font-weight: 700;
+    background: #1e293b;
+    color: #94a3b8;
+}
+
+.pdb-badge--warn {
+    background: #854d0e;
+    color: #fde68a;
+}
+
+.pdb-badge--danger {
+    background: #7f1d1d;
+    color: #fca5a5;
+}
+
+.pdb-time {
+    font-size: 10px;
+    color: #475569;
+}
+
+.pdb-meta {
+    margin-left: auto;
+    color: #475569;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.pdb-close {
+    background: none;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 0 8px;
+    margin-left: 8px;
+    transition: transform 0.2s;
+}
+
+.pdb-close:hover {
+    color: #e2e8f0;
+}
+
+/* ── Panels ── */
+.pdb-panels {
+    max-height: 280px;
+    overflow-y: auto;
+    background: #0f172a;
+}
+
+.pdb-panel {
+    display: none;
+    padding: 12px 16px;
+}
+
+.pdb-panel--active {
+    display: block;
+}
+
+.pdb-panel h4 {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #475569;
+    margin: 12px 0 6px;
+}
+
+/* ── Table ── */
+.pdb-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+}
+
+.pdb-table thead {
+    background: #1e293b;
+}
+
+.pdb-table th {
+    padding: 6px 10px;
+    text-align: left;
+    color: #64748b;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border-bottom: 1px solid #334155;
+}
+
+.pdb-table td {
+    padding: 5px 10px;
+    color: #94a3b8;
+    border-bottom: 1px solid #1e293b;
+    vertical-align: top;
+}
+
+.pdb-table tr:last-child td {
+    border-bottom: none;
+}
+
+.pdb-table tr:hover td {
+    background: #1e293b;
+}
+
+.pdb-sql {
+    color: #7dd3fc;
+    font-family: monospace;
+    word-break: break-all;
+}
+
+/* ── Timeline ── */
+.pdb-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px 0;
+}
+
+.pdb-timeline-bar {
+    background: #1d4ed8;
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    min-width: 60px;
+    display: flex;
+    align-items: center;
+    transition: width 0.3s ease;
+}
+
+.pdb-timeline-bar--db {
+    background: #0f766e;
+}
+
+/* ── Scrollbar ── */
+.pdb-panels::-webkit-scrollbar {
+    width: 4px;
+}
+
+.pdb-panels::-webkit-scrollbar-track {
+    background: #0f172a;
+}
+
+.pdb-panels::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 2px;
+}

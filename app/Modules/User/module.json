@@ -1,0 +1,8 @@
+{
+    "name": "User",
+    "description": "User authentication and management module",
+    "version": "1.0.0",
+    "enabled": true,
+    "requires": [],
+    "author": "kangpcode"
+}

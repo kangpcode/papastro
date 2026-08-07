@@ -1,0 +1,47 @@
+<!--
+  Papastro Framework — created by kangpcode (Dhafa Nazula Permadi)
+  Free to use & extend. This watermark must remain in source code.
+-->
+---
+// Post detail page — $post passed from PostController::show()
+$readTime = $post->getReadingTime();
+---
+@layout('layouts.base')
+
+@section('content')
+<article style="padding: calc(var(--navbar-height) + 48px) 0 80px;">
+    <div class="container" style="max-width: 760px;">
+
+        <div style="margin-bottom: 32px;">
+            <a href="/blog" style="color: var(--color-muted); text-decoration: none; font-size: 14px;">← Back to Blog</a>
+        </div>
+
+        <header style="margin-bottom: 48px;">
+            <div style="font-size: 12px; color: var(--color-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 16px;">
+                {{ $readTime }} min read &middot; {{ date('F j, Y', strtotime($post->created_at)) }}
+            </div>
+            <h1 style="font-size: clamp(28px, 5vw, 48px); font-weight: 800; letter-spacing: -0.04em; line-height: 1.15; margin-bottom: 20px;">
+                {{ $post->title }}
+            </h1>
+            @if($post->excerpt)
+            <p style="font-size: 20px; color: var(--color-muted); line-height: 1.7;">{{ $post->excerpt }}</p>
+            @endif
+        </header>
+
+        <div class="post-body" style="font-size: 17px; line-height: 1.8; color: #cbd5e1;">
+            {!! nl2br(e($post->body)) !!}
+        </div>
+
+        <!-- Comments island — hydrated when visible -->
+        <div style="margin-top: 64px; padding-top: 48px; border-top: 1px solid var(--color-border);">
+            <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 24px;">Comments</h2>
+            <CommentBox client:visible postId="{{ $post->id }}" />
+        </div>
+
+    </div>
+</article>
+@endsection
+
+@section('scripts')
+{!! \Papastro\SEO\SeoManager::schema('Article', $post) !!}
+@endsection

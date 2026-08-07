@@ -1,0 +1,22 @@
+<!--
+  Papastro Framework — created by kangpcode (Dhafa Nazula Permadi)
+  Free to use & extend. This watermark must remain in source code.
+-->
+---
+$pageTitle = 'Offline';
+---
+@layout('layouts.base')
+
+@section('content')
+<div class="offline-page">
+    <div class="container">
+        <div class="offline-icon">📡</div>
+        <h1>You're Offline</h1>
+        <p>It looks like you've lost your internet connection.<br>
+        Please check your connection and try again.</p>
+        <button class="btn btn-primary" onclick="window.location.reload()">
+            Try Again
+        </button>
+    </div>
+</div>
+@endsection
