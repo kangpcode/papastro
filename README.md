@@ -1,295 +1,536 @@
-# 🌟 Papastro Framework
+# Papastro Framework v1.1.0
 
-> **Papastro** = **PAPA** (PHP Architecture Pattern Approach) + **ASTRO** (Astro-style island frontend)
+> **Papastro Framework** adalah framework web hybrid berskala tinggi yang menggabungkan keandalan **Backend PHP (bergaya Laravel)** dengan efisiensi **Frontend Modern (bergaya Astro Island Architecture)** dalam arsitektur **Modular Monolith Scalable**.
 
-A hybrid **PHP backend (Laravel-style)** + **frontend (Astro-style island architecture)** framework with a **Modular Monolith Scalable** architecture.
-
-**Author:** kangpcode (Dhafa Nazula Permadi)  
-**Version:** 1.0.0  
-**License:** Free to use & modify — watermark must remain in source
+- **Pembuat:** kangpcode (Dhafa Nazula Permadi)
+- **Versi Framework:** 1.1.0
+- **Lisensi:** Bebas digunakan dan dikembangkan — watermark kepemilikan wajib dipertahankan pada kode sumber.
 
 ---
 
-## ✨ Features
+## Daftar Isi
 
-| Feature | Description |
-|---------|-------------|
-| 🏝️ **Island Architecture** | SSR by default, JS islands hydrate selectively (`client:load`, `client:idle`, `client:visible`, `client:only`) |
-| 📦 **Modular Monolith** | Domain-driven modules, each with its own MVC + Routes + Islands + Pages |
-| 🚀 **Expressive Router** | Laravel-style routing with named routes, groups, middleware, resource routes |
-| 🗄️ **Eloquent-like ORM** | Active Record model with QueryBuilder, migrations, and schema builder |
-| 🔍 **SEO-First** | Auto meta tags, Open Graph, Twitter Card, JSON-LD, canonical URL, sitemap generator |
-| 📱 **PWA Ready** | Service worker, manifest.json, offline caching — generated with one command |
-| 🛠️ **Powerful CLI** | 30+ commands: module scaffolding, generators, migrations, debug, optimization |
-| 🐛 **Debug Experience** | Debugbar (Laravel-style) + Dev Overlay (Next.js-style) |
-| 💉 **IoC Container** | Full dependency injection with constructor auto-wiring |
-| 🔧 **Service Providers** | Register/boot lifecycle for clean application bootstrapping |
+1. [Visi dan Konsep Utama](#visi-dan-konsep-utama)
+2. [Fitur Utama Framework](#fitur-utama-framework)
+3. [Persyaratan Sistem dan Instalasi](#persyaratan-sistem-dan-instalasi)
+4. [Struktur Direktori Proyek](#struktur-direktori-proyek)
+5. [Arsitektur Modular Monolith](#arsitektur-modular-monolith)
+6. [Island Architecture dan Hydration Engine](#island-architecture-dan-hydration-engine)
+7. [Router Engine](#router-engine)
+8. [Active Record ORM dan Migrasi](#active-record-orm-dan-migrasi)
+9. [Event dan Listener System](#event-dan-listener-system)
+10. [Optimasi SEO dan Structured Data](#optimasi-seo-dan-structured-data)
+11. [Progressive Web App (PWA) Engine](#progressive-web-app-pwa-engine)
+12. [Debugger dan Dev Overlay](#debugger-dan-dev-overlay)
+13. [Dokumentasi Perintah CLI (papastro)](#dokumentasi-perintah-cli-papastro)
+14. [Lisensi dan Watermark Kepemilikan](#lisensi-dan-watermark-kepemilikan)
 
 ---
 
-## 🚀 Quick Start
+## Visi dan Konsep Utama
+
+Papastro dirancang untuk memberikan pengalaman pengembang (*Developer Experience*) terbaik tanpa mengorbankan performa aplikasi. Framework ini memadukan dua filosofi arsitektur utama:
+
+- **Backend Ala Laravel**: Service Container IoC, Routing ekspresif, Active Record ORM, Middleware Pipeline, Artisan-style CLI, dan Templating Engine berbasis Blade/Astro.
+- **Frontend Ala Astro**: Island Architecture (komponen interaktif di-hydrate secara selektif di client, sisanya di-render 100% statis/SSR di server), output HTML minimal secara default, dan SEO-first.
+
+Target utama Papastro adalah menyediakan satu ekosistem terintegrasi dalam satu codebase dan satu CLI tanpa perlu memisahkan backend PHP dan frontend JS ke dalam repository terpisah.
+
+---
+
+## Fitur Utama Framework
+
+- **Modular Monolith Architecture**: Setiap domain aplikasi dipisahkan ke dalam modul independen yang memiliki MVC, Routes, Pages, dan Islands sendiri.
+- **Selective Island Hydration**: Render server (SSR) secara default. Komponen JavaScript hanya di-hydrate di client menggunakan directive `client:load`, `client:idle`, `client:visible`, atau `client:only`.
+- **Expressive Router**: Mendukung HTTP GET, POST, PUT, DELETE, Route Grouping, Named Routes, Resource Routes, dan Custom Middleware.
+- **Active Record ORM & QueryBuilder**: Interface query basis data yang fleksibel dengan dukungan driver MySQL, SQLite, dan PostgreSQL.
+- **Event & Listener System**: Engine `EventDispatcher` terintegrasi untuk menangani arsitektur event-driven decoupling.
+- **SEO Engine Out-of-the-Box**: Otomatisasi Meta Tags, Open Graph, Twitter Cards, JSON-LD Structured Data, Canonical URL, dan Sitemap XML Generator.
+- **PWA Engine Out-of-the-Box**: PWA Manifest Generator (`manifest.json`), Service Worker Builder (`sw.js`), dan caching offline otomatis.
+- **Papastro Debugbar & Dev Overlay**: Pelacakan query SQL, deteksi query N+1, log request/response, timeline rendering, serta visual error overlay interaktif saat mode debug aktif.
+- **Comprehensive CLI Tooling**: Lebih dari 30 perintah bawaan untuk scaffolding modul, pembuat kode (generator), migrasi basis data, optimasi, dan diagnostik.
+
+---
+
+## Persyaratan Sistem dan Instalasi
+
+### Persyaratan Sistem
+
+- PHP versi 8.1 atau yang lebih baru
+- Ekstensi PHP wajib: `pdo`, `pdo_sqlite` / `pdo_mysql` / `pdo_pgsql`, `json`, `mbstring`
+- Composer 2.x
+
+### Langkah Instalasi Proyek Baru
 
 ```bash
-# Install via Composer
-composer create-project kangpcode/papastro my-app
+# 1. Buat proyek baru melalui Composer
+composer create-project kangpcode/papastro nama-proyek
 
-cd my-app
+# 2. Masuk ke direktori proyek
+cd nama-proyek
 
-# Setup environment
+# 3. Salin konfigurasi environment
 cp .env.example .env
+
+# 4. Generate kunci aplikasi
 php papastro key:generate
 
-# Run migrations
+# 5. Jalankan migrasi basis data
 php papastro migrate
 
-# Start development server
+# 6. Jalankan server pengembang (Development Server)
 php papastro dev
-# → http://127.0.0.1:8000
 ```
+
+Aplikasi pengembang akan berjalan secara otomatis di `http://127.0.0.1:8000`.
 
 ---
 
-## 📁 Directory Structure
+## Struktur Direktori Proyek
 
 ```
 papastro-app/
 ├── app/
-│   ├── Core/               # Framework kernel (do not modify)
-│   │   ├── Container/      # IoC Container
-│   │   ├── Console/        # CLI Kernel + Commands
-│   │   ├── Debugger/       # Debugbar + QueryCollector
-│   │   ├── Foundation/     # Application, ServiceProvider, Bootstrap
-│   │   ├── Http/           # Request, Response, Kernel, Pipeline
-│   │   ├── Island/         # IslandRenderer + HydrationEngine
-│   │   ├── Module/         # ModuleLoader + ModuleManager
-│   │   ├── ORM/            # Model, QueryBuilder, Connection, Migrator
-│   │   ├── PWA/            # PwaManager
-│   │   ├── Router/         # Router, Route, RouteCollection, Facade
-│   │   ├── SEO/            # SeoManager, SitemapGenerator
-│   │   ├── View/           # ViewEngine, Compiler (.pstro parser)
-│   │   └── helpers.php     # Global helper functions
-│   ├── Console/            # App Console Kernel
-│   ├── Http/               # App HTTP Kernel + Middleware
-│   ├── Modules/            # Your domain modules
-│   │   ├── User/           # Authentication module
-│   │   └── Blog/           # Blog module (starter)
-│   └── Providers/          # App, Route, Database, Module providers
-├── bootstrap/              # Application bootstrap
-├── config/                 # app, database, modules, seo, pwa
+│   ├── Core/                    # Framework Kernel (Jangan diubah oleh developer)
+│   │   ├── Console/             # CLI Engine & Commands
+│   │   ├── Container/           # IoC Container Engine
+│   │   ├── Debugger/            # Papastro Debugbar & Dev Overlay
+│   │   ├── Events/              # EventDispatcher Engine
+│   │   ├── Foundation/          # Application & ServiceProvider Base
+│   │   ├── Http/                # Request, Response & Pipeline Engine
+│   │   ├── Island/              # IslandRenderer & Hydration Engine
+│   │   ├── Module/              # ModuleLoader & ModuleManager
+│   │   ├── ORM/                 # Model, QueryBuilder, Connection & Migrator
+│   │   ├── PWA/                 # PWA Engine & Generator
+│   │   ├── Router/              # Router, RouteCollection & Facades
+│   │   ├── SEO/                 # SeoManager & SitemapGenerator
+│   │   ├── Validation/          # Validator Engine & Exceptions
+│   │   ├── View/                # ViewEngine & Compiler (.pstro Parser)
+│   │   └── helpers.php          # Global Helper Functions
+│   ├── Console/                 # Kernel Console Aplikasi
+│   ├── Http/                    # Kernel HTTP Aplikasi & Custom Middleware
+│   ├── Modules/                 # Modul Domain Bisnis Aplikasi
+│   │   ├── User/                # Modul Autentikasi User (Bawaan)
+│   │   ├── Blog/                # Modul Blog (Bawaan)
+│   │   └── Product/             # Modul Produk (Contoh Scaffolding)
+│   └── Providers/               # Service Providers Aplikasi
+├── bootstrap/                   # Application Bootstrapper
+├── config/                      # File Konfigurasi (app, database, modules, pwa, seo)
 ├── database/
-│   ├── migrations/         # Database migrations
-│   └── seeders/            # Database seeders
+│   ├── database.sqlite          # Basis Data SQLite (Default Zero-Config)
+│   ├── migrations/              # File Migrasi Skema Basis Data
+│   └── seeders/                 # File Seeder Data Awal
 ├── public/
-│   ├── index.php           # HTTP entry point
-│   ├── app.css             # Main stylesheet
-│   ├── islands/            # Built island JS files (public)
-│   ├── manifest.json       # PWA manifest (auto-generated)
-│   └── sw.js               # Service worker (auto-generated)
+│   ├── index.php                # Entry Point HTTP Server
+│   ├── app.css                  # Stylesheet Utama Aplikasi
+│   ├── islands/                 # File Komponen JS Island Publik
+│   ├── manifest.json            # PWA Manifest (Auto-Generated)
+│   └── sw.js                    # Service Worker (Auto-Generated)
 ├── resources/
-│   ├── islands/            # Global island components
-│   ├── layouts/            # Layout templates (.pstro)
-│   └── views/              # Global view templates (.pstro)
+│   ├── islands/                 # Komponen Island Global (JS/TS)
+│   ├── layouts/                 # Master Layout Templates (.pstro)
+│   └── views/                   # Template Halaman Global (.pstro)
 ├── routes/
-│   ├── web.php             # Global web routes
-│   └── api.php             # Global API routes
+│   ├── web.php                  # Web Routes Global
+│   └── api.php                  # API Routes Global
 ├── storage/
-│   ├── cache/              # Compiled views & route cache
-│   ├── debug/              # Debug snapshots
-│   └── logs/               # Application logs
-├── .env.example            # Environment template
-├── papastro                # CLI executable
-├── papastro.php            # CLI bootstrap
+│   ├── cache/                   # Cache View Compiler & Route Cache
+│   ├── debug/                   # Snapshot Debug Trace
+│   └── logs/                    # Log Berkas Aplikasi
+├── .env.example                 # Template File Environment
+├── papastro                     # Executable CLI Papastro
+├── papastro.php                 # CLI Entry Point Bootstrapper
 └── composer.json
 ```
 
 ---
 
-## 🏝️ Island Architecture
+## Arsitektur Modular Monolith
 
-File extension: `.pstro` (Papastro template)
+Papastro menerapkan pendekatan **Modular Monolith**. Seluruh domain aplikasi berada di bawah direktori `app/Modules/`. Setiap modul berdiri secara independen dan memiliki struktur domain terorganisir:
+
+```
+app/Modules/Blog/
+├── Events/                      # File Event Modul
+├── Http/
+│   ├── Controllers/             # Controller Modul
+│   └── Middleware/              # Middleware Khusus Modul
+├── Islands/                     # Komponen Interactive Island Modul
+├── Listeners/                   # File Listener Modul
+├── Models/                      # File Active Record Model Modul
+├── Pages/                       # Halaman Template (.pstro) Modul
+├── Repositories/                # Business Logic Repositories Modul
+├── Routes/
+│   ├── web.php                  # Route Web Modul
+│   └── api.php                  # Route API Modul
+├── Services/                    # Service Layer Modul
+├── BlogServiceProvider.php      # Service Provider Khusus Modul
+└── module.json                  # Metadata & Dependency Modul
+```
+
+### Konfigurasi Metadata Modul (`module.json`)
+
+```json
+{
+    "name": "Blog",
+    "version": "1.1.0",
+    "enabled": true,
+    "requires": ["User"]
+}
+```
+
+Framework akan membaca dependency `requires` dan memuat modul secara otomatis berdasarkan urutan dependensi domain.
+
+---
+
+## Island Architecture dan Hydration Engine
+
+File template Papastro menggunakan ekstensi `.pstro`. Template `.pstro` menggabungkan logika logika server-side PHP (frontmatter) dengan HTML statis dan komponen interaktif island.
+
+### Contoh File Template (`resources/views/welcome.pstro`)
 
 ```pstro
 ---
-// Frontmatter: runs on the server (PHP)
+// Frontmatter: Kode PHP diproses 100% di Server Side
 use App\Modules\Blog\Models\Post;
 $posts = Post::published()->latest()->paginate(10);
+$pageTitle = 'Halaman Utama';
 ---
 @layout('layouts.base')
 
 @section('content')
-<h1>Blog</h1>
+<div class="hero">
+    <h1>Selamat Datang di Papastro Framework</h1>
+    <p>Framework Hybrid PHP Backend dan Astro Island Frontend.</p>
+</div>
 
-@foreach ($posts['data'] as $post)
-  <a href="/blog/{{ $post->slug }}">{{ $post->title }}</a>
-@endforeach
+<div class="posts">
+    @foreach ($posts['data'] as $post)
+        <article class="post-card">
+            <h2>{{ $post->title }}</h2>
+            <p>{{ $post->excerpt }}</p>
+        </article>
+    @endforeach
+</div>
 
-<!-- This island loads JS only when visible in viewport -->
-<CommentBox client:visible postId="{{ $post->id }}" />
+<!-- Island Component: Di-hydrate di client saat elemen masuk ke viewport -->
+<Counter client:visible initialCount="0" />
+
+<!-- Island Component: Di-hydrate saat browser dalam kondisi idle -->
+<CommentBox client:idle postId="1" />
 @endsection
 ```
 
-### Hydration Directives
+### Directives Hydration Island
 
-| Directive | Behavior |
-|-----------|----------|
-| `client:load` | Hydrate immediately on page load |
-| `client:idle` | Hydrate when browser is idle (`requestIdleCallback`) |
-| `client:visible` | Hydrate when element enters viewport (`IntersectionObserver`) |
-| `client:only` | Skip SSR, full client-side render only |
+| Directive | Perilaku Hydration Client |
+|-----------|---------------------------|
+| `client:load` | Memuat dan me-hydrate JavaScript komponen secara langsung saat halaman selesai dimuat (*page load*). |
+| `client:idle` | Memuat dan me-hydrate JavaScript komponen saat browser dalam kondisi tidak sibuk (*idle* via `requestIdleCallback`). |
+| `client:visible` | Memuat dan me-hydrate JavaScript komponen saat elemen masuk ke dalam area pandang pengguna (*viewport* via `IntersectionObserver`). |
+| `client:only` | Melewati proses Server-Side Rendering (SSR) dan menjalankan rendering 100% di sisi client. |
 
 ---
 
-## 🛠️ CLI Reference
+## Router Engine
 
-```bash
-# Development
-php papastro dev                      # Start dev server (port 8000)
-php papastro build                    # Build for production
-php papastro serve                    # Start production server
+Papastro menggunakan sintaks routing ekspresif berbasis Facade:
 
-# Module Management
-php papastro module:make Blog         # Scaffold a new module
-php papastro module:enable Blog       # Enable a module
-php papastro module:disable Blog      # Disable a module
-php papastro module:list              # List all modules
+```php
+use Papastro\Router\RouteFacade as Route;
+use App\Modules\Blog\Http\Controllers\PostController;
 
-# Code Generators (auto-include Papastro watermark)
-php papastro make:controller Blog/PostController --resource
-php papastro make:model Blog/Post
-php papastro make:migration create_comments_table
-php papastro make:island Blog/CommentBox
-php papastro make:page Blog/index
-php papastro make:middleware AuthCheck
-php papastro make:service Blog/PostService
+// Route Web Dasar
+Route::get('/', function() {
+    return view('welcome');
+})->name('home');
 
-# Database
-php papastro migrate                  # Run pending migrations
-php papastro migrate:rollback         # Rollback last batch
-php papastro db:seed                  # Run database seeders
+// Route dengan Controller dan Middleware
+Route::get('/blog', [PostController::class, 'index'])
+    ->name('blog.index');
 
-# SEO & PWA
-php papastro seo:sitemap              # Generate sitemap.xml
-php papastro pwa:generate             # Generate manifest.json + sw.js
-php papastro pwa:precache             # Update service worker precache
+Route::get('/blog/{slug}', [PostController::class, 'show'])
+    ->name('blog.show');
 
-# Debug & Diagnostics
-php papastro debug:route              # List all routes
-php papastro debug:island             # Find all island files
-php papastro debug:clear              # Clear debug snapshots
-
-# Cache & Optimize
-php papastro cache:clear              # Clear view/route/config cache
-php papastro optimize                 # Optimize the application
-php papastro route:cache              # Cache route list
-php papastro route:list               # Display all routes
-
-# Application
-php papastro key:generate             # Generate APP_KEY
+// Route Grouping dengan Prefix dan Middleware
+Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function() {
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::resource('/posts', AdminPostController::class);
+});
 ```
 
 ---
 
-## 🗄️ ORM Usage
+## Active Record ORM dan Migrasi
+
+Papastro ORM menyediakan mekanisme manipulasi data berbasis Active Record dengan QueryBuilder yang fleksibel.
+
+### Model Definisi
+
+```php
+namespace App\Modules\Blog\Models;
+
+use Papastro\ORM\Model;
+
+class Post extends Model
+{
+    protected string $table = 'posts';
+    protected array $fillable = ['user_id', 'title', 'slug', 'body', 'published'];
+
+    public static function published(): static
+    {
+        return static::where('published', 1);
+    }
+}
+```
+
+### Penggunaan Query Model
 
 ```php
 use App\Modules\Blog\Models\Post;
 
-// Find all
+// Ambil semua data
 $posts = Post::all();
 
-// Query builder
-$posts = Post::where('published', 1)
-              ->latest()
-              ->paginate(10, $page);
+// Filter data dengan pagination
+$paginated = Post::where('published', 1)
+                ->latest()
+                ->paginate(10, $page = 1);
 
-// Create
+// Buat record baru
 $post = Post::create([
-    'title'   => 'Hello World',
-    'body'    => 'My first post!',
-    'user_id' => 1,
+    'user_id'   => 1,
+    'title'     => 'Panduan Papastro v1.1.0',
+    'slug'      => 'panduan-papastro-v110',
+    'body'      => 'Konten lengkap framework Papastro...',
+    'published' => 1,
 ]);
 
-// Find by ID
-$post = Post::find(1);
-$post = Post::findOrFail(42); // throws if not found
+// Cari berdasarkan ID atau gagal
+$post = Post::findOrFail(1);
 
-// Update
-$post->update(['title' => 'Updated Title']);
+// Perbarui record
+$post->update(['title' => 'Judul Diperbarui']);
 
-// Delete
+// Hapus record
 $post->delete();
-
-// Aggregates
-$count = Post::where('published', 1)->count();
-$latest = Post::latest()->limit(5)->get();
 ```
 
 ---
 
-## 🔍 SEO
+## Event dan Listener System
+
+Papastro v1.1.0 dilengkapi dengan engine `EventDispatcher` untuk menangani arsitektur event-driven secara efisien.
+
+### Membuat Event dan Listener
+
+```bash
+# Generate Event baru di Modul Blog
+php papastro make:event Blog/PostPublished
+
+# Generate Listener baru di Modul Blog
+php papastro make:listener Blog/SendPostNotification
+```
+
+### Mendaftarkan dan Memicu Event
+
+Daftarkan pemetaan event dan listener di `app/Providers/EventServiceProvider.php`:
 
 ```php
-// In a controller or page
+protected array $listen = [
+    \App\Modules\Blog\Events\PostPublished::class => [
+        \App\Modules\Blog\Listeners\SendPostNotification::class,
+    ],
+];
+```
+
+Picu event di mana saja dalam aplikasi menggunakan helper `event()`:
+
+```php
+use App\Modules\Blog\Events\PostPublished;
+
+// Memicu event dengan objek event
+event(new PostPublished($post));
+
+// Memicu event berbasis string nama event
+event('user.registered', ['user_id' => $user->id]);
+```
+
+---
+
+## Optimasi SEO dan Structured Data
+
+Papastro dibangun dengan prinsip SEO-First. Semua halaman utama di-render di sisi server (SSR) sehingga mesin pencari (*search engine crawlers*) dapat membaca isi HTML secara utuh.
+
+### Mengatur Meta Tags di Controller / Page
+
+```php
 app(\Papastro\SEO\SeoManager::class)
-    ->title('My Blog Post')
-    ->description('A great article about...')
-    ->canonical('https://mysite.com/blog/my-post')
-    ->set(['og_image' => '/images/post.jpg']);
+    ->title('Judul Artikel Blog - Papastro')
+    ->description('Deskripsi lengkap artikel blog yang ramah SEO.')
+    ->canonical('https://example.com/blog/artikel-1')
+    ->set([
+        'og_image' => 'https://example.com/images/og-blog.jpg',
+        'twitter_card' => 'summary_large_image',
+    ]);
+```
 
-// In a .pstro template
+### Injeksi Structured Data (JSON-LD Schema)
+
+Di dalam template `.pstro`:
+
+```pstro
+@section('scripts')
 {!! \Papastro\SEO\SeoManager::schema('Article', $post) !!}
+@endsection
+```
 
-// Generate sitemap
+### Pembuatan SitemapXML Otomatis
+
+Otomatiskan pembuatan file `public/sitemap.xml` dari seluruh rute publik terdaftar dengan satu perintah:
+
+```bash
 php papastro seo:sitemap
 ```
 
 ---
 
-## 📱 PWA
+## Progressive Web App (PWA) Engine
 
-Configure in `config/pwa.php`:
+Papastro dapat diubah menjadi Progressive Web App (PWA) dengan strategi caching offline secara instan.
+
+### Konfigurasi PWA (`config/pwa.php`)
 
 ```php
 return [
-    'name'       => 'My App',
-    'short_name' => 'App',
+    'name'        => 'Aplikasi Papastro',
+    'short_name'  => 'Papastro',
     'theme_color' => '#0f172a',
-    'strategy'   => 'cache-first', // or network-first, stale-while-revalidate
-    'precache'   => ['/', '/offline', '/blog'],
+    'strategy'    => 'cache-first', // Pilihan: cache-first, network-first, stale-while-revalidate
+    'precache'    => ['/', '/offline', '/blog'],
 ];
 ```
 
+### Generate Manifest dan Service Worker
+
+Jalankan perintah pembuatan PWA:
+
 ```bash
-php papastro pwa:generate   # Creates public/manifest.json + public/sw.js
+php papastro pwa:generate
+```
+
+Perintah ini akan membuat dua file utama secara otomatis:
+- `public/manifest.json`: Metadata aplikasi untuk instalasi PWA di perangkat seluler dan desktop.
+- `public/sw.js`: Service worker untuk caching asset statis dan fallback halaman offline saat koneksi terputus.
+
+---
+
+## Debugger dan Dev Overlay
+
+Saat mode pengembang aktif (`APP_DEBUG=true` di `.env`), Papastro secara otomatis menampilkan dua sistem diagnostik:
+
+1. **Papastro Debugbar**: Panel di bagian bawah layar browser yang menampilkan:
+   - **Tab Queries**: Jumlah query SQL, waktu eksekusi query, dan peringatan deteksi N+1 query.
+   - **Tab Routes**: Informasi rute aktif, nama rute, controller, dan middleware yang dieksekusi.
+   - **Tab Request/Response**: Header HTTP, session, data input, dan status response.
+   - **Tab Islands**: Komponen island yang di-hydrate beserta strategi hydration yang digunakan.
+   - **Tab Timeline**: Perbandingan waktu render server side vs hydration client side.
+
+2. **Dev Overlay**: Tampilan layar penuh (*full-screen overlay*) visual ketika terjadi exception PHP atau kesalahan JavaScript pada island komponen, dilengkapi dengan stack trace, snippet kode sumber, dan nomor baris error.
+
+Pintasan keyboard: Tekan **`Alt + D`** di browser untuk menyembunyikan atau menampilkan Papastro Debugbar.
+
+---
+
+## Dokumentasi Perintah CLI (papastro)
+
+Papastro CLI menyediakan lebih dari 30 perintah bawaan untuk membantu pengelolaan proyek aplikasi.
+
+### Perintah Server & Build
+
+```bash
+php papastro dev                      # Jalankan server pengembang (SSR + Island Watch)
+php papastro serve                    # Jalankan server produksi
+php papastro build                    # Build dan optimasi asset island untuk produksi
+```
+
+### Perintah Manajemen Modul
+
+```bash
+php papastro module:make Produk       # Generate modul baru lengkap (MVC + Routes + Island + Page)
+php papastro module:enable Produk     # Aktifkan modul
+php papastro module:disable Produk    # Nonaktifkan modul
+php papastro module:list              # Tampilkan daftar semua modul dan statusnya
+```
+
+### Perintah Generator Kode
+
+```bash
+php papastro make:controller Blog/PostController --resource
+php papastro make:model Blog/Post
+php papastro make:migration create_posts_table
+php papastro make:island Blog/CommentBox
+php papastro make:page Blog/index
+php papastro make:middleware AuthCheck
+php papastro make:service Blog/PostService
+php papastro make:event Blog/PostPublished
+php papastro make:listener Blog/SendNotification
+```
+
+### Perintah Basis Data
+
+```bash
+php papastro migrate                  # Jalankan seluruh migrasi basis data yang pending
+php papastro migrate:rollback         # Batalkan (rollback) batch migrasi terakhir
+php papastro db:seed                  # Jalankan seeder data awal
+```
+
+### Perintah SEO & PWA
+
+```bash
+php papastro seo:sitemap              # Generate sitemap.xml otomatis dari rute aplikasi
+php papastro pwa:generate             # Generate file manifest.json dan service worker sw.js
+php papastro pwa:precache             # Perbarui daftar precache pada service worker
+```
+
+### Perintah Diagnostik & Debug
+
+```bash
+php papastro debug:route              # Tampilkan seluruh rute terdaftar dan modul asalnya
+php papastro debug:island             # Pindai dan tampilkan lokasi seluruh komponen island
+php papastro debug:clear              # Bersihkan snapshot debug trace di storage/debug
+```
+
+### Perintah Optimasi & Cache
+
+```bash
+php papastro cache:clear              # Bersihkan cache view, route, dan konfigurasi
+php papastro optimize                 # Optimaskan aplikasi untuk lingkungan produksi
+php papastro route:cache              # Cache daftar rute untuk mempercepat booting
+php papastro route:list               # Tampilkan tabel ringkasan rute aplikasi
+```
+
+### Perintah Aplikasi
+
+```bash
+php papastro key:generate             # Generate kunci enkripsi aplikasi (APP_KEY)
 ```
 
 ---
 
-## 🐛 Debug
+## Lisensi dan Watermark Kepemilikan
 
-Set in `.env`:
+Papastro Framework didistribusikan di bawah ketentuan lisensi bebas penggunaan dengan kewajiban watermark kepemilikan.
 
-```env
-APP_DEBUG=true
-PAPASTRO_DEBUGBAR=true
-PAPASTRO_DEV_OVERLAY=true
-```
+### Ketentuan Lisensi
 
-- **Debugbar** — bottom panel with SQL queries, route info, request data, timeline
-- **Dev Overlay** — full-screen error overlay with stack trace on exceptions
-- **Keyboard shortcut** — `Alt+D` to toggle debugbar
-
----
-
-## 📜 License & Watermark
-
-Papastro is **free to use and modify** for any purpose.  
-**One condition**: The copyright watermark in source files **must remain** (in code comments — never shown in public HTML).
+1. **Kebebasan Penggunaan**: Framework ini **bebas digunakan, dimodifikasi, dan dikembangkan oleh siapa saja** untuk keperluan komersial maupun non-komersial tanpa biaya royalti.
+2. **Kewajiban Watermark Kode Sumber (Wajib)**: Setiap file inti framework (`app/Core/**`), file executable CLI `papastro`, dan file boilerplate hasil generator CLI (`make:*`) **wajib mempertahankan header comment watermark hak cipta**:
 
 ```php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework
+ *  Papastro Framework v1.1.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -299,21 +540,9 @@ Papastro is **free to use and modify** for any purpose.
  */
 ```
 
----
-
-## 🗺️ Roadmap
-
-- [x] **Phase 1** — Core Kernel (Container, Router, ORM, CLI)
-- [x] **Phase 2** — Module System (auto-discovery, enable/disable)
-- [x] **Phase 3** — View & Island Engine (.pstro parser, hydration)
-- [x] **Phase 4** — Debugger (Debugbar + Dev Overlay)
-- [x] **Phase 5** — SEO & PWA (sitemap, JSON-LD, manifest, SW)
-- [x] **Phase 6** — Tooling (build, optimize, cache, migrate)
-- [x] **Phase 7** — Documentation & Starter Kit
-- [ ] **Phase 8** — Event system (Events + Listeners)
-- [ ] **Phase 9** — Validation engine
-- [ ] **Phase 10** — Auth guards + session management
+3. **Peraturan Tampilan**: Watermark kepemilikan ini **hanya berada di dalam komentar kode sumber (*source code comment*)** dan **tidak wajib ditampilkan pada antarmuka/UI publik** yang dilihat oleh pengguna akhir (*end-user*).
+4. **Peraturan Modifikasi**: Pengguna framework tidak diperkenankan menghapus atau menghapus nama pencipta `kangpcode (Dhafa Nazula Permadi)` dari komentar header file core framework, meskipun logika di dalamnya dimodifikasi atau dikembangkan lebih lanjut.
 
 ---
 
-*Made with ❤️ by kangpcode (Dhafa Nazula Permadi)*
+*Papastro Framework v1.1.0 dikembangkan oleh kangpcode (Dhafa Nazula Permadi).*

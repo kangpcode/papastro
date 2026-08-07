@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework
+ *  Papastro Framework v1.1.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -230,5 +230,36 @@ if (!function_exists('str_contains_any')) {
             if (str_contains($haystack, $needle)) return true;
         }
         return false;
+    }
+}
+
+if (!function_exists('event')) {
+    function event(object|string $event, array $payload = []): array
+    {
+        return app(\Papastro\Events\EventDispatcher::class)->dispatch($event, $payload);
+    }
+}
+
+if (!function_exists('flash')) {
+    function flash(?string $key = null, mixed $value = null): mixed
+    {
+        if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
+            @session_start();
+        }
+
+        if ($key === null) {
+            $flashes = $_SESSION['_flash'] ?? [];
+            $_SESSION['_flash'] = [];
+            return $flashes;
+        }
+
+        if ($value === null) {
+            $msg = $_SESSION['_flash'][$key] ?? null;
+            unset($_SESSION['_flash'][$key]);
+            return $msg;
+        }
+
+        $_SESSION['_flash'][$key] = $value;
+        return $value;
     }
 }

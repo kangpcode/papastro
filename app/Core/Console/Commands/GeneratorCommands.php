@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework
+ *  Papastro Framework v1.1.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -349,5 +349,83 @@ PHP
             return [implode('/', $parts), $class];
         }
         return ['App', $name];
+    }
+}
+
+/**
+ * papastro make:event Blog/PostPublished
+ */
+class MakeEventCommand extends Command
+{
+    public function execute(array $args): int
+    {
+        $name = $this->argument($args, 0);
+        if (!$name) { $this->error('Usage: papastro make:event Module/EventName'); return 1; }
+
+        if (str_contains($name, '/')) {
+            [$module, $class] = explode('/', $name, 2);
+            $path = $this->app->appPath("Modules/{$module}/Events/{$class}.php");
+            $ns   = "App\\Modules\\{$module}\\Events";
+        } else {
+            $class = $name;
+            $path  = $this->app->appPath("Events/{$class}.php");
+            $ns    = "App\\Events";
+        }
+
+        return $this->writeFile($path, $this->getHeader() . <<<PHP
+
+declare(strict_types=1);
+
+namespace {$ns};
+
+class {$class}
+{
+    public mixed \$data;
+
+    public function __construct(mixed \$data = null)
+    {
+        \$this->data = \$data;
+    }
+}
+PHP
+        ) ? 0 : 1;
+    }
+}
+
+/**
+ * papastro make:listener Blog/SendPostNotification
+ */
+class MakeListenerCommand extends Command
+{
+    public function execute(array $args): int
+    {
+        $name = $this->argument($args, 0);
+        if (!$name) { $this->error('Usage: papastro make:listener Module/ListenerName'); return 1; }
+
+        if (str_contains($name, '/')) {
+            [$module, $class] = explode('/', $name, 2);
+            $path = $this->app->appPath("Modules/{$module}/Listeners/{$class}.php");
+            $ns   = "App\\Modules\\{$module}\\Listeners";
+        } else {
+            $class = $name;
+            $path  = $this->app->appPath("Listeners/{$class}.php");
+            $ns    = "App\\Listeners";
+        }
+
+        return $this->writeFile($path, $this->getHeader() . <<<PHP
+
+declare(strict_types=1);
+
+namespace {$ns};
+
+class {$class}
+{
+    public function handle(object \$event): void
+    {
+        // Handle the event here
+    }
+}
+PHP
+        ) ? 0 : 1;
     }
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework
+ *  Papastro Framework v1.1.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -107,14 +107,18 @@ class HandleExceptions
             $this->renderDebugException($e);
         } else {
             error_log($e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
-            http_response_code(500);
+            if (!headers_sent()) {
+            @http_response_code(500);
+        }
             echo 'Internal Server Error';
         }
     }
 
     protected function renderDebugException(\Throwable $e): void
     {
-        http_response_code(500);
+        if (!headers_sent()) {
+            @http_response_code(500);
+        }
         $message = htmlspecialchars($e->getMessage());
         $file    = htmlspecialchars($e->getFile());
         $line    = $e->getLine();

@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework
+ *  Papastro Framework v1.1.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -57,6 +57,8 @@ class Kernel
             'make:page'           => Commands\MakePageCommand::class,
             'make:middleware'     => Commands\MakeMiddlewareCommand::class,
             'make:service'        => Commands\MakeServiceCommand::class,
+            'make:event'          => Commands\MakeEventCommand::class,
+            'make:listener'       => Commands\MakeListenerCommand::class,
 
             // Database
             'migrate'             => Commands\MigrateCommand::class,
@@ -134,7 +136,7 @@ class Kernel
         $groups = [
             'Server' => ['dev', 'serve', 'build'],
             'Module' => ['module:make', 'module:enable', 'module:disable', 'module:list'],
-            'Generator' => ['make:controller', 'make:model', 'make:migration', 'make:island', 'make:page', 'make:middleware', 'make:service'],
+            'Generator' => ['make:controller', 'make:model', 'make:migration', 'make:island', 'make:page', 'make:middleware', 'make:service', 'make:event', 'make:listener'],
             'Database' => ['migrate', 'migrate:rollback', 'db:seed'],
             'SEO & PWA' => ['seo:sitemap', 'pwa:generate', 'pwa:precache'],
             'Debug' => ['debug:route', 'debug:island', 'debug:clear'],
