@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.1.0
+ *  Papastro Framework v1.2.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -178,7 +178,7 @@ abstract class Command
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.1.0
+ *  Papastro Framework v1.2.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -197,7 +197,7 @@ PHP;
     {
         return <<<'PSTRO'
 <!--
-  Papastro Framework v1.1.0 — created by kangpcode (Dhafa Nazula Permadi)
+  Papastro Framework v1.2.0 — created by kangpcode (Dhafa Nazula Permadi)
   Free to use & extend. This watermark must remain in source code.
 -->
 PSTRO;
@@ -210,7 +210,7 @@ PSTRO;
     {
         return <<<'JS'
 /*
- * Papastro Framework v1.1.0 — created by kangpcode (Dhafa Nazula Permadi)
+ * Papastro Framework v1.2.0 — created by kangpcode (Dhafa Nazula Permadi)
  * Free to use & extend. This watermark must remain in source code.
  */
 JS;

@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.1.0
+ *  Papastro Framework v1.2.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 define('PAPASTRO_START', microtime(true));
 define('PAPASTRO_ROOT', dirname(__DIR__));
-define('PAPASTRO_VERSION', '1.1.0');
+define('PAPASTRO_VERSION', '1.2.0');
 
 /*
 |--------------------------------------------------------------------------

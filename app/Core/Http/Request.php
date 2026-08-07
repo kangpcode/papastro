@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.1.0
+ *  Papastro Framework v1.2.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -207,6 +207,29 @@ class Request
     public function except(array $keys): array
     {
         return array_diff_key($this->all(), array_flip($keys));
+    }
+
+    /**
+     * Replace input dataset (used by middleware).
+     */
+    public function replace(array $input): static
+    {
+        if ($this->method() === 'GET') {
+            $this->query = $input;
+        } else {
+            $this->data = $input;
+        }
+        return $this;
+    }
+
+    /**
+     * Sanitize input against XSS attacks.
+     */
+    public function sanitize(): static
+    {
+        $this->data  = \Papastro\Security\Security::sanitize($this->data);
+        $this->query = \Papastro\Security\Security::sanitize($this->query);
+        return $this;
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.1.0
+ *  Papastro Framework v1.2.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -173,7 +173,7 @@ HTML;
     window.Papastro = window.Papastro || {};
     window.Papastro.islands = islands;
     window.Papastro.loadIsland = loadIsland;
-    window.Papastro.version = '1.1.0';
+    window.Papastro.version = '1.2.0';
 
 })();
 </script>

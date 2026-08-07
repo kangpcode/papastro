@@ -1,9 +1,9 @@
-# Papastro Framework v1.1.0
+# Papastro Framework v1.2.0
 
 > **Papastro Framework** adalah framework web hybrid berskala tinggi yang menggabungkan keandalan **Backend PHP (bergaya Laravel)** dengan efisiensi **Frontend Modern (bergaya Astro Island Architecture)** dalam arsitektur **Modular Monolith Scalable**.
 
 - **Pembuat:** kangpcode (Dhafa Nazula Permadi)
-- **Versi Framework:** 1.1.0
+- **Versi Framework:** 1.2.0
 - **Lisensi:** Bebas digunakan dan dikembangkan — watermark kepemilikan wajib dipertahankan pada kode sumber.
 
 ---
