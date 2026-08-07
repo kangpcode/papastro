@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.1.0
+ *  Papastro Framework v1.2.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -231,8 +231,8 @@ abstract class Model
     {
         $instance = new static;
         $instance->attributes = $attributes;
-        $instance->original   = $attributes;
-        $instance->exists     = true;
+        $instance->original = $attributes;
+        $instance->exists = true;
         return $instance;
     }
 
@@ -241,7 +241,7 @@ abstract class Model
      */
     protected static function hydrate(array $rows): array
     {
-        return array_map(fn ($row) => static::newFromBuilder($row), $rows);
+        return array_map(fn($row) => static::newFromBuilder($row), $rows);
     }
 
     // -----------------------------------------------------------------------

@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.1.0
+ *  Papastro Framework v1.2.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -52,11 +52,11 @@ if (!function_exists('env')) {
         }
 
         return match (strtolower($value)) {
-            'true', '(true)'   => true,
+            'true', '(true)' => true,
             'false', '(false)' => false,
-            'null', '(null)'   => null,
+            'null', '(null)' => null,
             'empty', '(empty)' => '',
-            default            => $value,
+            default => $value,
         };
     }
 }
@@ -127,7 +127,7 @@ if (!function_exists('response')) {
 if (!function_exists('view')) {
     function view(string $template, array $data = []): \Papastro\Http\Response
     {
-        $engine  = app(\Papastro\View\ViewEngine::class);
+        $engine = app(\Papastro\View\ViewEngine::class);
         $content = $engine->render($template, $data);
         return \Papastro\Http\Response::make($content);
     }
@@ -151,7 +151,8 @@ if (!function_exists('request')) {
     function request(?string $key = null, mixed $default = null): mixed
     {
         $req = app('request');
-        if ($key === null) return $req;
+        if ($key === null)
+            return $req;
         return $req->input($key, $default);
     }
 }
@@ -227,7 +228,8 @@ if (!function_exists('str_contains_any')) {
     function str_contains_any(string $haystack, array $needles): bool
     {
         foreach ($needles as $needle) {
-            if (str_contains($haystack, $needle)) return true;
+            if (str_contains($haystack, $needle))
+                return true;
         }
         return false;
     }

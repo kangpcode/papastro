@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.1.0
+ *  Papastro Framework v1.2.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -26,16 +26,16 @@ class SeoManager
 
     public function __construct(Application $app)
     {
-        $this->app  = $app;
+        $this->app = $app;
         $this->meta = [
-            'title'       => config('seo.title', 'Papastro App'),
+            'title' => config('seo.title', 'Papastro App'),
             'description' => config('seo.description', ''),
-            'keywords'    => config('seo.keywords', ''),
-            'author'      => config('seo.author', ''),
-            'robots'      => config('seo.robots', 'index, follow'),
-            'og_type'     => config('seo.og.type', 'website'),
-            'og_image'    => config('seo.og.image', ''),
-            'canonical'   => '',
+            'keywords' => config('seo.keywords', ''),
+            'author' => config('seo.author', ''),
+            'robots' => config('seo.robots', 'index, follow'),
+            'og_type' => config('seo.og.type', 'website'),
+            'og_image' => config('seo.og.image', ''),
+            'canonical' => '',
         ];
     }
 
@@ -80,18 +80,20 @@ class SeoManager
      */
     public function render(): string
     {
-        $html  = '';
+        $html = '';
         $title = htmlspecialchars($this->meta['title'] ?? '');
-        $desc  = htmlspecialchars($this->meta['description'] ?? '');
-        $kw    = htmlspecialchars($this->meta['keywords'] ?? '');
-        $au    = htmlspecialchars($this->meta['author'] ?? '');
-        $rob   = htmlspecialchars($this->meta['robots'] ?? 'index, follow');
-        $url   = config('app.url') . request()->path();
+        $desc = htmlspecialchars($this->meta['description'] ?? '');
+        $kw = htmlspecialchars($this->meta['keywords'] ?? '');
+        $au = htmlspecialchars($this->meta['author'] ?? '');
+        $rob = htmlspecialchars($this->meta['robots'] ?? 'index, follow');
+        $url = config('app.url') . request()->path();
 
         $html .= "\n    <title>{$title}</title>\n";
         $html .= "    <meta name=\"description\" content=\"{$desc}\">\n";
-        if ($kw) $html .= "    <meta name=\"keywords\" content=\"{$kw}\">\n";
-        if ($au) $html .= "    <meta name=\"author\" content=\"{$au}\">\n";
+        if ($kw)
+            $html .= "    <meta name=\"keywords\" content=\"{$kw}\">\n";
+        if ($au)
+            $html .= "    <meta name=\"author\" content=\"{$au}\">\n";
         $html .= "    <meta name=\"robots\" content=\"{$rob}\">\n";
 
         // Canonical
@@ -110,14 +112,16 @@ class SeoManager
         }
 
         // Twitter Card
-        $twitterCard    = config('seo.twitter.card', 'summary_large_image');
-        $twitterSite    = config('seo.twitter.site', '');
+        $twitterCard = config('seo.twitter.card', 'summary_large_image');
+        $twitterSite = config('seo.twitter.site', '');
         $twitterCreator = config('seo.twitter.creator', '');
         $html .= "    <meta name=\"twitter:card\" content=\"{$twitterCard}\">\n";
         $html .= "    <meta name=\"twitter:title\" content=\"{$title}\">\n";
         $html .= "    <meta name=\"twitter:description\" content=\"{$desc}\">\n";
-        if ($twitterSite)    $html .= "    <meta name=\"twitter:site\" content=\"{$twitterSite}\">\n";
-        if ($twitterCreator) $html .= "    <meta name=\"twitter:creator\" content=\"{$twitterCreator}\">\n";
+        if ($twitterSite)
+            $html .= "    <meta name=\"twitter:site\" content=\"{$twitterSite}\">\n";
+        if ($twitterCreator)
+            $html .= "    <meta name=\"twitter:creator\" content=\"{$twitterCreator}\">\n";
 
         return $html;
     }
@@ -129,20 +133,20 @@ class SeoManager
     {
         $schema = match ($type) {
             'Article' => [
-                '@context'         => 'https://schema.org',
-                '@type'            => 'Article',
-                'headline'         => is_object($data) ? ($data->title ?? '') : ($data['title'] ?? ''),
-                'description'      => is_object($data) ? ($data->excerpt ?? '') : ($data['excerpt'] ?? ''),
-                'datePublished'    => is_object($data) ? ($data->published_at ?? $data->created_at ?? '') : ($data['published_at'] ?? ''),
-                'dateModified'     => is_object($data) ? ($data->updated_at ?? '') : ($data['updated_at'] ?? ''),
-                'author'           => ['@type' => 'Person', 'name' => config('seo.author', '')],
-                'publisher'        => ['@type' => 'Organization', 'name' => config('app.name')],
+                '@context' => 'https://schema.org',
+                '@type' => 'Article',
+                'headline' => is_object($data) ? ($data->title ?? '') : ($data['title'] ?? ''),
+                'description' => is_object($data) ? ($data->excerpt ?? '') : ($data['excerpt'] ?? ''),
+                'datePublished' => is_object($data) ? ($data->published_at ?? $data->created_at ?? '') : ($data['published_at'] ?? ''),
+                'dateModified' => is_object($data) ? ($data->updated_at ?? '') : ($data['updated_at'] ?? ''),
+                'author' => ['@type' => 'Person', 'name' => config('seo.author', '')],
+                'publisher' => ['@type' => 'Organization', 'name' => config('app.name')],
             ],
             'WebSite' => [
                 '@context' => 'https://schema.org',
-                '@type'    => 'WebSite',
-                'name'     => config('app.name'),
-                'url'      => config('app.url'),
+                '@type' => 'WebSite',
+                'name' => config('app.name'),
+                'url' => config('app.url'),
             ],
             'BreadcrumbList' => $data, // Pass pre-built breadcrumb schema
             default => array_merge(['@context' => 'https://schema.org', '@type' => $type], (array) $data),
@@ -158,7 +162,7 @@ class SeoManager
     public static function pwaHead(): string
     {
         $themeColor = config('pwa.theme_color', '#0f172a');
-        $appName    = htmlspecialchars(config('app.name', 'Papastro App'));
+        $appName = htmlspecialchars(config('app.name', 'Papastro App'));
 
         return <<<HTML
     <meta name="mobile-web-app-capable" content="yes">

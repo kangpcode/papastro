@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.1.0
+ *  Papastro Framework v1.2.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -29,9 +29,9 @@ class MakeModuleCommand extends Command
             return 1;
         }
 
-        $name      = ucfirst($name);
-        $basePath  = $this->app->appPath("Modules/{$name}");
-        $ns        = "App\\Modules\\{$name}";
+        $name = ucfirst($name);
+        $basePath = $this->app->appPath("Modules/{$name}");
+        $ns = "App\\Modules\\{$name}";
 
         $this->info("Creating module: {$name}");
         $this->newLine();
@@ -57,12 +57,12 @@ class MakeModuleCommand extends Command
 
         // module.json
         $this->writeFile("{$basePath}/module.json", json_encode([
-            'name'        => $name,
+            'name' => $name,
             'description' => "{$name} module",
-            'version'     => '1.0.0',
-            'enabled'     => true,
-            'requires'    => [],
-            'author'      => 'kangpcode',
+            'version' => '1.0.0',
+            'enabled' => true,
+            'requires' => [],
+            'author' => 'kangpcode',
         ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 
         // Routes/web.php
@@ -180,7 +180,10 @@ class ModuleEnableCommand extends Command
     public function execute(array $args): int
     {
         $name = $this->argument($args, 0);
-        if (!$name) { $this->error('Module name required.'); return 1; }
+        if (!$name) {
+            $this->error('Module name required.');
+            return 1;
+        }
 
         $manager = $this->app->make(\Papastro\Module\ModuleManager::class);
         if ($manager->enable($name)) {
@@ -201,7 +204,10 @@ class ModuleDisableCommand extends Command
     public function execute(array $args): int
     {
         $name = $this->argument($args, 0);
-        if (!$name) { $this->error('Module name required.'); return 1; }
+        if (!$name) {
+            $this->error('Module name required.');
+            return 1;
+        }
 
         $manager = $this->app->make(\Papastro\Module\ModuleManager::class);
         if ($manager->disable($name)) {
@@ -235,7 +241,7 @@ class ModuleListCommand extends Command
 
         foreach ($modules as $mod) {
             $status = $mod['enabled'] ? "\033[32m● enabled\033[0m" : "\033[31m○ disabled\033[0m";
-            $loaded = $mod['loaded']  ? ' [loaded]' : '';
+            $loaded = $mod['loaded'] ? ' [loaded]' : '';
             echo "  {$mod['name']} v{$mod['version']} — {$status}{$loaded}" . PHP_EOL;
         }
 

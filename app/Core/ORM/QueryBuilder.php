@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.1.0
+ *  Papastro Framework v1.2.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -21,20 +21,20 @@ class QueryBuilder
 {
     protected Connection $connection;
     protected string $table;
-    protected array $wheres     = [];
-    protected array $bindings   = [];
-    protected array $columns    = ['*'];
-    protected array $orders     = [];
-    protected array $joins      = [];
-    protected ?int  $limitValue = null;
-    protected ?int  $offsetValue = null;
-    protected ?string $groupBy  = null;
-    protected array $havings    = [];
+    protected array $wheres = [];
+    protected array $bindings = [];
+    protected array $columns = ['*'];
+    protected array $orders = [];
+    protected array $joins = [];
+    protected ?int $limitValue = null;
+    protected ?int $offsetValue = null;
+    protected ?string $groupBy = null;
+    protected array $havings = [];
 
     public function __construct(Connection $connection, string $table)
     {
         $this->connection = $connection;
-        $this->table      = $table;
+        $this->table = $table;
     }
 
     /**
@@ -52,13 +52,13 @@ class QueryBuilder
     public function where(string $column, mixed $operatorOrValue, mixed $value = null): static
     {
         if ($value === null) {
-            $value    = $operatorOrValue;
+            $value = $operatorOrValue;
             $operator = '=';
         } else {
             $operator = $operatorOrValue;
         }
 
-        $this->wheres[]   = "{$column} {$operator} ?";
+        $this->wheres[] = "{$column} {$operator} ?";
         $this->bindings[] = $value;
 
         return $this;
@@ -117,7 +117,7 @@ class QueryBuilder
      */
     public function whereBetween(string $column, mixed $min, mixed $max): static
     {
-        $this->wheres[]   = "{$column} BETWEEN ? AND ?";
+        $this->wheres[] = "{$column} BETWEEN ? AND ?";
         $this->bindings[] = $min;
         $this->bindings[] = $max;
         return $this;
@@ -129,7 +129,7 @@ class QueryBuilder
     public function orWhere(string $column, mixed $operatorOrValue, mixed $value = null): static
     {
         if ($value === null) {
-            $value    = $operatorOrValue;
+            $value = $operatorOrValue;
             $operator = '=';
         } else {
             $operator = $operatorOrValue;
@@ -139,7 +139,7 @@ class QueryBuilder
         if ($lastIndex >= 0) {
             $this->wheres[$lastIndex] = '(' . $this->wheres[$lastIndex] . " OR {$column} {$operator} ?)";
         } else {
-            $this->wheres[]   = "{$column} {$operator} ?";
+            $this->wheres[] = "{$column} {$operator} ?";
         }
         $this->bindings[] = $value;
 
@@ -237,8 +237,8 @@ class QueryBuilder
      */
     public function toSql(): string
     {
-        $cols  = implode(', ', $this->columns);
-        $sql   = "SELECT {$cols} FROM `{$this->table}`";
+        $cols = implode(', ', $this->columns);
+        $sql = "SELECT {$cols} FROM `{$this->table}`";
 
         if (!empty($this->joins)) {
             $sql .= ' ' . implode(' ', $this->joins);
@@ -300,9 +300,9 @@ class QueryBuilder
      */
     public function count(string $column = '*'): int
     {
-        $original     = $this->columns;
+        $original = $this->columns;
         $this->columns = ["COUNT({$column}) as aggregate"];
-        $result        = $this->first();
+        $result = $this->first();
         $this->columns = $original;
         return (int) ($result['aggregate'] ?? 0);
     }
@@ -312,9 +312,9 @@ class QueryBuilder
      */
     public function max(string $column): mixed
     {
-        $original     = $this->columns;
+        $original = $this->columns;
         $this->columns = ["MAX({$column}) as aggregate"];
-        $result        = $this->first();
+        $result = $this->first();
         $this->columns = $original;
         return $result['aggregate'] ?? null;
     }
@@ -324,9 +324,9 @@ class QueryBuilder
      */
     public function min(string $column): mixed
     {
-        $original     = $this->columns;
+        $original = $this->columns;
         $this->columns = ["MIN({$column}) as aggregate"];
-        $result        = $this->first();
+        $result = $this->first();
         $this->columns = $original;
         return $result['aggregate'] ?? null;
     }
@@ -336,9 +336,9 @@ class QueryBuilder
      */
     public function sum(string $column): mixed
     {
-        $original     = $this->columns;
+        $original = $this->columns;
         $this->columns = ["SUM({$column}) as aggregate"];
-        $result        = $this->first();
+        $result = $this->first();
         $this->columns = $original;
         return $result['aggregate'] ?? 0;
     }
@@ -365,10 +365,10 @@ class QueryBuilder
      */
     public function insert(array $data): string|false
     {
-        $keys   = array_keys($data);
-        $cols   = implode(', ', array_map(fn ($k) => "`{$k}`", $keys));
-        $phs    = implode(', ', array_fill(0, count($keys), '?'));
-        $sql    = "INSERT INTO `{$this->table}` ({$cols}) VALUES ({$phs})";
+        $keys = array_keys($data);
+        $cols = implode(', ', array_map(fn($k) => "`{$k}`", $keys));
+        $phs = implode(', ', array_fill(0, count($keys), '?'));
+        $sql = "INSERT INTO `{$this->table}` ({$cols}) VALUES ({$phs})";
 
         $this->connection->statement($sql, array_values($data));
 
@@ -380,12 +380,13 @@ class QueryBuilder
      */
     public function insertMany(array $rows): void
     {
-        if (empty($rows)) return;
+        if (empty($rows))
+            return;
 
         $keys = array_keys($rows[0]);
-        $cols = implode(', ', array_map(fn ($k) => "`{$k}`", $keys));
-        $phs  = implode(', ', array_fill(0, count($keys), '?'));
-        $sql  = "INSERT INTO `{$this->table}` ({$cols}) VALUES ({$phs})";
+        $cols = implode(', ', array_map(fn($k) => "`{$k}`", $keys));
+        $phs = implode(', ', array_fill(0, count($keys), '?'));
+        $sql = "INSERT INTO `{$this->table}` ({$cols}) VALUES ({$phs})";
 
         foreach ($rows as $row) {
             $this->connection->statement($sql, array_values($row));
@@ -397,9 +398,9 @@ class QueryBuilder
      */
     public function update(array $data): int
     {
-        $sets     = implode(', ', array_map(fn ($k) => "`{$k}` = ?", array_keys($data)));
+        $sets = implode(', ', array_map(fn($k) => "`{$k}` = ?", array_keys($data)));
         $bindings = array_merge(array_values($data), $this->bindings);
-        $sql      = "UPDATE `{$this->table}` SET {$sets}";
+        $sql = "UPDATE `{$this->table}` SET {$sets}";
 
         if (!empty($this->wheres)) {
             $sql .= ' WHERE ' . implode(' AND ', $this->wheres);
@@ -447,17 +448,17 @@ class QueryBuilder
         $total = $this->count();
 
         $results = $this->limit($perPage)
-                        ->offset(($page - 1) * $perPage)
-                        ->get();
+            ->offset(($page - 1) * $perPage)
+            ->get();
 
         return [
-            'data'         => $results,
-            'total'        => $total,
-            'per_page'     => $perPage,
+            'data' => $results,
+            'total' => $total,
+            'per_page' => $perPage,
             'current_page' => $page,
-            'last_page'    => (int) ceil($total / $perPage),
-            'from'         => ($page - 1) * $perPage + 1,
-            'to'           => min($page * $perPage, $total),
+            'last_page' => (int) ceil($total / $perPage),
+            'from' => ($page - 1) * $perPage + 1,
+            'to' => min($page * $perPage, $total),
         ];
     }
 

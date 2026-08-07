@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.1.0
+ *  Papastro Framework v1.2.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -25,8 +25,8 @@ class Migrator
 
     public function __construct(Connection $connection, string $migrationsPath)
     {
-        $this->connection      = $connection;
-        $this->migrationsPath  = $migrationsPath;
+        $this->connection = $connection;
+        $this->migrationsPath = $migrationsPath;
         $this->migrationsTable = config('database.migrations.table', 'papastro_migrations');
 
         $this->ensureMigrationsTableExists();
@@ -86,7 +86,7 @@ class Migrator
             return [];
         }
 
-        $ran   = $this->getRanMigrations();
+        $ran = $this->getRanMigrations();
         $batch = $this->getLastBatch() + 1;
         $files = glob($this->migrationsPath . '/*.php');
         sort($files);
@@ -94,7 +94,8 @@ class Migrator
         $executed = [];
         foreach ($files as $file) {
             $name = basename($file, '.php');
-            if (in_array($name, $ran)) continue;
+            if (in_array($name, $ran))
+                continue;
 
             $migration = require $file;
             $migration->setConnection($this->connection);
@@ -117,9 +118,10 @@ class Migrator
     public function rollback(): array
     {
         $batch = $this->getLastBatch();
-        if ($batch === 0) return [];
+        if ($batch === 0)
+            return [];
 
-        $rows  = $this->connection->select(
+        $rows = $this->connection->select(
             "SELECT migration FROM `{$this->migrationsTable}` WHERE batch = ? ORDER BY id DESC",
             [$batch]
         );
@@ -128,7 +130,8 @@ class Migrator
         $rolledBack = [];
         foreach ($names as $name) {
             $file = $this->migrationsPath . "/{$name}.php";
-            if (!file_exists($file)) continue;
+            if (!file_exists($file))
+                continue;
 
             $migration = require $file;
             $migration->setConnection($this->connection);
@@ -205,8 +208,8 @@ class SchemaBuilder
 
     public function __construct(string $table, bool $alter = false, string $driver = 'mysql')
     {
-        $this->table  = $table;
-        $this->alter  = $alter;
+        $this->table = $table;
+        $this->alter = $alter;
         $this->driver = $driver;
     }
 

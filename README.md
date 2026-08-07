@@ -300,7 +300,7 @@ $paginated = Post::where('published', 1)
 // Buat record baru
 $post = Post::create([
     'user_id'   => 1,
-    'title'     => 'Panduan Papastro v1.1.0',
+    'title'     => 'Panduan Papastro v1.2.0',
     'slug'      => 'panduan-papastro-v110',
     'body'      => 'Konten lengkap framework Papastro...',
     'published' => 1,
@@ -320,7 +320,7 @@ $post->delete();
 
 ## Event dan Listener System
 
-Papastro v1.1.0 dilengkapi dengan engine `EventDispatcher` untuk menangani arsitektur event-driven secara efisien.
+Papastro v1.2.0 dilengkapi dengan engine `EventDispatcher` untuk menangani arsitektur event-driven secara efisien.
 
 ### Membuat Event dan Listener
 
@@ -530,7 +530,7 @@ Papastro Framework didistribusikan di bawah ketentuan lisensi bebas penggunaan d
 ```php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.1.0
+ *  Papastro Framework v1.2.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -545,4 +545,4 @@ Papastro Framework didistribusikan di bawah ketentuan lisensi bebas penggunaan d
 
 ---
 
-*Papastro Framework v1.1.0 dikembangkan oleh kangpcode (Dhafa Nazula Permadi).*
+*Papastro Framework v1.2.0 dikembangkan oleh kangpcode (Dhafa Nazula Permadi).*

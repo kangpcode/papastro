@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.1.0
+ *  Papastro Framework v1.2.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -27,7 +27,7 @@ class SitemapGenerator
 
     public function __construct(Application $app, RouteCollection $routes)
     {
-        $this->app    = $app;
+        $this->app = $app;
         $this->routes = $routes;
     }
 
@@ -36,10 +36,10 @@ class SitemapGenerator
      */
     public function generate(): string
     {
-        $baseUrl    = config('app.url', 'http://localhost');
+        $baseUrl = config('app.url', 'http://localhost');
         $changefreq = config('seo.sitemap.changefreq', 'weekly');
-        $priority   = config('seo.sitemap.priority', '0.8');
-        $now        = date('Y-m-d');
+        $priority = config('seo.sitemap.priority', '0.8');
+        $now = date('Y-m-d');
 
         $urls = '';
         foreach ($this->routes->all() as $route) {
@@ -52,8 +52,8 @@ class SitemapGenerator
                 continue;
             }
 
-            $uri  = '/' . ltrim($route->getUri(), '/');
-            $loc  = rtrim($baseUrl, '/') . $uri;
+            $uri = '/' . ltrim($route->getUri(), '/');
+            $loc = rtrim($baseUrl, '/') . $uri;
             $prio = $uri === '/' ? '1.0' : $priority;
 
             $urls .= <<<XML

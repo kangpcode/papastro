@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.1.0
+ *  Papastro Framework v1.2.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -24,11 +24,14 @@ class MakeControllerCommand extends Command
     public function execute(array $args): int
     {
         $name = $this->argument($args, 0);
-        if (!$name) { $this->error('Usage: papastro make:controller Module/ControllerName'); return 1; }
+        if (!$name) {
+            $this->error('Usage: papastro make:controller Module/ControllerName');
+            return 1;
+        }
 
         [$module, $class] = $this->parseName($name);
         $path = $this->app->appPath("Modules/{$module}/Http/Controllers/{$class}.php");
-        $ns   = "App\\Modules\\{$module}\\Http\\Controllers";
+        $ns = "App\\Modules\\{$module}\\Http\\Controllers";
 
         $isResource = $this->hasFlag($args, 'resource');
 
@@ -39,7 +42,9 @@ class MakeControllerCommand extends Command
     }
 PHP;
 
-        return $this->writeFile($path, $this->getHeader() . <<<PHP
+        return $this->writeFile(
+            $path,
+            $this->getHeader() . <<<PHP
 
 declare(strict_types=1);
 
@@ -88,14 +93,19 @@ class MakeModelCommand extends Command
     public function execute(array $args): int
     {
         $name = $this->argument($args, 0);
-        if (!$name) { $this->error('Usage: papastro make:model Module/ModelName'); return 1; }
+        if (!$name) {
+            $this->error('Usage: papastro make:model Module/ModelName');
+            return 1;
+        }
 
         [$module, $class] = $this->parseName($name);
         $path = $this->app->appPath("Modules/{$module}/Models/{$class}.php");
-        $ns   = "App\\Modules\\{$module}\\Models";
+        $ns = "App\\Modules\\{$module}\\Models";
         $table = strtolower(preg_replace('/([A-Z])/', '_$1', lcfirst($class))) . 's';
 
-        return $this->writeFile($path, $this->getHeader() . <<<PHP
+        return $this->writeFile(
+            $path,
+            $this->getHeader() . <<<PHP
 
 declare(strict_types=1);
 
@@ -132,14 +142,19 @@ class MakeMigrationCommand extends Command
     public function execute(array $args): int
     {
         $name = $this->argument($args, 0);
-        if (!$name) { $this->error('Usage: papastro make:migration migration_name'); return 1; }
+        if (!$name) {
+            $this->error('Usage: papastro make:migration migration_name');
+            return 1;
+        }
 
         $timestamp = date('Y_m_d_His');
-        $filename  = "{$timestamp}_{$name}.php";
-        $path      = $this->app->databasePath("migrations/{$filename}");
-        $class     = str_replace(' ', '', ucwords(str_replace('_', ' ', $name)));
+        $filename = "{$timestamp}_{$name}.php";
+        $path = $this->app->databasePath("migrations/{$filename}");
+        $class = str_replace(' ', '', ucwords(str_replace('_', ' ', $name)));
 
-        return $this->writeFile($path, $this->getHeader() . <<<PHP
+        return $this->writeFile(
+            $path,
+            $this->getHeader() . <<<PHP
 
 declare(strict_types=1);
 
@@ -166,7 +181,8 @@ PHP
     protected function guessTable(string $name): string
     {
         // create_posts_table → posts
-        if (preg_match('/create_(.+)_table/', $name, $m)) return $m[1];
+        if (preg_match('/create_(.+)_table/', $name, $m))
+            return $m[1];
         return $name;
     }
 }
@@ -179,7 +195,10 @@ class MakeIslandCommand extends Command
     public function execute(array $args): int
     {
         $name = $this->argument($args, 0);
-        if (!$name) { $this->error('Usage: papastro make:island Module/IslandName'); return 1; }
+        if (!$name) {
+            $this->error('Usage: papastro make:island Module/IslandName');
+            return 1;
+        }
 
         [$module, $class] = $this->parseName($name);
         $path = $this->app->appPath("Modules/{$module}/Islands/{$class}.js");
@@ -234,7 +253,10 @@ class MakePageCommand extends Command
     public function execute(array $args): int
     {
         $name = $this->argument($args, 0);
-        if (!$name) { $this->error('Usage: papastro make:page Module/pagename'); return 1; }
+        if (!$name) {
+            $this->error('Usage: papastro make:page Module/pagename');
+            return 1;
+        }
 
         [$module, $page] = $this->parseName($name);
         $path = $this->app->appPath("Modules/{$module}/Pages/{$page}.pstro");
@@ -262,7 +284,7 @@ PSTRO;
     {
         if (str_contains($name, '/')) {
             $parts = explode('/', $name);
-            $page  = array_pop($parts);
+            $page = array_pop($parts);
             return [implode('/', $parts), $page];
         }
         return ['App', $name];
@@ -277,11 +299,16 @@ class MakeMiddlewareCommand extends Command
     public function execute(array $args): int
     {
         $name = $this->argument($args, 0);
-        if (!$name) { $this->error('Usage: papastro make:middleware MiddlewareName'); return 1; }
+        if (!$name) {
+            $this->error('Usage: papastro make:middleware MiddlewareName');
+            return 1;
+        }
 
         $path = $this->app->appPath("Http/Middleware/{$name}.php");
 
-        return $this->writeFile($path, $this->getHeader() . <<<PHP
+        return $this->writeFile(
+            $path,
+            $this->getHeader() . <<<PHP
 
 declare(strict_types=1);
 
@@ -316,13 +343,18 @@ class MakeServiceCommand extends Command
     public function execute(array $args): int
     {
         $name = $this->argument($args, 0);
-        if (!$name) { $this->error('Usage: papastro make:service Module/ServiceName'); return 1; }
+        if (!$name) {
+            $this->error('Usage: papastro make:service Module/ServiceName');
+            return 1;
+        }
 
         [$module, $class] = $this->parseName($name);
         $path = $this->app->appPath("Modules/{$module}/Services/{$class}.php");
-        $ns   = "App\\Modules\\{$module}\\Services";
+        $ns = "App\\Modules\\{$module}\\Services";
 
-        return $this->writeFile($path, $this->getHeader() . <<<PHP
+        return $this->writeFile(
+            $path,
+            $this->getHeader() . <<<PHP
 
 declare(strict_types=1);
 
@@ -360,19 +392,24 @@ class MakeEventCommand extends Command
     public function execute(array $args): int
     {
         $name = $this->argument($args, 0);
-        if (!$name) { $this->error('Usage: papastro make:event Module/EventName'); return 1; }
+        if (!$name) {
+            $this->error('Usage: papastro make:event Module/EventName');
+            return 1;
+        }
 
         if (str_contains($name, '/')) {
             [$module, $class] = explode('/', $name, 2);
             $path = $this->app->appPath("Modules/{$module}/Events/{$class}.php");
-            $ns   = "App\\Modules\\{$module}\\Events";
+            $ns = "App\\Modules\\{$module}\\Events";
         } else {
             $class = $name;
-            $path  = $this->app->appPath("Events/{$class}.php");
-            $ns    = "App\\Events";
+            $path = $this->app->appPath("Events/{$class}.php");
+            $ns = "App\\Events";
         }
 
-        return $this->writeFile($path, $this->getHeader() . <<<PHP
+        return $this->writeFile(
+            $path,
+            $this->getHeader() . <<<PHP
 
 declare(strict_types=1);
 
@@ -400,19 +437,24 @@ class MakeListenerCommand extends Command
     public function execute(array $args): int
     {
         $name = $this->argument($args, 0);
-        if (!$name) { $this->error('Usage: papastro make:listener Module/ListenerName'); return 1; }
+        if (!$name) {
+            $this->error('Usage: papastro make:listener Module/ListenerName');
+            return 1;
+        }
 
         if (str_contains($name, '/')) {
             [$module, $class] = explode('/', $name, 2);
             $path = $this->app->appPath("Modules/{$module}/Listeners/{$class}.php");
-            $ns   = "App\\Modules\\{$module}\\Listeners";
+            $ns = "App\\Modules\\{$module}\\Listeners";
         } else {
             $class = $name;
-            $path  = $this->app->appPath("Listeners/{$class}.php");
-            $ns    = "App\\Listeners";
+            $path = $this->app->appPath("Listeners/{$class}.php");
+            $ns = "App\\Listeners";
         }
 
-        return $this->writeFile($path, $this->getHeader() . <<<PHP
+        return $this->writeFile(
+            $path,
+            $this->getHeader() . <<<PHP
 
 declare(strict_types=1);
 

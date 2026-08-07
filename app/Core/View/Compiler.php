@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.1.0
+ *  Papastro Framework v1.2.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -72,7 +72,7 @@ class Compiler
     protected function compileFrontmatter(string $content): string
     {
         if (preg_match('/^---\s*\n(.*?)\n---\s*\n/s', $content, $matches)) {
-            $php  = "<?php\n" . $matches[1] . "\n?>";
+            $php = "<?php\n" . $matches[1] . "\n?>";
             return $php . "\n" . substr($content, strlen($matches[0]));
         }
         return $content;
@@ -91,9 +91,9 @@ class Compiler
         $content = preg_replace_callback(
             '/<island:(load|idle|visible|only)\s+component="([^"]+)"([^>]*?)\/>/s',
             function ($m) {
-                $strategy  = $m[1];
+                $strategy = $m[1];
                 $component = $m[2];
-                $attrs     = $this->parseIslandAttributes($m[3]);
+                $attrs = $this->parseIslandAttributes($m[3]);
                 return $this->buildIslandPhp($component, $strategy, $attrs);
             },
             $content
@@ -104,8 +104,8 @@ class Compiler
             '/<([A-Z][a-zA-Z]+)\s+client:(load|idle|visible|only)([^>]*?)\/>/s',
             function ($m) {
                 $component = $m[1];
-                $strategy  = $m[2];
-                $attrs     = $this->parseIslandAttributes($m[3]);
+                $strategy = $m[2];
+                $attrs = $this->parseIslandAttributes($m[3]);
                 return $this->buildIslandPhp($component, $strategy, $attrs);
             },
             $content
@@ -145,10 +145,10 @@ class Compiler
 <?php
 \$__islandProps = [];
 PHP
-        . "\n" . implode("\n", array_map(function ($k, $v) {
-            return "<?php \$__islandProps['{$k}'] = {$v}; ?>";
-        }, array_keys($attrs), array_values($attrs)))
-        . <<<PHP
+            . "\n" . implode("\n", array_map(function ($k, $v) {
+                return "<?php \$__islandProps['{$k}'] = {$v}; ?>";
+            }, array_keys($attrs), array_values($attrs)))
+            . <<<PHP
 
 <?php \Papastro\Island\IslandRenderer::renderPlaceholder('{$id}', '{$component}', '{$strategy}', \$__islandProps); ?>
 PHP;
@@ -175,29 +175,29 @@ PHP;
     {
         $replacements = [
             // @foreach / @endforeach
-            '/@foreach\s*\((.*?)\)/s'  => '<?php foreach($1): ?>',
-            '/@endforeach/'             => '<?php endforeach; ?>',
+            '/@foreach\s*\((.*?)\)/s' => '<?php foreach($1): ?>',
+            '/@endforeach/' => '<?php endforeach; ?>',
 
             // @for / @endfor
-            '/@for\s*\((.*?)\)/s'       => '<?php for($1): ?>',
-            '/@endfor/'                  => '<?php endfor; ?>',
+            '/@for\s*\((.*?)\)/s' => '<?php for($1): ?>',
+            '/@endfor/' => '<?php endfor; ?>',
 
             // @while / @endwhile
-            '/@while\s*\((.*?)\)/s'     => '<?php while($1): ?>',
-            '/@endwhile/'               => '<?php endwhile; ?>',
+            '/@while\s*\((.*?)\)/s' => '<?php while($1): ?>',
+            '/@endwhile/' => '<?php endwhile; ?>',
 
             // @if / @elseif / @else / @endif
-            '/@if\s*\((.*?)\)/s'        => '<?php if($1): ?>',
-            '/@elseif\s*\((.*?)\)/s'    => '<?php elseif($1): ?>',
-            '/@else/'                    => '<?php else: ?>',
-            '/@endif/'                   => '<?php endif; ?>',
+            '/@if\s*\((.*?)\)/s' => '<?php if($1): ?>',
+            '/@elseif\s*\((.*?)\)/s' => '<?php elseif($1): ?>',
+            '/@else/' => '<?php else: ?>',
+            '/@endif/' => '<?php endif; ?>',
 
             // @php / @endphp
-            '/@php/'                     => '<?php',
-            '/@endphp/'                  => '?>',
+            '/@php/' => '<?php',
+            '/@endphp/' => '?>',
 
             // @csrf
-            '/@csrf/'                    => '<?php echo csrf_field(); ?>',
+            '/@csrf/' => '<?php echo csrf_field(); ?>',
 
             // @method
             '/@method\([\'"]([^\'"]+)[\'"]\)/' => '<?php echo method_field(\'$1\'); ?>',
@@ -206,13 +206,13 @@ PHP;
             '/@include\([\'"]([^\'"]+)[\'"]\)/' => '<?php echo app(\Papastro\View\ViewEngine::class)->render(\'$1\'); ?>',
 
             // @json
-            '/@json\((.*?)\)/s'          => '<?php echo json_encode($1, JSON_UNESCAPED_UNICODE); ?>',
+            '/@json\((.*?)\)/s' => '<?php echo json_encode($1, JSON_UNESCAPED_UNICODE); ?>',
 
             // @dd — dump and die
-            '/@dd\((.*?)\)/s'            => '<?php var_dump($1); die(); ?>',
+            '/@dd\((.*?)\)/s' => '<?php var_dump($1); die(); ?>',
 
             // @dump
-            '/@dump\((.*?)\)/s'          => '<?php var_dump($1); ?>',
+            '/@dump\((.*?)\)/s' => '<?php var_dump($1); ?>',
         ];
 
         foreach ($replacements as $pattern => $replacement) {
@@ -222,14 +222,14 @@ PHP;
         // @yield('name')
         $content = preg_replace_callback(
             '/@yield\([\'"]([^\'"]+)[\'"]\)/',
-            fn ($m) => "<?php echo \$__sections['{$m[1]}'] ?? ''; ?>",
+            fn($m) => "<?php echo \$__sections['{$m[1]}'] ?? ''; ?>",
             $content
         );
 
         // @section('name') ... @endsection
         $content = preg_replace_callback(
             '/@section\([\'"]([^\'"]+)[\'"]\)(.*?)@endsection/s',
-            fn ($m) => "<?php \$__sections['{$m[1]}'] = <<<'PSTRO_SECTION'\n{$m[2]}\nPSTRO_SECTION; ?>",
+            fn($m) => "<?php \$__sections['{$m[1]}'] = <<<'PSTRO_SECTION'\n{$m[2]}\nPSTRO_SECTION; ?>",
             $content
         );
 
@@ -242,7 +242,7 @@ PHP;
     protected function compileLayout(string $content): string
     {
         if (preg_match('/@layout\([\'"]([^\'"]+)[\'"]\)/', $content, $matches)) {
-            $layout  = $matches[1];
+            $layout = $matches[1];
             $content = str_replace($matches[0], '', $content);
 
             // Wrap: render the layout and inject this page as @yield('content')

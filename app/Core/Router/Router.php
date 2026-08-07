@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.1.0
+ *  Papastro Framework v1.2.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -51,7 +51,7 @@ class Router
      */
     public function __construct(mixed $app)
     {
-        $this->app    = $app;
+        $this->app = $app;
         $this->routes = new RouteCollection;
     }
 
@@ -126,7 +126,7 @@ class Router
     {
         $route = $this->addRoute(['GET', 'HEAD'], $uri, function (Request $request) use ($islandComponent) {
             return $this->app->make(\Papastro\Island\IslandRenderer::class)
-                             ->render($islandComponent, $request->routeParameters());
+                ->render($islandComponent, $request->routeParameters());
         });
 
         $route->isIsland = true;
@@ -244,7 +244,7 @@ class Router
      */
     protected function runRoute(Request $request, Route $route): Response
     {
-        $request->setRouteResolver(fn () => $route);
+        $request->setRouteResolver(fn() => $route);
 
         return $this->runRouteWithinStack($route, $request);
     }
@@ -263,8 +263,8 @@ class Router
         $pipeline = new \Papastro\Http\Pipeline($this->app);
 
         return $pipeline->send($request)
-                        ->through($middleware)
-                        ->then(fn ($req) => $route->run($req));
+            ->through($middleware)
+            ->then(fn($req) => $route->run($req));
     }
 
     /**

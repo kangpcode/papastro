@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.1.0
+ *  Papastro Framework v1.2.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -37,48 +37,48 @@ class Kernel
     {
         $this->commands = [
             // Core
-            'key:generate'        => Commands\KeyGenerateCommand::class,
-            'optimize'            => Commands\OptimizeCommand::class,
-            'cache:clear'         => Commands\CacheClearCommand::class,
-            'route:cache'         => Commands\RouteCacheCommand::class,
-            'route:list'          => Commands\RouteListCommand::class,
+            'key:generate' => Commands\KeyGenerateCommand::class,
+            'optimize' => Commands\OptimizeCommand::class,
+            'cache:clear' => Commands\CacheClearCommand::class,
+            'route:cache' => Commands\RouteCacheCommand::class,
+            'route:list' => Commands\RouteListCommand::class,
 
             // Module
-            'module:make'         => Commands\MakeModuleCommand::class,
-            'module:enable'       => Commands\ModuleEnableCommand::class,
-            'module:disable'      => Commands\ModuleDisableCommand::class,
-            'module:list'         => Commands\ModuleListCommand::class,
+            'module:make' => Commands\MakeModuleCommand::class,
+            'module:enable' => Commands\ModuleEnableCommand::class,
+            'module:disable' => Commands\ModuleDisableCommand::class,
+            'module:list' => Commands\ModuleListCommand::class,
 
             // Generators
-            'make:controller'     => Commands\MakeControllerCommand::class,
-            'make:model'          => Commands\MakeModelCommand::class,
-            'make:migration'      => Commands\MakeMigrationCommand::class,
-            'make:island'         => Commands\MakeIslandCommand::class,
-            'make:page'           => Commands\MakePageCommand::class,
-            'make:middleware'     => Commands\MakeMiddlewareCommand::class,
-            'make:service'        => Commands\MakeServiceCommand::class,
-            'make:event'          => Commands\MakeEventCommand::class,
-            'make:listener'       => Commands\MakeListenerCommand::class,
+            'make:controller' => Commands\MakeControllerCommand::class,
+            'make:model' => Commands\MakeModelCommand::class,
+            'make:migration' => Commands\MakeMigrationCommand::class,
+            'make:island' => Commands\MakeIslandCommand::class,
+            'make:page' => Commands\MakePageCommand::class,
+            'make:middleware' => Commands\MakeMiddlewareCommand::class,
+            'make:service' => Commands\MakeServiceCommand::class,
+            'make:event' => Commands\MakeEventCommand::class,
+            'make:listener' => Commands\MakeListenerCommand::class,
 
             // Database
-            'migrate'             => Commands\MigrateCommand::class,
-            'migrate:rollback'    => Commands\MigrateRollbackCommand::class,
-            'db:seed'             => Commands\DbSeedCommand::class,
+            'migrate' => Commands\MigrateCommand::class,
+            'migrate:rollback' => Commands\MigrateRollbackCommand::class,
+            'db:seed' => Commands\DbSeedCommand::class,
 
             // SEO & PWA
-            'seo:sitemap'         => Commands\SeoSitemapCommand::class,
-            'pwa:generate'        => Commands\PwaGenerateCommand::class,
-            'pwa:precache'        => Commands\PwaPrecacheCommand::class,
+            'seo:sitemap' => Commands\SeoSitemapCommand::class,
+            'pwa:generate' => Commands\PwaGenerateCommand::class,
+            'pwa:precache' => Commands\PwaPrecacheCommand::class,
 
             // Debug
-            'debug:route'         => Commands\DebugRouteCommand::class,
-            'debug:island'        => Commands\DebugIslandCommand::class,
-            'debug:clear'         => Commands\DebugClearCommand::class,
+            'debug:route' => Commands\DebugRouteCommand::class,
+            'debug:island' => Commands\DebugIslandCommand::class,
+            'debug:clear' => Commands\DebugClearCommand::class,
 
             // Dev server
-            'dev'                 => Commands\DevServerCommand::class,
-            'serve'               => Commands\ServeCommand::class,
-            'build'               => Commands\BuildCommand::class,
+            'dev' => Commands\DevServerCommand::class,
+            'serve' => Commands\ServeCommand::class,
+            'build' => Commands\BuildCommand::class,
         ];
     }
 
@@ -88,7 +88,7 @@ class Kernel
     public function handle(array $argv): int
     {
         $commandName = $argv[1] ?? null;
-        $args        = array_slice($argv, 2);
+        $args = array_slice($argv, 2);
 
         if (!$commandName || in_array($commandName, ['--help', '-h', 'help'])) {
             $this->showHelp();
@@ -107,7 +107,7 @@ class Kernel
         }
 
         $commandClass = $this->commands[$commandName];
-        $command      = new $commandClass($this->app, $this);
+        $command = new $commandClass($this->app, $this);
 
         try {
             return $command->execute($args);
@@ -160,18 +160,18 @@ class Kernel
     {
         $colors = [
             'default' => "\033[0m",
-            'black'   => "\033[30m",
-            'red'     => "\033[31m",
-            'green'   => "\033[32m",
-            'yellow'  => "\033[33m",
-            'blue'    => "\033[34m",
-            'purple'  => "\033[35m",
-            'cyan'    => "\033[36m",
-            'white'   => "\033[37m",
-            'gray'    => "\033[90m",
+            'black' => "\033[30m",
+            'red' => "\033[31m",
+            'green' => "\033[32m",
+            'yellow' => "\033[33m",
+            'blue' => "\033[34m",
+            'purple' => "\033[35m",
+            'cyan' => "\033[36m",
+            'white' => "\033[37m",
+            'gray' => "\033[90m",
         ];
 
-        $code  = $colors[$color] ?? "\033[0m";
+        $code = $colors[$color] ?? "\033[0m";
         $reset = "\033[0m";
 
         echo $code . $message . $reset . PHP_EOL;

@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.1.0
+ *  Papastro Framework v1.2.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -37,9 +37,9 @@ class Debugbar
 
     public function __construct(Application $app, QueryCollector $queryCollector)
     {
-        $this->app            = $app;
+        $this->app = $app;
         $this->queryCollector = $queryCollector;
-        $this->startTime      = defined('PAPASTRO_START') ? PAPASTRO_START : microtime(true);
+        $this->startTime = defined('PAPASTRO_START') ? PAPASTRO_START : microtime(true);
     }
 
     /**
@@ -66,7 +66,7 @@ class Debugbar
         }
 
         $debugbarHtml = $this->render($request);
-        $content      = str_replace('</body>', $debugbarHtml . '</body>', $content);
+        $content = str_replace('</body>', $debugbarHtml . '</body>', $content);
 
         return $response->setContent($content);
     }
@@ -76,21 +76,21 @@ class Debugbar
      */
     public function render(Request $request): string
     {
-        $renderTime   = round((microtime(true) - $this->startTime) * 1000, 2);
-        $queries      = $this->queryCollector->getQueries();
-        $queryCount   = $this->queryCollector->count();
-        $queryTime    = $this->queryCollector->totalTime();
-        $n1Count      = count($this->queryCollector->getNPlusOneQueries());
-        $route        = $request->route();
-        $routeName    = $route?->getName() ?? 'N/A';
-        $routeUri     = $route?->getUri() ?? $request->path();
-        $middleware   = $route ? implode(', ', $route->getMiddleware()) : 'none';
-        $memUsage     = round(memory_get_peak_usage(true) / 1024 / 1024, 2);
+        $renderTime = round((microtime(true) - $this->startTime) * 1000, 2);
+        $queries = $this->queryCollector->getQueries();
+        $queryCount = $this->queryCollector->count();
+        $queryTime = $this->queryCollector->totalTime();
+        $n1Count = count($this->queryCollector->getNPlusOneQueries());
+        $route = $request->route();
+        $routeName = $route?->getName() ?? 'N/A';
+        $routeUri = $route?->getUri() ?? $request->path();
+        $middleware = $route ? implode(', ', $route->getMiddleware()) : 'none';
+        $memUsage = round(memory_get_peak_usage(true) / 1024 / 1024, 2);
 
         $queryRows = '';
         foreach ($queries as $i => $q) {
             $n1Badge = $q['n1'] ? '<span class="pdb-badge pdb-badge--warn">N+1</span>' : '';
-            $sql     = htmlspecialchars($q['sql']);
+            $sql = htmlspecialchars($q['sql']);
             $queryRows .= "<tr><td>{$i}</td><td class=\"pdb-sql\">{$sql}{$n1Badge}</td><td>{$q['elapsed']}ms</td></tr>";
         }
 

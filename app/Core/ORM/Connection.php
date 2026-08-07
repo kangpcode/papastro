@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.1.0
+ *  Papastro Framework v1.2.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -48,11 +48,11 @@ class Connection
      */
     protected function createPdo(): PDO
     {
-        $driver   = $this->config['driver'] ?? 'mysql';
-        $host     = $this->config['host'] ?? 'localhost';
-        $port     = $this->config['port'] ?? '3306';
-        $dbname   = $this->config['database'] ?? '';
-        $charset  = $this->config['charset'] ?? 'utf8mb4';
+        $driver = $this->config['driver'] ?? 'mysql';
+        $host = $this->config['host'] ?? 'localhost';
+        $port = $this->config['port'] ?? '3306';
+        $dbname = $this->config['database'] ?? '';
+        $charset = $this->config['charset'] ?? 'utf8mb4';
         $username = $this->config['username'] ?? 'root';
         $password = $this->config['password'] ?? '';
 
@@ -71,9 +71,9 @@ class Connection
         }
 
         $options = [
-            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES   => false,
+            PDO::ATTR_EMULATE_PREPARES => false,
         ];
 
         try {

@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.1.0
+ *  Papastro Framework v1.2.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -32,7 +32,7 @@ class ViewEngine
 
     public function __construct(Application $app)
     {
-        $this->app      = $app;
+        $this->app = $app;
         $this->compiler = new Compiler($app);
     }
 
@@ -73,12 +73,12 @@ class ViewEngine
     protected function evaluateCompiledTemplate(string $code, array $data): string
     {
         // Write to a temp file in storage/cache
-        $cacheDir  = $this->app->storagePath('cache/views');
+        $cacheDir = $this->app->storagePath('cache/views');
         if (!is_dir($cacheDir)) {
             mkdir($cacheDir, 0755, true);
         }
 
-        $hash      = md5($code);
+        $hash = md5($code);
         $cachePath = $cacheDir . DIRECTORY_SEPARATOR . $hash . '.php';
 
         if (!file_exists($cachePath)) {
@@ -94,7 +94,7 @@ class ViewEngine
     protected function evaluatePHP(string $path, array $data): string
     {
         // $__data must be set BEFORE extract() so the compiled layout closure can capture it
-        $__data    = $data;
+        $__data = $data;
         $__sections = $data['__sections'] ?? [];
 
         extract($data, EXTR_SKIP);

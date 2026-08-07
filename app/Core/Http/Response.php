@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.1.0
+ *  Papastro Framework v1.2.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -61,9 +61,9 @@ class Response
      */
     public function __construct(string $content = '', int $statusCode = 200, array $headers = [])
     {
-        $this->content    = $content;
+        $this->content = $content;
         $this->statusCode = $statusCode;
-        $this->headers    = array_merge(['Content-Type' => 'text/html; charset=UTF-8'], $headers);
+        $this->headers = array_merge(['Content-Type' => 'text/html; charset=UTF-8'], $headers);
     }
 
     /**
@@ -169,11 +169,11 @@ class Response
     public function cookie(
         string $name,
         string $value,
-        int    $minutes = 0,
-        string $path    = '/',
-        string $domain  = '',
-        bool   $secure  = false,
-        bool   $httpOnly = true
+        int $minutes = 0,
+        string $path = '/',
+        string $domain = '',
+        bool $secure = false,
+        bool $httpOnly = true
     ): static {
         $expires = $minutes > 0 ? time() + ($minutes * 60) : 0;
         setcookie($name, $value, $expires, $path, $domain, $secure, $httpOnly);

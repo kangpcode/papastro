@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.1.0
+ *  Papastro Framework v1.2.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -24,7 +24,7 @@ class ModuleManager
 
     public function __construct(ModuleLoader $loader, string $modulesPath)
     {
-        $this->loader      = $loader;
+        $this->loader = $loader;
         $this->modulesPath = $modulesPath;
     }
 
@@ -75,17 +75,17 @@ class ModuleManager
         }
 
         foreach (glob($this->modulesPath . '/*', GLOB_ONLYDIR) as $dir) {
-            $name     = basename($dir);
+            $name = basename($dir);
             $manifest = $dir . DIRECTORY_SEPARATOR . 'module.json';
-            $meta     = file_exists($manifest)
+            $meta = file_exists($manifest)
                 ? json_decode(file_get_contents($manifest), true)
                 : [];
 
             $modules[] = [
-                'name'    => $name,
+                'name' => $name,
                 'enabled' => $meta['enabled'] ?? true,
                 'version' => $meta['version'] ?? '1.0.0',
-                'loaded'  => $this->loader->isLoaded($name),
+                'loaded' => $this->loader->isLoaded($name),
             ];
         }
 

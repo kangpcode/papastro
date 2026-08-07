@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.1.0
+ *  Papastro Framework v1.2.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -40,12 +40,14 @@ class LoadEnvironmentVariables
             }
 
             [$name, $value] = explode('=', $line, 2);
-            $name  = trim($name);
+            $name = trim($name);
             $value = trim($value);
 
             // Strip surrounding quotes
-            if ((str_starts_with($value, '"') && str_ends_with($value, '"')) ||
-                (str_starts_with($value, "'") && str_ends_with($value, "'"))) {
+            if (
+                (str_starts_with($value, '"') && str_ends_with($value, '"')) ||
+                (str_starts_with($value, "'") && str_ends_with($value, "'"))
+            ) {
                 $value = substr($value, 1, -1);
             }
 
@@ -108,8 +110,8 @@ class HandleExceptions
         } else {
             error_log($e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
             if (!headers_sent()) {
-            @http_response_code(500);
-        }
+                @http_response_code(500);
+            }
             echo 'Internal Server Error';
         }
     }
@@ -120,9 +122,9 @@ class HandleExceptions
             @http_response_code(500);
         }
         $message = htmlspecialchars($e->getMessage());
-        $file    = htmlspecialchars($e->getFile());
-        $line    = $e->getLine();
-        $trace   = htmlspecialchars($e->getTraceAsString());
+        $file = htmlspecialchars($e->getFile());
+        $line = $e->getLine();
+        $trace = htmlspecialchars($e->getTraceAsString());
 
         echo <<<HTML
 <!DOCTYPE html><html><head><title>Error</title>

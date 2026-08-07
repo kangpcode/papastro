@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.1.0
+ *  Papastro Framework v1.2.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -55,7 +55,7 @@ class Kernel
      */
     public function __construct(Application $app, \Papastro\Router\Router $router)
     {
-        $this->app    = $app;
+        $this->app = $app;
         $this->router = $router;
     }
 
@@ -87,7 +87,7 @@ class Kernel
         return (new Pipeline($this->app))
             ->send($request)
             ->through($this->middleware)
-            ->then(fn ($req) => $this->router->dispatch($req));
+            ->then(fn($req) => $this->router->dispatch($req));
     }
 
     /**
@@ -140,10 +140,10 @@ class Kernel
     protected function renderDebugException(Throwable $e): Response
     {
         $message = htmlspecialchars($e->getMessage());
-        $class   = get_class($e);
-        $file    = htmlspecialchars($e->getFile());
-        $line    = $e->getLine();
-        $trace   = htmlspecialchars($e->getTraceAsString());
+        $class = get_class($e);
+        $file = htmlspecialchars($e->getFile());
+        $line = $e->getLine();
+        $trace = htmlspecialchars($e->getTraceAsString());
 
         $html = <<<HTML
 <!DOCTYPE html>
@@ -196,7 +196,8 @@ HTML;
     public function terminate(Request $request, Response $response): void
     {
         foreach ($this->middleware as $middleware) {
-            if (!is_string($middleware)) continue;
+            if (!is_string($middleware))
+                continue;
 
             $instance = $this->app->make($middleware);
 

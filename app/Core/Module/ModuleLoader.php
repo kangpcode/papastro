@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.1.0
+ *  Papastro Framework v1.2.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -27,7 +27,7 @@ class ModuleLoader
 
     public function __construct(Application $app)
     {
-        $this->app         = $app;
+        $this->app = $app;
         $this->modulesPath = $app->appPath('Modules');
     }
 
@@ -36,7 +36,7 @@ class ModuleLoader
      */
     public function load(): void
     {
-        $config   = $this->app->make('config');
+        $config = $this->app->make('config');
         $disabled = $config->get('modules.disabled', []);
 
         if ($config->get('modules.auto_discover', true)) {
@@ -56,7 +56,8 @@ class ModuleLoader
         }
 
         $dirs = glob($this->modulesPath . '/*', GLOB_ONLYDIR);
-        if (!$dirs) return;
+        if (!$dirs)
+            return;
 
         // Build a pending list of [name => dir]
         $pending = [];
@@ -101,7 +102,8 @@ class ModuleLoader
                 }
             }
 
-            if ($loaded === 0) break; // No progress — circular or missing dep
+            if ($loaded === 0)
+                break; // No progress — circular or missing dep
         }
 
         // Report unresolvable modules (missing dependencies)
@@ -117,7 +119,8 @@ class ModuleLoader
     protected function loadExplicit(array $enabled, array $disabled): void
     {
         foreach ($enabled as $name) {
-            if (in_array($name, $disabled)) continue;
+            if (in_array($name, $disabled))
+                continue;
 
             $dir = $this->modulesPath . DIRECTORY_SEPARATOR . $name;
             if (is_dir($dir)) {
@@ -151,9 +154,9 @@ class ModuleLoader
         }
 
         $this->modules[$name] = [
-            'name'    => $name,
-            'path'    => $path,
-            'meta'    => $meta,
+            'name' => $name,
+            'path' => $path,
+            'meta' => $meta,
             'enabled' => true,
         ];
 

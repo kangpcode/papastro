@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.1.0
+ *  Papastro Framework v1.2.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -23,7 +23,7 @@ class KeyGenerateCommand extends Command
 {
     public function execute(array $args): int
     {
-        $key     = 'base64:' . base64_encode(random_bytes(32));
+        $key = 'base64:' . base64_encode(random_bytes(32));
         $envPath = $this->app->basePath('.env');
 
         if (file_exists($envPath)) {
@@ -81,7 +81,8 @@ class OptimizeCommand extends Command
     {
         $quiet = $this->hasFlag($args, 'quiet');
 
-        if (!$quiet) $this->info('Optimizing application...');
+        if (!$quiet)
+            $this->info('Optimizing application...');
 
         // Clear old caches
         (new CacheClearCommand($this->app, $this->console))->execute([]);
@@ -96,10 +97,12 @@ class OptimizeCommand extends Command
         ];
 
         foreach ($dirs as $dir) {
-            if (!is_dir($dir)) mkdir($dir, 0755, true);
+            if (!is_dir($dir))
+                mkdir($dir, 0755, true);
         }
 
-        if (!$quiet) $this->success('Application optimized.');
+        if (!$quiet)
+            $this->success('Application optimized.');
         return 0;
     }
 }
@@ -112,15 +115,15 @@ class RouteCacheCommand extends Command
     public function execute(array $args): int
     {
         $this->info('Caching routes...');
-        $router     = $this->app->make(\Papastro\Router\Router::class);
-        $routes     = $router->getRoutes()->all();
-        $cacheData  = [];
+        $router = $this->app->make(\Papastro\Router\Router::class);
+        $routes = $router->getRoutes()->all();
+        $cacheData = [];
 
         foreach ($routes as $route) {
             $cacheData[] = [
                 'methods' => $route->getMethods(),
-                'uri'     => $route->getUri(),
-                'name'    => $route->getName(),
+                'uri' => $route->getUri(),
+                'name' => $route->getName(),
             ];
         }
 
@@ -149,9 +152,9 @@ class RouteListCommand extends Command
 
         foreach ($routes as $route) {
             $method = implode('|', $route->getMethods());
-            $uri    = $route->getUri();
-            $name   = $route->getName() ?? '-';
-            $mw     = implode(',', $route->getMiddleware()) ?: '-';
+            $uri = $route->getUri();
+            $name = $route->getName() ?? '-';
+            $mw = implode(',', $route->getMiddleware()) ?: '-';
 
             echo '  ' . "\033[32m" . str_pad($method, 10) . "\033[0m"
                 . str_pad($uri, 40)
@@ -174,9 +177,9 @@ class SeoSitemapCommand extends Command
     public function execute(array $args): int
     {
         $this->info('Generating sitemap.xml...');
-        $router    = $this->app->make(\Papastro\Router\Router::class);
+        $router = $this->app->make(\Papastro\Router\Router::class);
         $generator = new \Papastro\SEO\SitemapGenerator($this->app, $router->getRoutes());
-        $path      = $generator->generate();
+        $path = $generator->generate();
         $this->success("Sitemap generated: {$path}");
         return 0;
     }
@@ -266,7 +269,8 @@ class DebugClearCommand extends Command
         $debugDir = $this->app->storagePath('debug');
         if (is_dir($debugDir)) {
             foreach (glob("{$debugDir}/*") as $file) {
-                if (is_file($file)) unlink($file);
+                if (is_file($file))
+                    unlink($file);
             }
         }
         $this->success('Debug snapshots cleared.');
@@ -328,7 +332,7 @@ class DbSeedCommand extends Command
     public function execute(array $args): int
     {
         $seederClass = $this->option($args, 'class', 'DatabaseSeeder');
-        $seederPath  = $this->app->databasePath("seeders/{$seederClass}.php");
+        $seederPath = $this->app->databasePath("seeders/{$seederClass}.php");
 
         if (!file_exists($seederPath)) {
             $this->error("Seeder [{$seederClass}] not found.");

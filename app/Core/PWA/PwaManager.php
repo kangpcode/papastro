@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.1.0
+ *  Papastro Framework v1.2.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -34,21 +34,21 @@ class PwaManager
     public function generateManifest(): string
     {
         $manifest = [
-            'name'             => config('pwa.name', config('app.name')),
-            'short_name'       => config('pwa.short_name', 'App'),
-            'description'      => config('pwa.description', ''),
-            'start_url'        => config('pwa.start_url', '/'),
-            'display'          => config('pwa.display', 'standalone'),
+            'name' => config('pwa.name', config('app.name')),
+            'short_name' => config('pwa.short_name', 'App'),
+            'description' => config('pwa.description', ''),
+            'start_url' => config('pwa.start_url', '/'),
+            'display' => config('pwa.display', 'standalone'),
             'background_color' => config('pwa.background_color', '#0f172a'),
-            'theme_color'      => config('pwa.theme_color', '#0f172a'),
-            'icons'            => config('pwa.icons', []),
-            'categories'       => ['productivity'],
+            'theme_color' => config('pwa.theme_color', '#0f172a'),
+            'icons' => config('pwa.icons', []),
+            'categories' => ['productivity'],
             'prefer_related_applications' => false,
-            'orientation'      => 'any',
-            'lang'             => config('app.locale', 'en'),
+            'orientation' => 'any',
+            'lang' => config('app.locale', 'en'),
         ];
 
-        $json    = json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        $json = json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
         $outPath = $this->app->publicPath('manifest.json');
         file_put_contents($outPath, $json);
 
@@ -60,9 +60,9 @@ class PwaManager
      */
     public function generateServiceWorker(): string
     {
-        $cacheName   = json_encode(config('pwa.cache_name', 'papastro-v1'));
-        $precache    = json_encode(config('pwa.precache', ['/', '/offline']));
-        $strategy    = config('pwa.strategy', 'cache-first');
+        $cacheName = json_encode(config('pwa.cache_name', 'papastro-v1'));
+        $precache = json_encode(config('pwa.precache', ['/', '/offline']));
+        $strategy = config('pwa.strategy', 'cache-first');
         $offlinePage = json_encode(config('pwa.offline_page', '/offline'));
 
         $fetchStrategy = $this->getFetchStrategy($strategy);

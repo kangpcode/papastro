@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.1.0
+ *  Papastro Framework v1.2.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -79,8 +79,8 @@ class Container
     public function bound(string $abstract): bool
     {
         return isset($this->bindings[$abstract]) ||
-               isset($this->instances[$abstract]) ||
-               $this->isAlias($abstract);
+            isset($this->instances[$abstract]) ||
+            $this->isAlias($abstract);
     }
 
     /**
@@ -323,7 +323,7 @@ class Container
             return $this->make($className);
         }
 
-        return array_map(fn ($c) => $this->build($c), $concrete);
+        return array_map(fn($c) => $this->build($c), $concrete);
     }
 
     /**
@@ -381,7 +381,7 @@ class Container
     public function isShared(string $abstract): bool
     {
         return isset($this->instances[$abstract]) ||
-               (isset($this->bindings[$abstract]['shared']) && $this->bindings[$abstract]['shared']);
+            (isset($this->bindings[$abstract]['shared']) && $this->bindings[$abstract]['shared']);
     }
 
     /**
