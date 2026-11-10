@@ -25,11 +25,17 @@ class RouteServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->loadRoutesFrom(base_path('routes/web.php'));
+        $router = $this->app->make(\Papastro\Router\Router::class);
+        \Papastro\Router\RouteFacade::setRouter($router);
+
+        // Web routes run through the "web" middleware group (session + CSRF).
+        $router->group(['middleware' => ['web']], function () {
+            require base_path('routes/web.php');
+        });
 
         if (file_exists(base_path('routes/api.php'))) {
-            $router = $this->app->make(\Papastro\Router\Router::class);
-            $router->group(['prefix' => 'api'], function () {
+            // API routes run through the "api" group (CORS + throttle), prefixed with /api.
+            $router->group(['prefix' => 'api', 'middleware' => ['api']], function () {
                 require base_path('routes/api.php');
             });
         }

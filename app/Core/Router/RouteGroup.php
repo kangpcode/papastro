@@ -20,41 +20,27 @@ namespace Papastro\Router;
 class RouteGroup
 {
     /**
-     * Merge route group attributes into a new attribute array.
+     * Merge route group attributes: prefixes concatenate, names concatenate,
+     * middleware accumulate (de-duplicated), everything else is overridden by $new.
      */
     public static function merge(array $new, array $old): array
     {
-        $new = self::formatAs($new, $old);
+        $merged = array_merge($old, $new);
 
-        return array_merge_recursive(
-            self::formatAttributes($old),
-            self::formatAttributes($new)
-        );
-    }
-
-    /**
-     * Format the 'as' (name prefix) attribute.
-     */
-    protected static function formatAs(array $new, array $old): array
-    {
-        if (isset($old['as'])) {
-            $new['as'] = $old['as'] . ($new['as'] ?? '');
+        $prefix = trim(trim((string) ($old['prefix'] ?? ''), '/') . '/' . trim((string) ($new['prefix'] ?? ''), '/'), '/');
+        if ($prefix !== '') {
+            $merged['prefix'] = $prefix;
+        } else {
+            unset($merged['prefix']);
         }
 
-        return $new;
-    }
+        $middleware = array_merge((array) ($old['middleware'] ?? []), (array) ($new['middleware'] ?? []));
+        $merged['middleware'] = array_values(array_unique($middleware));
 
-    /**
-     * Format the attributes for merging.
-     */
-    protected static function formatAttributes(array $attributes): array
-    {
-        $attributes['middleware'] = (array) ($attributes['middleware'] ?? []);
-
-        if (isset($attributes['prefix'])) {
-            $attributes['prefix'] = trim($attributes['prefix'], '/');
+        if (isset($old['as']) || isset($new['as'])) {
+            $merged['as'] = ($old['as'] ?? '') . ($new['as'] ?? '');
         }
 
-        return $attributes;
+        return $merged;
     }
 }

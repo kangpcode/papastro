@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework
+ *  Papastro Framework v3.0.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -14,20 +14,23 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use Closure;
 use Papastro\Http\Request;
 use Papastro\Http\Response;
 
 /**
- * Example authentication middleware stub.
+ * Authenticate — requires a logged-in user (session user_id).
  */
 class Authenticate
 {
-    public function handle(Request $request, callable $next): Response
+    public function handle(Request $request, Closure $next): Response
     {
-        // TODO: Implement auth check
-        // if (!session('user_id')) {
-        //     return Response::redirect('/login');
-        // }
+        if (empty(session()->get('user_id'))) {
+            if ($request->expectsJson()) {
+                return Response::json(['status' => 'error', 'message' => 'Unauthenticated.'], 401);
+            }
+            return Response::redirect('/login');
+        }
 
         return $next($request);
     }

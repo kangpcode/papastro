@@ -54,6 +54,7 @@ class Kernel extends BaseKernel
      */
     protected array $middlewareGroups = [
         'web' => [
+            \App\Http\Middleware\StartSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
         ],
         'api' => [
@@ -71,5 +72,6 @@ class Kernel extends BaseKernel
         'throttle' => \App\Http\Middleware\ThrottleRequests::class,
         'cors' => \App\Http\Middleware\HandleCors::class,
         'security' => \App\Http\Middleware\SecurityHeaders::class,
+        'session' => \App\Http\Middleware\StartSession::class,
     ];
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.2.0
+ *  Papastro Framework v3.0.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -83,7 +83,7 @@ class ModuleLoader
                     continue;
                 }
 
-                $meta = json_decode(file_get_contents($manifest), true);
+                $meta = json_decode((string) file_get_contents($manifest), true) ?: [];
 
                 // Check if all required modules are already loaded
                 $requires = $meta['requires'] ?? [];
@@ -140,7 +140,7 @@ class ModuleLoader
             return;
         }
 
-        $meta = json_decode(file_get_contents($manifest), true);
+        $meta = json_decode((string) file_get_contents($manifest), true) ?: [];
 
         if (!($meta['enabled'] ?? true)) {
             return;
@@ -182,11 +182,13 @@ class ModuleLoader
                 \Papastro\Router\RouteFacade::setRouter($router);
 
                 if ($file === 'api.php') {
-                    $router->group(['prefix' => 'api'], function () use ($routeFile) {
+                    $router->group(['prefix' => 'api', 'middleware' => ['api']], function () use ($routeFile) {
                         require $routeFile;
                     });
                 } else {
-                    require $routeFile;
+                    $router->group(['middleware' => ['web']], function () use ($routeFile) {
+                        require $routeFile;
+                    });
                 }
             }
         }
