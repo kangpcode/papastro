@@ -184,7 +184,12 @@ class Application extends Container
         $this->singleton(\Papastro\Security\Encrypter::class, fn($app) => new \Papastro\Security\Encrypter());
         $this->singleton(\Papastro\Security\RateLimiter::class, fn($app) => new \Papastro\Security\RateLimiter($app->make(\Papastro\Cache\CacheManager::class)));
         $this->singleton(\Papastro\Debugger\QueryCollector::class, fn() => new \Papastro\Debugger\QueryCollector());
-        $this->singleton(\Papastro\Debugger\Debugbar::class, fn($app) => new \Papastro\Debugger\Debugbar($app, $app->make(\Papastro\Debugger\QueryCollector::class)));
+        $this->scoped(\Papastro\Debugger\Debugbar::class, fn($app) => new \Papastro\Debugger\Debugbar($app, $app->make(\Papastro\Debugger\QueryCollector::class)));
+        $this->singleton(\Papastro\View\ViewEngine::class, fn($app) => new \Papastro\View\ViewEngine($app));
+        $this->singleton(\Papastro\PWA\PwaManager::class, fn($app) => new \Papastro\PWA\PwaManager($app));
+        // SeoManager holds per-page meta → must be shared inside a request but fresh for the next one.
+        $this->scoped(\Papastro\SEO\SeoManager::class, fn($app) => new \Papastro\SEO\SeoManager($app));
+        $this->singleton(\Papastro\Pasway\Pasway::class, fn($app) => new \Papastro\Pasway\Pasway($app));
     }
 
     /**
@@ -330,7 +335,11 @@ class Application extends Container
      */
     public function debug(): bool
     {
-        return (bool) $this->make('config')->get('app.debug', false);
+        if ($this->resolved('config')) {
+            return (bool) $this->make('config')->get('app.debug', false);
+        }
+
+        return filter_var(getenv('APP_DEBUG') ?: false, FILTER_VALIDATE_BOOLEAN);
     }
 
     /**
@@ -338,7 +347,11 @@ class Application extends Container
      */
     public function environment(): string
     {
-        return (string) $this->make('config')->get('app.env', 'production');
+        if ($this->resolved('config')) {
+            return (string) $this->make('config')->get('app.env', 'production');
+        }
+
+        return (string) (getenv('APP_ENV') ?: 'production');
     }
 
     /**
@@ -375,6 +388,33 @@ class Application extends Container
             return [];
         }
         return json_decode((string) file_get_contents($path), true) ?: [];
+    }
+
+    /**
+     * Instances that belong to a single request and must never leak into the next one.
+     */
+    protected array $requestInstances = [
+        'request',
+        \Papastro\Http\Request::class,
+        'session',
+        \Papastro\Session\Session::class,
+        \Papastro\Router\Route::class,
+    ];
+
+    /**
+     * Reset all per-request state. Called by the runtime after every request so a
+     * long-lived worker behaves exactly like a fresh PHP-FPM request.
+     */
+    public function resetRequestState(): void
+    {
+        foreach ($this->requestInstances as $abstract) {
+            $this->forgetInstance($abstract);
+        }
+        $this->forgetScopedInstances();
+
+        if ($this->bound(\Papastro\Debugger\QueryCollector::class)) {
+            $this->make(\Papastro\Debugger\QueryCollector::class)->reset();
+        }
     }
 
     /**

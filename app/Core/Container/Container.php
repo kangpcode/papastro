@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.2.0
+ *  Papastro Framework v3.0.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -54,6 +54,12 @@ class Container
     protected array $buildStack = [];
 
     /**
+     * Abstracts registered as "scoped": shared within one request/job, flushed between
+     * requests by the long-running runtime (Papastro Runtime / Pastroutine workers).
+     */
+    protected array $scopedInstances = [];
+
+    /**
      * Get the globally available instance of the container.
      */
     public static function getInstance(): static
@@ -71,6 +77,15 @@ class Container
     public static function setInstance(?Container $container = null): ?Container
     {
         return static::$instance = $container;
+    }
+
+    /**
+     * Determine if the given abstract type has been resolved.
+     */
+    public function resolved(string $abstract): bool
+    {
+        $abstract = $this->getAlias($abstract);
+        return isset($this->instances[$abstract]);
     }
 
     /**
@@ -121,6 +136,33 @@ class Container
     public function singleton(string $abstract, mixed $concrete = null): void
     {
         $this->bind($abstract, $concrete, true);
+    }
+
+    /**
+     * Register a binding that is shared for the current request only.
+     */
+    public function scoped(string $abstract, mixed $concrete = null): void
+    {
+        $this->scopedInstances[] = $abstract;
+        $this->singleton($abstract, $concrete);
+    }
+
+    /**
+     * Forget a resolved instance.
+     */
+    public function forgetInstance(string $abstract): void
+    {
+        unset($this->instances[$abstract]);
+    }
+
+    /**
+     * Flush every scoped instance (called between requests in long-running workers).
+     */
+    public function forgetScopedInstances(): void
+    {
+        foreach ($this->scopedInstances as $abstract) {
+            unset($this->instances[$abstract]);
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.2.0
+ *  Papastro Framework v3.0.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -82,9 +82,11 @@ class Debugbar
         $queryTime = $this->queryCollector->totalTime();
         $n1Count = count($this->queryCollector->getNPlusOneQueries());
         $route = $request->route();
-        $routeName = $route?->getName() ?? 'N/A';
-        $routeUri = $route?->getUri() ?? $request->path();
-        $middleware = $route ? implode(', ', $route->getMiddleware()) : 'none';
+        $routeName = htmlspecialchars((string) ($route?->getName() ?? 'N/A'));
+        $routeUri = htmlspecialchars((string) ($route?->getUri() ?? $request->path()));
+        $middleware = htmlspecialchars($route ? implode(', ', array_map('strval', $route->getMiddleware())) : 'none');
+        $phpVersion = PHP_VERSION;
+        $dbPct = round(min(100, ($queryTime / max($renderTime, 1)) * 100), 1);
         $memUsage = round(memory_get_peak_usage(true) / 1024 / 1024, 2);
 
         $queryRows = '';
@@ -96,12 +98,15 @@ class Debugbar
 
         $allHeaders = '';
         foreach ($request->headers() as $k => $v) {
-            $allHeaders .= '<tr><td>' . htmlspecialchars($k) . '</td><td>' . htmlspecialchars($v) . '</td></tr>';
+            $allHeaders .= '<tr><td>' . htmlspecialchars((string) $k) . '</td><td>' . htmlspecialchars(is_array($v) ? implode(', ', $v) : (string) $v) . '</td></tr>';
         }
 
         $allInput = '';
         foreach ($request->all() as $k => $v) {
-            $allInput .= '<tr><td>' . htmlspecialchars($k) . '</td><td>' . htmlspecialchars((string) $v) . '</td></tr>';
+            if (preg_match('/pass|token|secret|key/i', (string) $k)) {
+                $v = '********';
+            }
+            $allInput .= '<tr><td>' . htmlspecialchars((string) $k) . '</td><td>' . htmlspecialchars(is_array($v) ? json_encode($v) : (string) $v) . '</td></tr>';
         }
 
         $n1Warning = $n1Count > 0 ? "<span class=\"pdb-badge pdb-badge--danger\">{$n1Count} N+1</span>" : '';
@@ -119,7 +124,7 @@ class Debugbar
         <span class="pdb-tab" data-tab="request">Request</span>
         <span class="pdb-tab" data-tab="timeline">Timeline</span>
         <span class="pdb-meta">
-            {$renderTime}ms | {$memUsage}MB | PHP <?php echo PHP_VERSION; ?>
+            {$renderTime}ms | {$memUsage}MB | PHP {$phpVersion}
         </span>
         <button class="pdb-close" onclick="document.getElementById('papastro-debugbar').classList.toggle('pdb--minimized')">▼</button>
     </div>
@@ -149,7 +154,7 @@ class Debugbar
                 <div class="pdb-timeline-bar" style="width: 100%">
                     <span>Total: {$renderTime}ms</span>
                 </div>
-                <div class="pdb-timeline-bar pdb-timeline-bar--db" style="width: <?php echo min(100, ($queryTime / max($renderTime, 1)) * 100); ?>%">
+                <div class="pdb-timeline-bar pdb-timeline-bar--db" style="width: {$dbPct}%">
                     <span>DB: {$queryTime}ms</span>
                 </div>
             </div>

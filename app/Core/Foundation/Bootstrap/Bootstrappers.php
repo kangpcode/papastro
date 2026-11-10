@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.2.0
+ *  Papastro Framework v3.0.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -51,7 +51,7 @@ class LoadEnvironmentVariables
                 $value = substr($value, 1, -1);
             }
 
-            if (!array_key_exists($name, $_ENV)) {
+            if (!array_key_exists($name, $_ENV) && getenv($name) === false) {
                 $_ENV[$name] = $value;
                 putenv("{$name}={$value}");
             }
@@ -66,14 +66,17 @@ class LoadConfiguration
 {
     public function bootstrap(Application $app): void
     {
-        $config = new \Papastro\Config\Repository($app->configPath());
+        $config = new \Papastro\Config\Repository($app->configPath(), $app->storagePath('cache/config/config.php'));
         $app->instance('config', $config);
         $app->instance(\Papastro\Config\Repository::class, $config);
 
         // Set PHP timezone from config
         date_default_timezone_set(
-            $config->get('app.timezone', 'UTC')
+            (string) $config->get('app.timezone', 'UTC')
         );
+
+        // Only these proxies may supply X-Forwarded-* headers (prevents IP spoofing).
+        \Papastro\Http\Request::setTrustedProxies((array) $config->get('app.trusted_proxies', []));
     }
 }
 

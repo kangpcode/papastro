@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.2.0
+ *  Papastro Framework v3.0.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -77,10 +77,47 @@ class Connection
         ];
 
         try {
-            return new PDO($dsn, $username, $password, $options);
+            $pdo = new PDO($dsn, $username, $password, $options);
         } catch (PDOException $e) {
             throw new \RuntimeException("Database connection failed: " . $e->getMessage(), 0, $e);
         }
+
+        if ($driver === 'sqlite') {
+            // WAL + busy timeout make SQLite safe for many concurrent runtime workers.
+            $pdo->exec('PRAGMA journal_mode = WAL');
+            $pdo->exec('PRAGMA busy_timeout = 5000');
+            $pdo->exec('PRAGMA synchronous = NORMAL');
+            $pdo->exec('PRAGMA foreign_keys = ON');
+        }
+
+        return $pdo;
+    }
+
+    /**
+     * Determine if the PDO exception means the connection was lost.
+     */
+    protected function isConnectionLost(PDOException $e): bool
+    {
+        $msg = strtolower($e->getMessage());
+        foreach (['server has gone away', 'lost connection', 'no connection to the server', 'connection reset', 'broken pipe', 'is dead or not enabled'] as $needle) {
+            if (str_contains($msg, $needle)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function inTransaction(): bool
+    {
+        return $this->pdo !== null && $this->pdo->inTransaction();
+    }
+
+    /**
+     * Drop the PDO handle so the next query reconnects.
+     */
+    public function disconnect(): void
+    {
+        $this->pdo = null;
     }
 
     /**
@@ -98,8 +135,19 @@ class Connection
     {
         $start = microtime(true);
 
-        $stmt = $this->getPdo()->prepare($sql);
-        $stmt->execute($bindings);
+        try {
+            $stmt = $this->getPdo()->prepare($sql);
+            $stmt->execute($bindings);
+        } catch (PDOException $e) {
+            // Long-running workers: transparently reconnect once if the server dropped us.
+            if (!$this->inTransaction() && $this->isConnectionLost($e)) {
+                $this->disconnect();
+                $stmt = $this->getPdo()->prepare($sql);
+                $stmt->execute($bindings);
+            } else {
+                throw $e;
+            }
+        }
 
         $elapsed = microtime(true) - $start;
 
@@ -170,6 +218,20 @@ class Connection
      */
     public function transaction(callable $callback): mixed
     {
+        // Nested call → SAVEPOINT so an inner failure only rolls back the inner block.
+        if ($this->inTransaction()) {
+            $name = 'sp_' . bin2hex(random_bytes(4));
+            $this->getPdo()->exec("SAVEPOINT {$name}");
+            try {
+                $result = $callback($this);
+                $this->getPdo()->exec("RELEASE SAVEPOINT {$name}");
+                return $result;
+            } catch (\Throwable $e) {
+                $this->getPdo()->exec("ROLLBACK TO SAVEPOINT {$name}");
+                throw $e;
+            }
+        }
+
         $this->beginTransaction();
 
         try {
@@ -177,7 +239,9 @@ class Connection
             $this->commit();
             return $result;
         } catch (\Throwable $e) {
-            $this->rollBack();
+            if ($this->inTransaction()) {
+                $this->rollBack();
+            }
             throw $e;
         }
     }

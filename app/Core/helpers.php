@@ -313,11 +313,12 @@ if (!function_exists('broadcast')) {
     }
 }
 
-if (!function_exists('go')) {
+if (!function_exists('pastroutine')) {
     /**
      * Spawn a Pastroutine (lightweight cooperative concurrent task).
+     * Named pastroutine() — not go() — because ext-swoole already owns a global go().
      */
-    function go(callable $task, mixed ...$args): \Papastro\Pastroutine\Pastroutine
+    function pastroutine(callable $task, mixed ...$args): \Papastro\Pastroutine\Pastroutine
     {
         return \Papastro\Pastroutine\Scheduler::current()->go($task, ...$args);
     }

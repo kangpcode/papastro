@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework
+ *  Papastro Framework v3.0.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -24,8 +24,16 @@ class QueryCollector
     /**
      * Record a query execution.
      */
+    public function reset(): void
+    {
+        $this->queries = [];
+    }
+
     public function record(string $sql, array $bindings, float $elapsed): void
     {
+        if (count($this->queries) >= 500) {
+            return; // hard cap: protects long-running workers from unbounded growth
+        }
         $this->queries[] = [
             'sql'      => $sql,
             'bindings' => $bindings,
