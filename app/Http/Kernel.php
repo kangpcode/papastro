@@ -44,6 +44,7 @@ class Kernel extends BaseKernel
      * These run before every request.
      */
     protected array $middleware = [
+        \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
         \App\Http\Middleware\SecurityHeaders::class,
         \App\Http\Middleware\TrimStrings::class,
         \App\Http\Middleware\ConvertEmptyStringsToNull::class,

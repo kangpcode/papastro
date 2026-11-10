@@ -159,6 +159,64 @@ class QueueManager
     }
 
     /**
+     * Retry a failed job by ID.
+     */
+    public function retry(string $id): bool
+    {
+        $failed = $this->readJobs($this->failedFile);
+        $foundIndex = null;
+
+        foreach ($failed as $idx => $job) {
+            if ($job['id'] === $id) {
+                $foundIndex = $idx;
+                break;
+            }
+        }
+
+        if ($foundIndex === null) {
+            return false;
+        }
+
+        $job = $failed[$foundIndex];
+        array_splice($failed, $foundIndex, 1);
+        $this->writeJobs($this->failedFile, $failed);
+
+        unset($job['error'], $job['failed_at']);
+        $job['attempts'] = 0;
+
+        $jobs = $this->readJobs($this->queueFile);
+        $jobs[] = $job;
+        $this->writeJobs($this->queueFile, $jobs);
+
+        return true;
+    }
+
+    /**
+     * Retry all failed jobs.
+     */
+    public function retryAll(): int
+    {
+        $failed = $this->readJobs($this->failedFile);
+        if (empty($failed)) {
+            return 0;
+        }
+
+        $count = count($failed);
+        $jobs = $this->readJobs($this->queueFile);
+
+        foreach ($failed as $job) {
+            unset($job['error'], $job['failed_at']);
+            $job['attempts'] = 0;
+            $jobs[] = $job;
+        }
+
+        $this->writeJobs($this->queueFile, $jobs);
+        $this->writeJobs($this->failedFile, []);
+
+        return $count;
+    }
+
+    /**
      * Clear all pending jobs.
      */
     public function clear(): int
