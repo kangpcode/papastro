@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework
+ *  Papastro Framework v3.0.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -28,7 +28,7 @@ class User extends Model
      */
     public function setPasswordAttribute(string $value): void
     {
-        $this->attributes['password'] = password_hash($value, PASSWORD_ARGON2ID);
+        $this->attributes['password'] = \Papastro\Security\Hash::make($value);
     }
 
     /**
@@ -36,7 +36,7 @@ class User extends Model
      */
     public function verifyPassword(string $plainPassword): bool
     {
-        return password_verify($plainPassword, $this->attributes['password'] ?? '');
+        return \Papastro\Security\Hash::check($plainPassword, $this->attributes['password'] ?? '');
     }
 
     /**

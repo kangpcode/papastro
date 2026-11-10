@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework
+ *  Papastro Framework v3.0.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -27,7 +27,13 @@ class DatabaseServiceProvider extends ServiceProvider
             $driver = $config->get('database.default', 'mysql');
             $dbConf = $config->get("database.connections.{$driver}", []);
 
-            return new Connection($dbConf);
+            $connection = new Connection($dbConf);
+
+            if ($app->debug() && $app->bound(\Papastro\Debugger\QueryCollector::class)) {
+                $connection->setQueryCollector($app->make(\Papastro\Debugger\QueryCollector::class));
+            }
+
+            return $connection;
         });
 
         $this->app->alias(Connection::class, 'db');

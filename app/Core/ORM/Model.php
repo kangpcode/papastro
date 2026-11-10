@@ -304,10 +304,10 @@ abstract class Model implements \JsonSerializable
     /**
      * Start a WHERE query.
      */
-    public static function where(string $column, mixed $operatorOrValue, mixed $value = null): ModelQueryBuilder
+    public static function where(string $column, mixed ...$args): ModelQueryBuilder
     {
         return (new ModelQueryBuilder(static::query(), static::class))
-            ->where($column, $operatorOrValue, $value);
+            ->where($column, ...$args);
     }
 
     /**

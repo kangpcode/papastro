@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework
+ *  Papastro Framework v3.0.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -16,37 +16,50 @@ namespace App\Modules\User\Http\Controllers;
 
 use Papastro\Http\Request;
 use Papastro\Http\Response;
+use Papastro\Security\RateLimiter;
 use App\Modules\User\Models\User;
 
 class AuthController
 {
     public function showLogin(): Response
     {
-        return view('User::login');
+        return view('User::login', ['error' => flash('error')]);
     }
 
-    public function login(Request $request): Response
+    public function login(Request $request, RateLimiter $limiter): Response
     {
-        $email    = $request->input('email');
-        $password = $request->input('password');
+        $data = $request->validate([
+            'email'    => 'required|email',
+            'password' => 'required',
+        ]);
 
-        $user = User::findByEmail($email);
-
-        if (!$user || !$user->verifyPassword($password)) {
-            return view('User::login', ['error' => 'Invalid credentials']);
+        // Brute-force protection: 5 attempts / minute per IP+email.
+        $key = 'login:' . $request->ip() . '|' . strtolower($data['email']);
+        if ($limiter->tooManyAttempts($key, 5)) {
+            return view('User::login', ['error' => 'Too many attempts. Try again in ' . $limiter->availableIn($key) . 's.'])
+                ->setStatusCode(429);
         }
 
-        session_start();
-        $_SESSION['user_id']   = $user->getKey();
-        $_SESSION['user_name'] = $user->name;
+        $user = User::findByEmail($data['email']);
 
-        return redirect('/dashboard');
+        if (!$user || !$user->verifyPassword((string) $data['password'])) {
+            $limiter->hit($key, 60);
+            return view('User::login', ['error' => 'Invalid credentials'])->setStatusCode(422);
+        }
+
+        $limiter->clear($key);
+
+        $session = session();
+        $session->regenerate();               // prevent session fixation
+        $session->put('user_id', $user->getKey());
+        $session->put('user_name', $user->name);
+
+        return redirect('/');
     }
 
     public function logout(): Response
     {
-        session_start();
-        session_destroy();
+        session()->invalidate();
         return redirect('/');
     }
 
@@ -58,16 +71,18 @@ class AuthController
     public function register(Request $request): Response
     {
         $data = $request->validate([
-            'name'     => 'required|min:2',
-            'email'    => 'required|email',
+            'name'     => 'required|min:2|max:100',
+            'email'    => 'required|email|unique:users,email',
             'password' => 'required|min:8',
         ]);
 
-        $user = User::create($data);
+        $user = User::create($data);   // password hashed by User::setPasswordAttribute
 
-        session_start();
-        $_SESSION['user_id'] = $user->getKey();
+        $session = session();
+        $session->regenerate();
+        $session->put('user_id', $user->getKey());
+        $session->put('user_name', $user->name);
 
-        return redirect('/dashboard');
+        return redirect('/');
     }
 }

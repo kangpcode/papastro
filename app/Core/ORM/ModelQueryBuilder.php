@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework
+ *  Papastro Framework v3.0.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -28,9 +28,9 @@ class ModelQueryBuilder
         $this->modelClass = $modelClass;
     }
 
-    public function where(string $column, mixed $operatorOrValue, mixed $value = null): static
+    public function where(string $column, mixed ...$args): static
     {
-        $this->builder->where($column, $operatorOrValue, $value);
+        $this->builder->where($column, ...$args);
         return $this;
     }
 
@@ -108,6 +108,16 @@ class ModelQueryBuilder
         $modelClass = $this->modelClass;
         $result['data'] = array_map(fn ($row) => $modelClass::newFromBuilder($row), $result['data']);
         return $result;
+    }
+
+    public function find(mixed $id, string $primaryKey = 'id'): ?Model
+    {
+        return $this->where($primaryKey, $id)->first();
+    }
+
+    public function pluck(string $column): array
+    {
+        return $this->builder->pluck($column);
     }
 
     public function __call(string $method, array $args): mixed

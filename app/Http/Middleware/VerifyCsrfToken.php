@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.2.0
+ *  Papastro Framework v3.0.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -27,10 +27,14 @@ class VerifyCsrfToken
      */
     protected array $except = [
         'api/*',
+        'pasway/broadcast',
     ];
 
     public function handle(Request $request, Closure $next): Response
     {
+        // Make sure a CSRF token exists for views rendered in this request.
+        session()->token();
+
         if ($this->isReading($request) || $this->inExceptArray($request) || $this->tokensMatch($request)) {
             return $next($request);
         }
@@ -45,7 +49,7 @@ class VerifyCsrfToken
 
     protected function inExceptArray(Request $request): bool
     {
-        $uri = ltrim($request->uri(), '/');
+        $uri = ltrim($request->path(), '/');
 
         foreach ($this->except as $except) {
             if ($except === $uri) {
@@ -62,10 +66,10 @@ class VerifyCsrfToken
 
     protected function tokensMatch(Request $request): bool
     {
-        $token     = $request->input('_token') ?? $request->header('X-CSRF-TOKEN');
-        $sessionToken = session('_token');
+        $token = $request->input('_token') ?? $request->header('X-CSRF-TOKEN') ?? $request->header('X-XSRF-TOKEN');
+        $sessionToken = session()->get('_token');
 
-        if (!$token || !$sessionToken) {
+        if (!is_string($token) || !is_string($sessionToken) || $token === '' || $sessionToken === '') {
             return false;
         }
 
