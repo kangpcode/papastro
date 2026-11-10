@@ -160,10 +160,12 @@ class Kernel
         $this->output("", 'default');
 
         $groups = [
-            'Server' => ['dev', 'serve', 'build'],
+            'Server & Runtime' => ['dev', 'serve', 'build', 'runtime:start', 'runtime:stop', 'runtime:reload', 'runtime:status', 'pasway:start'],
             'Module' => ['module:make', 'module:enable', 'module:disable', 'module:list'],
             'Generator' => ['make:controller', 'make:model', 'make:migration', 'make:island', 'make:page', 'make:middleware', 'make:service', 'make:event', 'make:listener'],
-            'Database' => ['migrate', 'migrate:rollback', 'db:seed'],
+            'Database' => ['migrate', 'migrate:status', 'migrate:fresh', 'migrate:reset', 'migrate:rollback', 'db:seed'],
+            'Queue' => ['queue:work', 'queue:failed', 'queue:retry', 'queue:clear'],
+            'Maintenance' => ['down', 'up'],
             'SEO & PWA' => ['seo:sitemap', 'pwa:generate', 'pwa:precache'],
             'Debug' => ['debug:route', 'debug:island', 'debug:clear'],
             'Cache & Optimize' => ['cache:clear', 'optimize', 'route:cache', 'route:list'],
