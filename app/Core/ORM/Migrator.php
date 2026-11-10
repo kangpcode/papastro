@@ -147,6 +147,112 @@ class Migrator
 
         return $rolledBack;
     }
+
+    /**
+     * Get the status of all migrations (both ran and pending).
+     *
+     * @return array<int, array{ran: bool, migration: string, batch: int|null, ran_at: string|null}>
+     */
+    public function getStatus(): array
+    {
+        $this->ensureMigrationsTableExists();
+
+        $rows = $this->connection->select("SELECT migration, batch, ran_at FROM `{$this->migrationsTable}` ORDER BY id ASC");
+        $ranMap = [];
+        foreach ($rows as $row) {
+            $ranMap[$row['migration']] = $row;
+        }
+
+        $files = is_dir($this->migrationsPath) ? glob($this->migrationsPath . '/*.php') : [];
+        sort($files);
+
+        $statusList = [];
+        $seen = [];
+
+        foreach ($files as $file) {
+            $name = basename($file, '.php');
+            $seen[$name] = true;
+            $statusList[] = [
+                'ran'       => isset($ranMap[$name]),
+                'migration' => $name,
+                'batch'     => $ranMap[$name]['batch'] ?? null,
+                'ran_at'    => $ranMap[$name]['ran_at'] ?? null,
+            ];
+        }
+
+        // Include any migration recorded in DB but missing from disk
+        foreach ($ranMap as $name => $meta) {
+            if (!isset($seen[$name])) {
+                $statusList[] = [
+                    'ran'       => true,
+                    'migration' => $name . ' (missing file)',
+                    'batch'     => $meta['batch'] ?? null,
+                    'ran_at'    => $meta['ran_at'] ?? null,
+                ];
+            }
+        }
+
+        return $statusList;
+    }
+
+    /**
+     * Rollback all database migrations.
+     */
+    public function reset(): array
+    {
+        $rolledBack = [];
+        while ($this->getLastBatch() > 0) {
+            $batchRolled = $this->rollback();
+            if (empty($batchRolled)) {
+                break;
+            }
+            $rolledBack = array_merge($rolledBack, $batchRolled);
+        }
+
+        return $rolledBack;
+    }
+
+    /**
+     * Drop all tables from the database.
+     */
+    public function dropAllTables(): void
+    {
+        $driver = $this->connection->getDriverName();
+
+        if ($driver === 'sqlite') {
+            $tables = $this->connection->select("SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'");
+            foreach ($tables as $t) {
+                $tableName = $t['name'] ?? null;
+                if ($tableName) {
+                    $this->connection->statement("DROP TABLE IF EXISTS \"{$tableName}\"");
+                }
+            }
+        } elseif ($driver === 'mysql') {
+            $this->connection->statement('SET FOREIGN_KEY_CHECKS = 0');
+            $tables = $this->connection->select('SHOW TABLES');
+            foreach ($tables as $row) {
+                $tableName = reset($row);
+                if ($tableName) {
+                    $this->connection->statement("DROP TABLE IF EXISTS `{$tableName}`");
+                }
+            }
+            $this->connection->statement('SET FOREIGN_KEY_CHECKS = 1');
+        } elseif ($driver === 'pgsql') {
+            $this->connection->statement('DROP SCHEMA public CASCADE');
+            $this->connection->statement('CREATE SCHEMA public');
+        }
+
+        $this->ensureMigrationsTableExists();
+    }
+
+    /**
+     * Drop all tables and re-run all migrations from scratch.
+     */
+    public function fresh(): array
+    {
+        $this->dropAllTables();
+        return $this->run();
+    }
 }
 
 /**
