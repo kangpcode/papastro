@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework
+ *  Papastro Framework v2.0.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -18,6 +18,7 @@ use Closure;
 
 /**
  * Middleware Pipeline — passes request through a stack of middleware.
+ * Supports parameterized middleware strings (e.g. 'throttle:60,1').
  */
 class Pipeline
 {
@@ -57,15 +58,21 @@ class Pipeline
     {
         return function ($stack, $pipe) {
             return function ($passable) use ($stack, $pipe) {
+                $parameters = [];
+
                 if (is_string($pipe)) {
+                    if (str_contains($pipe, ':')) {
+                        [$pipe, $paramString] = explode(':', $pipe, 2);
+                        $parameters = explode(',', $paramString);
+                    }
                     $pipe = $this->container->make($pipe);
                 }
 
                 if ($pipe instanceof Closure) {
-                    return $pipe($passable, $stack);
+                    return $pipe($passable, $stack, ...$parameters);
                 }
 
-                return $pipe->handle($passable, $stack);
+                return $pipe->handle($passable, $stack, ...$parameters);
             };
         };
     }

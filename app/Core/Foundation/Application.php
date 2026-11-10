@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.2.0
+ *  Papastro Framework v2.0.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -25,12 +25,12 @@ class Application extends Container
     /**
      * The Papastro framework version.
      */
-    public const VERSION = '1.2.0';
+    public const VERSION = '2.0.0';
 
     /**
      * The base path for the Papastro installation.
      */
-    protected string $basePath;
+    protected string $basePath = '';
 
     /**
      * Indicates if the application has been bootstrapped.
@@ -176,6 +176,15 @@ class Application extends Container
         $this->instance('app', $this);
         $this->instance(Application::class, $this);
         $this->instance(Container::class, $this);
+
+        // Register Core Ecosystem Singletons
+        $this->singleton(\Papastro\Cache\CacheManager::class, fn($app) => new \Papastro\Cache\CacheManager($app));
+        $this->singleton(\Papastro\Log\Logger::class, fn($app) => new \Papastro\Log\Logger($app));
+        $this->singleton(\Papastro\Queue\QueueManager::class, fn($app) => new \Papastro\Queue\QueueManager($app));
+        $this->singleton(\Papastro\Security\Encrypter::class, fn($app) => new \Papastro\Security\Encrypter());
+        $this->singleton(\Papastro\Security\RateLimiter::class, fn($app) => new \Papastro\Security\RateLimiter($app->make(\Papastro\Cache\CacheManager::class)));
+        $this->singleton(\Papastro\Debugger\QueryCollector::class, fn() => new \Papastro\Debugger\QueryCollector());
+        $this->singleton(\Papastro\Debugger\Debugbar::class, fn($app) => new \Papastro\Debugger\Debugbar($app, $app->make(\Papastro\Debugger\QueryCollector::class)));
     }
 
     /**
@@ -191,15 +200,27 @@ class Application extends Container
      */
     protected function registerCoreContainerAliases(): void
     {
-        $this->aliases = [
-            'app'    => [Application::class, Container::class],
-            'config' => [\Papastro\Config\Repository::class],
-            'router' => [\Papastro\Router\Router::class],
-            'db'     => [\Papastro\ORM\Connection::class],
-            'view'   => [\Papastro\View\ViewEngine::class],
-            'pwa'    => [\Papastro\PWA\PwaManager::class],
-            'seo'    => [\Papastro\SEO\SeoManager::class],
+        $coreAliases = [
+            'app'       => [Application::class, Container::class],
+            'config'    => [\Papastro\Config\Repository::class],
+            'router'    => [\Papastro\Router\Router::class],
+            'db'        => [\Papastro\ORM\Connection::class],
+            'view'      => [\Papastro\View\ViewEngine::class],
+            'pwa'       => [\Papastro\PWA\PwaManager::class],
+            'seo'       => [\Papastro\SEO\SeoManager::class],
+            'cache'     => [\Papastro\Cache\CacheManager::class],
+            'log'       => [\Papastro\Log\Logger::class],
+            'queue'     => [\Papastro\Queue\QueueManager::class],
+            'encrypter' => [\Papastro\Security\Encrypter::class],
+            'limiter'   => [\Papastro\Security\RateLimiter::class],
         ];
+
+        foreach ($coreAliases as $alias => $abstracts) {
+            foreach ($abstracts as $abstract) {
+                $this->alias($abstract, $alias);
+                break; // Map string alias to primary abstract class
+            }
+        }
     }
 
     /**
@@ -207,7 +228,7 @@ class Application extends Container
      */
     public function register(mixed $provider, bool $force = false): mixed
     {
-        if ($registered = $this->getProvider($provider) && !$force) {
+        if (($registered = $this->getProvider($provider)) && !$force) {
             return $registered;
         }
 
@@ -217,8 +238,9 @@ class Application extends Container
 
         $provider->register();
 
-        $this->serviceProviders[] = $provider;
-        $this->loadedProviders[get_class($provider)] = true;
+        $class = get_class($provider);
+        $this->serviceProviders[$class] = $provider;
+        $this->loadedProviders[$class] = true;
 
         if ($this->isBooted()) {
             $this->bootProvider($provider);
@@ -316,7 +338,7 @@ class Application extends Container
      */
     public function environment(): string
     {
-        return $this->make('config')->get('app.env', 'production');
+        return (string) $this->make('config')->get('app.env', 'production');
     }
 
     /**
@@ -333,6 +355,26 @@ class Application extends Container
     public function isProduction(): bool
     {
         return $this->environment() === 'production';
+    }
+
+    /**
+     * Determine if the application is currently down for maintenance.
+     */
+    public function isDownForMaintenance(): bool
+    {
+        return is_file($this->storagePath('cache/down.json'));
+    }
+
+    /**
+     * Get the maintenance mode payload data.
+     */
+    public function maintenanceModeData(): array
+    {
+        $path = $this->storagePath('cache/down.json');
+        if (!is_file($path)) {
+            return [];
+        }
+        return json_decode((string) file_get_contents($path), true) ?: [];
     }
 
     /**

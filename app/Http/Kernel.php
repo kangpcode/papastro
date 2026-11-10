@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.2.0
+ *  Papastro Framework v2.0.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -44,6 +44,7 @@ class Kernel extends BaseKernel
      * These run before every request.
      */
     protected array $middleware = [
+        \App\Http\Middleware\SecurityHeaders::class,
         \App\Http\Middleware\TrimStrings::class,
         \App\Http\Middleware\ConvertEmptyStringsToNull::class,
     ];
@@ -56,7 +57,8 @@ class Kernel extends BaseKernel
             \App\Http\Middleware\VerifyCsrfToken::class,
         ],
         'api' => [
-            // \App\Http\Middleware\ThrottleRequests::class,
+            \App\Http\Middleware\HandleCors::class,
+            'throttle:120,1',
         ],
     ];
 
@@ -66,5 +68,8 @@ class Kernel extends BaseKernel
     protected array $routeMiddleware = [
         'auth' => \App\Http\Middleware\Authenticate::class,
         'csrf' => \App\Http\Middleware\VerifyCsrfToken::class,
+        'throttle' => \App\Http\Middleware\ThrottleRequests::class,
+        'cors' => \App\Http\Middleware\HandleCors::class,
+        'security' => \App\Http\Middleware\SecurityHeaders::class,
     ];
 }

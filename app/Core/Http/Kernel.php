@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.2.0
+ *  Papastro Framework v2.0.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Papastro\Http;
 
 use Papastro\Foundation\Application;
+use Papastro\Validation\ValidationException;
 use Throwable;
 
 /**
@@ -46,7 +47,7 @@ class Kernel
     ];
 
     /**
-     * The application's route middleware.
+     * The application's route middleware aliases.
      */
     protected array $routeMiddleware = [];
 
@@ -65,9 +66,20 @@ class Kernel
     public function handle(Request $request): Response
     {
         try {
+            if ($this->app->isDownForMaintenance()) {
+                return $this->renderMaintenanceResponse($request);
+            }
+
             $response = $this->sendRequestThroughRouter($request);
+
+            // Inject Debugbar on HTML responses when debug mode is enabled
+            if ($this->app->debug() && $this->app->bound(\Papastro\Debugger\Debugbar::class)) {
+                $response = $this->app->make(\Papastro\Debugger\Debugbar::class)->inject($response, $request);
+            }
+        } catch (ValidationException $e) {
+            $response = $this->renderValidationException($request, $e);
         } catch (Exception\HttpException $e) {
-            $response = $this->renderHttpException($e);
+            $response = $this->renderHttpException($request, $e);
         } catch (Throwable $e) {
             $response = $this->renderException($request, $e);
         }
@@ -81,8 +93,13 @@ class Kernel
     protected function sendRequestThroughRouter(Request $request): Response
     {
         $this->app->instance('request', $request);
+        $this->app->instance(Request::class, $request);
 
         $this->bootstrap();
+
+        // Sync route middleware aliases and groups to the Router
+        $this->router->setMiddlewareGroups($this->middlewareGroups);
+        $this->router->setRouteMiddleware($this->routeMiddleware);
 
         return (new Pipeline($this->app))
             ->send($request)
@@ -115,11 +132,66 @@ class Kernel
     }
 
     /**
-     * Render an HTTP exception into a response.
+     * Render a Maintenance Mode (503) response or allow bypass with secret.
      */
-    protected function renderHttpException(Exception\HttpException $e): Response
+    protected function renderMaintenanceResponse(Request $request): Response
     {
-        return Response::make($e->getMessage(), $e->getStatusCode());
+        $data = $this->app->maintenanceModeData();
+        $secret = $data['secret'] ?? null;
+
+        if ($secret && ($request->query('secret') === $secret || $request->cookie('papastro_maintenance') === $secret)) {
+            $response = $this->sendRequestThroughRouter($request);
+            if ($request->query('secret') === $secret) {
+                $response->cookie('papastro_maintenance', $secret, 720);
+            }
+            return $response;
+        }
+
+        $message = $data['message'] ?? 'Service Unavailable — Under Maintenance.';
+        $retry = (string) ($data['retry'] ?? 60);
+
+        if ($request->expectsJson() || str_starts_with(ltrim($request->path(), '/'), 'api/')) {
+            return Response::json([
+                'status' => 'maintenance',
+                'message' => $message,
+            ], 503, ['Retry-After' => $retry]);
+        }
+
+        return Response::make($message, 503, ['Retry-After' => $retry]);
+    }
+
+    /**
+     * Render a ValidationException into a 422 JSON response or redirect back.
+     */
+    protected function renderValidationException(Request $request, ValidationException $e): Response
+    {
+        if ($request->expectsJson() || str_starts_with(ltrim($request->path(), '/'), 'api/')) {
+            return Response::json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+                'errors' => $e->errors(),
+            ], 422);
+        }
+
+        flash('errors', $e->errors());
+        $referer = $request->header('Referer', '/');
+        return Response::redirect((string) $referer, 302);
+    }
+
+    /**
+     * Render an HTTP exception into a response, preserving custom headers.
+     */
+    protected function renderHttpException(Request $request, Exception\HttpException $e): Response
+    {
+        if ($request->expectsJson() || str_starts_with(ltrim($request->path(), '/'), 'api/')) {
+            return Response::json([
+                'status' => 'error',
+                'code' => $e->getStatusCode(),
+                'message' => $e->getMessage() ?: 'HTTP Error',
+            ], $e->getStatusCode(), $e->getHeaders());
+        }
+
+        return Response::make($e->getMessage(), $e->getStatusCode(), $e->getHeaders());
     }
 
     /**
@@ -127,6 +199,26 @@ class Kernel
      */
     protected function renderException(Request $request, Throwable $e): Response
     {
+        if ($this->app->bound(\Papastro\Log\Logger::class)) {
+            $this->app->make(\Papastro\Log\Logger::class)->error($e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
+        }
+
+        if ($request->expectsJson() || str_starts_with(ltrim($request->path(), '/'), 'api/')) {
+            $payload = [
+                'status' => 'error',
+                'message' => $this->app->debug() ? $e->getMessage() : 'Internal Server Error',
+            ];
+            if ($this->app->debug()) {
+                $payload['exception'] = get_class($e);
+                $payload['file'] = $e->getFile();
+                $payload['line'] = $e->getLine();
+            }
+            return Response::json($payload, 500);
+        }
+
         if ($this->app->debug()) {
             return $this->renderDebugException($e);
         }
@@ -196,8 +288,9 @@ HTML;
     public function terminate(Request $request, Response $response): void
     {
         foreach ($this->middleware as $middleware) {
-            if (!is_string($middleware))
+            if (!is_string($middleware)) {
                 continue;
+            }
 
             $instance = $this->app->make($middleware);
 
@@ -221,5 +314,13 @@ HTML;
     public function getMiddlewareGroups(): array
     {
         return $this->middlewareGroups;
+    }
+
+    /**
+     * Get the application's route middleware aliases.
+     */
+    public function getRouteMiddleware(): array
+    {
+        return $this->routeMiddleware;
     }
 }

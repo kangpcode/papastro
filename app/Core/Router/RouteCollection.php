@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework
+ *  Papastro Framework v2.0.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -19,7 +19,7 @@ use Papastro\Http\Exception\NotFoundException;
 use Papastro\Http\Exception\MethodNotAllowedException;
 
 /**
- * Manages all registered routes and performs route matching.
+ * Manages all registered routes and performs high-speed O(1) static + regex route matching.
  */
 class RouteCollection
 {
@@ -27,6 +27,16 @@ class RouteCollection
      * All registered routes indexed by method.
      */
     protected array $routes = [];
+
+    /**
+     * O(1) lookup table for static (parameter-less) routes: $staticRoutes[$method][$uri] = Route
+     */
+    protected array $staticRoutes = [];
+
+    /**
+     * Dynamic (parameterized) routes indexed by method.
+     */
+    protected array $dynamicRoutes = [];
 
     /**
      * Routes indexed by name.
@@ -44,9 +54,16 @@ class RouteCollection
     public function add(Route $route): Route
     {
         $this->allRoutes[] = $route;
+        $uri = '/' . ltrim($route->getUri(), '/');
+        $isStatic = !str_contains($uri, '{');
 
         foreach ($route->getMethods() as $method) {
             $this->routes[$method][] = $route;
+            if ($isStatic) {
+                $this->staticRoutes[$method][$uri] = $route;
+            } else {
+                $this->dynamicRoutes[$method][] = $route;
+            }
         }
 
         if ($name = $route->getName()) {
@@ -57,36 +74,59 @@ class RouteCollection
     }
 
     /**
+     * Refresh the named routes lookup table.
+     */
+    public function refreshNameLookups(): void
+    {
+        $this->nameList = [];
+        foreach ($this->allRoutes as $route) {
+            if ($name = $route->getName()) {
+                $this->nameList[$name] = $route;
+            }
+        }
+    }
+
+    /**
      * Find the first route matching a given request.
+     * Uses O(1) hash lookup for static routes before checking dynamic regex routes.
      */
     public function match(Request $request): Route
     {
-        $method  = $request->method();
-        $routes  = $this->routes[$method] ?? [];
-        $matched = null;
+        $method = $request->method();
+        $uri = '/' . ltrim($request->path(), '/');
 
-        foreach ($routes as $route) {
+        // 1. Fast-path O(1) static route lookup
+        if (isset($this->staticRoutes[$method][$uri])) {
+            return $this->staticRoutes[$method][$uri];
+        }
+
+        // 2. Dynamic parameterized route matching
+        $dynamic = $this->dynamicRoutes[$method] ?? [];
+        foreach ($dynamic as $route) {
             if ($route->matches($request)) {
-                $matched = $route;
-                break;
+                return $route;
             }
         }
 
-        if ($matched) {
-            return $matched;
+        // 3. Check if any route matches the URI for another HTTP method (405 Method Not Allowed)
+        $allowedMethods = [];
+        foreach ($this->staticRoutes as $m => $map) {
+            if ($m !== $method && isset($map[$uri])) {
+                $allowedMethods[] = $m;
+            }
         }
 
-        // Check if any route matches the URI but not the method
-        $uri = '/' . ltrim($request->path(), '/');
-        foreach ($this->allRoutes as $route) {
-            foreach ($route->getMethods() as $routeMethod) {
-                if ($routeMethod !== $method) {
-                    $testRequest = clone $request;
-                    if ($route->matches($testRequest)) {
-                        throw new MethodNotAllowedException($route->getMethods(), $uri);
-                    }
+        if (empty($allowedMethods)) {
+            foreach ($this->allRoutes as $route) {
+                $testReq = new Request($route->getMethods()[0] ?? 'GET', $uri);
+                if ($route->matches($testReq)) {
+                    $allowedMethods = array_merge($allowedMethods, $route->getMethods());
                 }
             }
+        }
+
+        if (!empty($allowedMethods)) {
+            throw new MethodNotAllowedException(array_values(array_unique($allowedMethods)), $uri);
         }
 
         throw new NotFoundException("No route matched for [{$method}] {$uri}");
@@ -97,6 +137,9 @@ class RouteCollection
      */
     public function getByName(string $name): ?Route
     {
+        if (!isset($this->nameList[$name])) {
+            $this->refreshNameLookups();
+        }
         return $this->nameList[$name] ?? null;
     }
 
@@ -121,6 +164,7 @@ class RouteCollection
      */
     public function getNamedRoutes(): array
     {
+        $this->refreshNameLookups();
         return $this->nameList;
     }
 

@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework
+ *  Papastro Framework v2.0.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -15,17 +15,29 @@ declare(strict_types=1);
 namespace Papastro\Config;
 
 /**
- * Configuration Repository — loads and manages config files.
+ * Configuration Repository — loads and manages config files with O(1) cache support.
  */
 class Repository
 {
     protected array $items = [];
     protected string $configPath;
     protected array $loaded = [];
+    protected bool $loadedFromCache = false;
 
-    public function __construct(string $configPath)
+    public function __construct(string $configPath, ?string $cachedConfigFile = null)
     {
         $this->configPath = $configPath;
+
+        $cacheFile = $cachedConfigFile ?? dirname($configPath) . '/storage/cache/config/config.php';
+        if (is_file($cacheFile)) {
+            $cached = require $cacheFile;
+            if (is_array($cached)) {
+                $this->items = $cached;
+                $this->loadedFromCache = true;
+                return;
+            }
+        }
+
         $this->loadAll();
     }
 
@@ -45,6 +57,14 @@ class Repository
                 $this->loaded[$key] = true;
             }
         }
+    }
+
+    /**
+     * Determine if configuration was loaded from cache.
+     */
+    public function isCached(): bool
+    {
+        return $this->loadedFromCache;
     }
 
     /**

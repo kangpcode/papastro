@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.2.0
+ *  Papastro Framework v2.0.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -22,7 +22,7 @@ use Papastro\Http\Response;
  * Papastro Router
  *
  * Expressive HTTP router with support for all HTTP verbs, named routes,
- * route groups, middleware, and island (SSR+hydration) routes.
+ * route groups, middleware groups/aliases, and island (SSR+hydration) routes.
  */
 class Router
 {
@@ -47,12 +47,38 @@ class Router
     protected ?Route $currentRoute = null;
 
     /**
+     * Registered middleware groups (web, api).
+     */
+    protected array $middlewareGroups = [];
+
+    /**
+     * Registered route middleware aliases (auth, csrf, throttle, etc.).
+     */
+    protected array $routeMiddleware = [];
+
+    /**
      * Create a new Router instance.
      */
     public function __construct(mixed $app)
     {
         $this->app = $app;
         $this->routes = new RouteCollection;
+    }
+
+    /**
+     * Set middleware groups from HTTP Kernel.
+     */
+    public function setMiddlewareGroups(array $groups): void
+    {
+        $this->middlewareGroups = $groups;
+    }
+
+    /**
+     * Set route middleware aliases from HTTP Kernel.
+     */
+    public function setRouteMiddleware(array $middleware): void
+    {
+        $this->routeMiddleware = $middleware;
     }
 
     /**
@@ -117,6 +143,21 @@ class Router
     public function match(array $methods, string $uri, mixed $action): Route
     {
         return $this->addRoute(array_map('strtoupper', $methods), $uri, $action);
+    }
+
+    /**
+     * Register a RESTful resource controller.
+     */
+    public function resource(string $name, string $controller): void
+    {
+        $slug = trim($name, '/');
+        $this->get("/{$slug}",            [$controller, 'index'])->name("{$slug}.index");
+        $this->get("/{$slug}/create",     [$controller, 'create'])->name("{$slug}.create");
+        $this->post("/{$slug}",           [$controller, 'store'])->name("{$slug}.store");
+        $this->get("/{$slug}/{id}",       [$controller, 'show'])->name("{$slug}.show");
+        $this->get("/{$slug}/{id}/edit",  [$controller, 'edit'])->name("{$slug}.edit");
+        $this->put("/{$slug}/{id}",       [$controller, 'update'])->name("{$slug}.update");
+        $this->delete("/{$slug}/{id}",    [$controller, 'destroy'])->name("{$slug}.destroy");
     }
 
     /**
@@ -254,7 +295,8 @@ class Router
      */
     protected function runRouteWithinStack(Route $route, Request $request): Response
     {
-        $middleware = $route->getMiddleware();
+        $rawMiddleware = $route->getMiddleware();
+        $middleware = $this->gatherRouteMiddleware($rawMiddleware);
 
         if (empty($middleware)) {
             return $route->run($request);
@@ -265,6 +307,41 @@ class Router
         return $pipeline->send($request)
             ->through($middleware)
             ->then(fn($req) => $route->run($req));
+    }
+
+    /**
+     * Resolve middleware groups and aliases into concrete class names (preserving parameters).
+     */
+    public function gatherRouteMiddleware(array $middleware): array
+    {
+        $resolved = [];
+
+        foreach ($middleware as $name) {
+            if (!is_string($name)) {
+                $resolved[] = $name;
+                continue;
+            }
+
+            if (isset($this->middlewareGroups[$name])) {
+                $resolved = array_merge($resolved, $this->gatherRouteMiddleware($this->middlewareGroups[$name]));
+                continue;
+            }
+
+            $params = '';
+            $baseName = $name;
+            if (str_contains($name, ':')) {
+                [$baseName, $params] = explode(':', $name, 2);
+                $params = ':' . $params;
+            }
+
+            if (isset($this->routeMiddleware[$baseName])) {
+                $resolved[] = $this->routeMiddleware[$baseName] . $params;
+            } else {
+                $resolved[] = $name;
+            }
+        }
+
+        return array_values(array_unique($resolved, SORT_REGULAR));
     }
 
     /**
