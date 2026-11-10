@@ -27,6 +27,7 @@ class Kernel
     public function __construct(Application $app)
     {
         $this->app = $app;
+        require_once __DIR__ . '/Commands/CoreCommands.php';
         $this->registerDefaultCommands();
     }
 
