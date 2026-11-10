@@ -21,7 +21,7 @@ ob_start();
 </div>
 
 <div class="container">
-    <?php if(empty($posts['data']): ?>)
+    <?php if(empty($posts['data'])): ?>
         <div style="text-align: center; padding: 80px 0; color: var(--color-muted);">
             <p style="font-size: 48px">📝</p>
             <p style="margin-top: 16px; font-size: 18px;">No posts yet. <a href="/blog/create" style="color: var(--color-primary);">Write the first one →</a></p>

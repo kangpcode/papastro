@@ -256,110 +256,125 @@ PHP;
     }
 
     /**
+     * Balanced-parenthesis regex fragment (named group "p") so nested calls like
+     * @if(!empty($x) && count($y) > 1) compile correctly.
+     */
+    protected const BAL = '(?<p>\((?:[^()]++|(?&p))*\))';
+
+    /**
      * Compile template directives.
      */
     protected function compileDirectives(string $content): string
     {
-        // Inline @section('name', 'value')
-        $content = preg_replace_callback(
-            '/@section\(\s*[\'"]([^\'"]+)[\'"]\s*,\s*(.*?)\s*\)/',
-            fn($m) => "<?php \$__sections['{$m[1]}'] = htmlspecialchars((string)({$m[2]}), ENT_QUOTES, 'UTF-8'); ?>",
-            $content
-        );
+        $b = self::BAL;
+        $pre = '(?<![\w@])';
 
-        // Block @section('name') ... @endsection (using output buffering so PHP inside sections executes!)
+        // @section('a', expr) inline  |  @section('a') ... @endsection block  (sequential, stack based)
+        $stack = [];
         $content = preg_replace_callback(
-            '/@section\(\s*[\'"]([^\'"]+)[\'"]\s*\)(.*?)@endsection/s',
-            fn($m) => "<?php ob_start(); ?>{$m[2]}<?php \$__sections['{$m[1]}'] = ob_get_clean(); ?>",
-            $content
-        );
-
-        // @yield('name', 'default') or @yield('name')
-        $content = preg_replace_callback(
-            '/@yield\(\s*[\'"]([^\'"]+)[\'"]\s*(?:,\s*(.*?))?\s*\)/',
-            function ($m) {
-                $section = $m[1];
-                $default = isset($m[2]) && $m[2] !== '' ? $m[2] : "''";
-                return "<?php echo \$__sections['{$section}'] ?? {$default}; ?>";
+            "/{$pre}@section\\s*{$b}|{$pre}@endsection\\b/s",
+            function ($m) use (&$stack) {
+                if (!isset($m['p'])) {
+                    $name = array_pop($stack);
+                    return $name === null ? $m[0] : "<?php \$__sections['{$name}'] = ob_get_clean(); ?>";
+                }
+                $inner = substr($m['p'], 1, -1);
+                if (preg_match('/^\s*[\'"]([^\'"]+)[\'"]\s*,\s*(.+)$/s', $inner, $x)) {
+                    return "<?php \$__sections['{$x[1]}'] = htmlspecialchars((string)({$x[2]}), ENT_QUOTES, 'UTF-8'); ?>";
+                }
+                if (preg_match('/^\s*[\'"]([^\'"]+)[\'"]\s*$/', $inner, $x)) {
+                    $stack[] = $x[1];
+                    return '<?php ob_start(); ?>';
+                }
+                return $m[0];
             },
             $content
         );
 
-        // @include('template', [...]) or @include('template')
-        $content = preg_replace_callback(
-            '/@include\(\s*[\'"]([^\'"]+)[\'"]\s*(?:,\s*(.*?))?\s*\)/',
-            function ($m) {
-                $tpl = $m[1];
-                $dataExpr = isset($m[2]) && $m[2] !== '' ? "array_merge(\$__data ?? [], {$m[2]})" : "(\$__data ?? [])";
-                return "<?php echo app(\\Papastro\\View\\ViewEngine::class)->render('{$tpl}', {$dataExpr}); ?>";
-            },
-            $content
-        );
+        // @yield('name'[, default])
+        $content = preg_replace_callback("/{$pre}@yield\\s*{$b}/s", function ($m) {
+            $inner = substr($m['p'], 1, -1);
+            if (!preg_match('/^\s*[\'"]([^\'"]+)[\'"]\s*(?:,\s*(.+))?$/s', $inner, $x)) {
+                return $m[0];
+            }
+            $default = isset($x[2]) && trim($x[2]) !== '' ? $x[2] : "''";
+            return "<?php echo \$__sections['{$x[1]}'] ?? {$default}; ?>";
+        }, $content);
 
-        $replacements = [
-            // @foreach / @endforeach
-            '/@foreach\s*\((.*?)\)/s' => '<?php foreach($1): ?>',
-            '/@endforeach\b/' => '<?php endforeach; ?>',
+        // @include('template'[, [data]])
+        $content = preg_replace_callback("/{$pre}@include\\s*{$b}/s", function ($m) {
+            $inner = substr($m['p'], 1, -1);
+            if (!preg_match('/^\s*[\'"]([^\'"]+)[\'"]\s*(?:,\s*(.+))?$/s', $inner, $x)) {
+                return $m[0];
+            }
+            $data = isset($x[2]) && trim($x[2]) !== '' ? "array_merge(\$__data ?? [], {$x[2]})" : '($__data ?? [])';
+            return "<?php echo app(\\Papastro\\View\\ViewEngine::class)->render('{$x[1]}', {$data}); ?>";
+        }, $content);
 
-            // @for / @endfor
-            '/@for\s*\((.*?)\)/s' => '<?php for($1): ?>',
-            '/@endfor\b/' => '<?php endfor; ?>',
-
-            // @while / @endwhile
-            '/@while\s*\((.*?)\)/s' => '<?php while($1): ?>',
-            '/@endwhile\b/' => '<?php endwhile; ?>',
-
-            // @if / @elseif / @else / @endif
-            '/@if\s*\((.*?)\)/s' => '<?php if($1): ?>',
-            '/@elseif\s*\((.*?)\)/s' => '<?php elseif($1): ?>',
-            '/@else\b/' => '<?php else: ?>',
-            '/@endif\b/' => '<?php endif; ?>',
-
-            // @unless / @endunless
-            '/@unless\s*\((.*?)\)/s' => '<?php if(!($1)): ?>',
-            '/@endunless\b/' => '<?php endif; ?>',
-
-            // @isset / @endisset
-            '/@isset\s*\((.*?)\)/s' => '<?php if(isset($1)): ?>',
-            '/@endisset\b/' => '<?php endif; ?>',
-
-            // @empty / @endempty
-            '/@empty\s*\((.*?)\)/s' => '<?php if(empty($1)): ?>',
-            '/@endempty\b/' => '<?php endif; ?>',
-
-            // @auth / @endauth
-            '/@auth\b/' => '<?php if(!empty(session(\'user_id\'))): ?>',
-            '/@endauth\b/' => '<?php endif; ?>',
-
-            // @guest / @endguest
-            '/@guest\b/' => '<?php if(empty(session(\'user_id\'))): ?>',
-            '/@endguest\b/' => '<?php endif; ?>',
-
-            // @production / @endproduction
-            '/@production\b/' => '<?php if(app()->isProduction()): ?>',
-            '/@endproduction\b/' => '<?php endif; ?>',
-
-            // @php / @endphp
-            '/@php\b/' => '<?php',
-            '/@endphp\b/' => '?>',
-
-            // @csrf
-            '/@csrf\b/' => '<?php echo csrf_field(); ?>',
-
-            // @method
-            '/@method\([\'"]([^\'"]+)[\'"]\)/' => '<?php echo method_field(\'$1\'); ?>',
-
-            // @json
-            '/@json\((.*?)\)/s' => '<?php echo json_encode($1, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE); ?>',
-
-            // @dd — dump and die
-            '/@dd\((.*?)\)/s' => '<?php var_dump($1); die(); ?>',
-
-            // @dump
-            '/@dump\((.*?)\)/s' => '<?php var_dump($1); ?>',
+        // Directives that take a balanced expression
+        $withExpr = [
+            'foreach' => '<?php foreach$1: ?>',
+            'forelse' => '<?php if(!empty(__FORELSE_PLACEHOLDER__)): foreach$1: ?>',
+            'for'     => '<?php for$1: ?>',
+            'while'   => '<?php while$1: ?>',
+            'elseif'  => '<?php elseif$1: ?>',
+            'if'      => '<?php if$1: ?>',
+            'unless'  => '<?php if(!$1): ?>',
+            'isset'   => '<?php if(isset$1): ?>',
+            'empty'   => '<?php if(empty$1): ?>',
+            'json'    => '<?php echo json_encode$1, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE); ?>',
+            'dd'      => '<?php var_dump$1; die(); ?>',
+            'dump'    => '<?php var_dump$1; ?>',
+            'method'  => '<?php echo method_field$1; ?>',
         ];
 
-        foreach ($replacements as $pattern => $replacement) {
+        // @forelse is rewritten manually (needs the iterable expression twice)
+        $content = preg_replace_callback("/{$pre}@forelse\\s*{$b}/s", function ($m) {
+            $inner = substr($m['p'], 1, -1);
+            if (!preg_match('/^\s*(.+?)\s+as\s+(.+)$/s', $inner, $x)) {
+                return $m[0];
+            }
+            return "<?php if(!empty({$x[1]})): foreach({$inner}): ?>";
+        }, $content);
+        unset($withExpr['forelse']);
+
+        foreach ($withExpr as $name => $replacement) {
+            $content = preg_replace_callback("/{$pre}@{$name}\\s*{$b}/s", function ($m) use ($name, $replacement) {
+                $expr = $m['p'];
+                return match ($name) {
+                    'unless' => '<?php if(!' . $expr . '): ?>',
+                    'json'   => '<?php echo json_encode(' . substr($expr, 1, -1) . ', JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE); ?>',
+                    'dd'     => '<?php var_dump(' . substr($expr, 1, -1) . '); die(); ?>',
+                    'dump'   => '<?php var_dump(' . substr($expr, 1, -1) . '); ?>',
+                    'method' => '<?php echo method_field(' . substr($expr, 1, -1) . '); ?>',
+                    default  => str_replace('$1', $expr, $replacement),
+                };
+            }, $content);
+        }
+
+        $simple = [
+            '/(?<![\w@])@empty\b(?!\s*\()/'      => '<?php else: ?>',          // @forelse ... @empty ... @endforelse
+            '/(?<![\w@])@endforelse\b/'          => '<?php endif; ?>',
+            '/(?<![\w@])@endforeach\b/'          => '<?php endforeach; ?>',
+            '/(?<![\w@])@endfor\b/'              => '<?php endfor; ?>',
+            '/(?<![\w@])@endwhile\b/'            => '<?php endwhile; ?>',
+            '/(?<![\w@])@else\b/'                => '<?php else: ?>',
+            '/(?<![\w@])@endif\b/'               => '<?php endif; ?>',
+            '/(?<![\w@])@endunless\b/'           => '<?php endif; ?>',
+            '/(?<![\w@])@endisset\b/'            => '<?php endif; ?>',
+            '/(?<![\w@])@endempty\b/'            => '<?php endif; ?>',
+            '/(?<![\w@])@auth\b/'                => '<?php if(!empty(session(\'user_id\'))): ?>',
+            '/(?<![\w@])@endauth\b/'             => '<?php endif; ?>',
+            '/(?<![\w@])@guest\b/'               => '<?php if(empty(session(\'user_id\'))): ?>',
+            '/(?<![\w@])@endguest\b/'            => '<?php endif; ?>',
+            '/(?<![\w@])@production\b/'          => '<?php if(app()->isProduction()): ?>',
+            '/(?<![\w@])@endproduction\b/'       => '<?php endif; ?>',
+            '/(?<![\w@])@php\b/'                 => '<?php',
+            '/(?<![\w@])@endphp\b/'              => '?>',
+            '/(?<![\w@])@csrf\b/'                => '<?php echo csrf_field(); ?>',
+        ];
+
+        foreach ($simple as $pattern => $replacement) {
             $content = preg_replace($pattern, $replacement, $content);
         }
 

@@ -16,7 +16,7 @@ ob_start();
         <h1 style="font-size: 28px; font-weight: 800; margin-bottom: 8px; text-align: center;">Welcome Back</h1>
         <p style="color: var(--color-muted); text-align: center; margin-bottom: 32px; font-size: 14px;">Sign in to your Papastro account</p>
 
-        <?php if(!empty($error): ?>)
+        <?php if(!empty($error)): ?>
             <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #f87171; padding: 12px 16px; border-radius: 8px; font-size: 14px; margin-bottom: 20px;">
                 <?php echo htmlspecialchars((string)($error), ENT_QUOTES, 'UTF-8'); ?>
             </div>
