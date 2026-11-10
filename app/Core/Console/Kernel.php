@@ -62,8 +62,34 @@ class Kernel
 
             // Database
             'migrate' => Commands\MigrateCommand::class,
+            'migrate:status' => Commands\MigrateStatusCommand::class,
+            'migrate:fresh' => Commands\MigrateFreshCommand::class,
+            'migrate:reset' => Commands\MigrateResetCommand::class,
             'migrate:rollback' => Commands\MigrateRollbackCommand::class,
             'db:seed' => Commands\DbSeedCommand::class,
+
+            // Queue
+            'queue:work' => Commands\QueueWorkCommand::class,
+            'queue:failed' => Commands\QueueFailedCommand::class,
+            'queue:retry' => Commands\QueueRetryCommand::class,
+            'queue:clear' => Commands\QueueClearCommand::class,
+
+            // Maintenance Mode
+            'down' => Commands\DownCommand::class,
+            'up' => Commands\UpCommand::class,
+
+            // High-Concurrency Runtime (Octane-style)
+            'runtime:start' => Commands\RuntimeStartCommand::class,
+            'runtime:stop' => Commands\RuntimeStopCommand::class,
+            'runtime:reload' => Commands\RuntimeReloadCommand::class,
+            'runtime:status' => Commands\RuntimeStatusCommand::class,
+            'octane:start' => Commands\RuntimeStartCommand::class,
+            'octane:stop' => Commands\RuntimeStopCommand::class,
+            'octane:reload' => Commands\RuntimeReloadCommand::class,
+            'octane:status' => Commands\RuntimeStatusCommand::class,
+
+            // Pasway Realtime Broadcaster
+            'pasway:start' => Commands\PaswayStartCommand::class,
 
             // SEO & PWA
             'seo:sitemap' => Commands\SeoSitemapCommand::class,

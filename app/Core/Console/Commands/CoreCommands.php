@@ -411,3 +411,363 @@ class BuildCommand extends Command
         return 0;
     }
 }
+
+/**
+ * papastro migrate:status — show status of each database migration
+ */
+class MigrateStatusCommand extends Command
+{
+    public function execute(array $args): int
+    {
+        $migrator = new \Papastro\ORM\Migrator(
+            $this->app->make(\Papastro\ORM\Connection::class),
+            $this->app->databasePath('migrations')
+        );
+
+        $statuses = $migrator->getStatus();
+
+        if (empty($statuses)) {
+            $this->warn('No migrations found in database/migrations.');
+            return 0;
+        }
+
+        $this->newLine();
+        $this->line("  +------+------------------------------------------------+-------+---------------------+", 'gray');
+        $this->line("  | Ran? | Migration Name                                 | Batch | Ran At              |", 'yellow');
+        $this->line("  +------+------------------------------------------------+-------+---------------------+", 'gray');
+
+        foreach ($statuses as $s) {
+            $ranTag = $s['ran'] ? "\033[32m Yes  \033[0m" : "\033[31m  No  \033[0m";
+            $migName = str_pad(substr($s['migration'], 0, 46), 46);
+            $batchStr = str_pad($s['batch'] !== null ? (string)$s['batch'] : '-', 5, ' ', STR_PAD_BOTH);
+            $ranAt = str_pad($s['ran_at'] ?? '-', 19);
+
+            echo "  | {$ranTag}| {$migName} | {$batchStr} | {$ranAt} |\n";
+        }
+
+        $this->line("  +------+------------------------------------------------+-------+---------------------+", 'gray');
+        $this->newLine();
+
+        return 0;
+    }
+}
+
+/**
+ * papastro migrate:fresh — drop all tables and re-run migrations
+ */
+class MigrateFreshCommand extends Command
+{
+    public function execute(array $args): int
+    {
+        $this->warn('Dropping all database tables...');
+        $migrator = new \Papastro\ORM\Migrator(
+            $this->app->make(\Papastro\ORM\Connection::class),
+            $this->app->databasePath('migrations')
+        );
+
+        $ran = $migrator->fresh();
+
+        foreach ($ran as $migration) {
+            $this->success("Migrated: {$migration}");
+        }
+
+        $this->success('Database fresh migration completed.');
+
+        if ($this->hasFlag($args, 'seed')) {
+            $this->newLine();
+            (new DbSeedCommand($this->app, $this->console))->execute($args);
+        }
+
+        return 0;
+    }
+}
+
+/**
+ * papastro migrate:reset — rollback all database migrations
+ */
+class MigrateResetCommand extends Command
+{
+    public function execute(array $args): int
+    {
+        $this->warn('Rolling back all database migrations...');
+        $migrator = new \Papastro\ORM\Migrator(
+            $this->app->make(\Papastro\ORM\Connection::class),
+            $this->app->databasePath('migrations')
+        );
+
+        $rolled = $migrator->reset();
+
+        if (empty($rolled)) {
+            $this->line('  Nothing to rollback.', 'gray');
+        } else {
+            foreach ($rolled as $migration) {
+                $this->success("Rolled back: {$migration}");
+            }
+        }
+
+        return 0;
+    }
+}
+
+/**
+ * papastro queue:work — start background job worker daemon
+ */
+class QueueWorkCommand extends Command
+{
+    public function execute(array $args): int
+    {
+        $queueName = $this->option($args, 'queue', 'default');
+        $sleep = (int) $this->option($args, 'sleep', 3);
+        $maxTries = (int) $this->option($args, 'tries', 3);
+
+        $queue = $this->app->make(\Papastro\Queue\QueueManager::class);
+
+        $this->info("Queue worker started on [{$queueName}] (sleep: {$sleep}s)...");
+        $this->line("  Press Ctrl+C to exit.");
+
+        while (true) {
+            $result = $queue->processNext($queueName);
+
+            if ($result !== null) {
+                if ($result['status'] === 'processed') {
+                    $this->success("[{$result['id']}] Processed {$result['class']} ({$result['elapsed_ms']}ms)");
+                } else {
+                    $this->error("[{$result['id']}] Failed {$result['class']}: {$result['error']}");
+                }
+            } else {
+                sleep($sleep);
+            }
+        }
+
+        return 0;
+    }
+}
+
+/**
+ * papastro queue:failed — list all failed background jobs
+ */
+class QueueFailedCommand extends Command
+{
+    public function execute(array $args): int
+    {
+        $queue = $this->app->make(\Papastro\Queue\QueueManager::class);
+        $failed = $queue->failed();
+
+        if (empty($failed)) {
+            $this->success('No failed jobs found.');
+            return 0;
+        }
+
+        $this->newLine();
+        $this->line("  +------------------+---------+--------------------------------+---------------------+", 'gray');
+        $this->line("  | ID               | Queue   | Class                          | Failed At           |", 'yellow');
+        $this->line("  +------------------+---------+--------------------------------+---------------------+", 'gray');
+
+        foreach ($failed as $job) {
+            $id = str_pad($job['id'] ?? '', 16);
+            $q = str_pad($job['queue'] ?? 'default', 7);
+            $cls = str_pad(substr($job['class'] ?? '', 0, 30), 30);
+            $failedAt = str_pad($job['failed_at'] ?? '', 19);
+
+            echo "  | {$id} | {$q} | {$cls} | {$failedAt} |\n";
+            if (!empty($job['error'])) {
+                echo "  |   \033[31mError:\033[0m " . substr($job['error'], 0, 70) . "\n";
+            }
+        }
+
+        $this->line("  +------------------+---------+--------------------------------+---------------------+", 'gray');
+        $this->newLine();
+
+        return 0;
+    }
+}
+
+/**
+ * papastro queue:retry — retry failed background jobs
+ */
+class QueueRetryCommand extends Command
+{
+    public function execute(array $args): int
+    {
+        $queue = $this->app->make(\Papastro\Queue\QueueManager::class);
+        $id = $this->argument($args, 0);
+
+        if ($this->hasFlag($args, 'all') || $id === 'all') {
+            $count = $queue->retryAll();
+            $this->success("Retried {$count} failed job(s).");
+            return 0;
+        }
+
+        if (!$id) {
+            $this->error("Please specify a job ID to retry, or use --all.");
+            return 1;
+        }
+
+        if ($queue->retry($id)) {
+            $this->success("Job [{$id}] pushed back to active queue.");
+            return 0;
+        }
+
+        $this->error("Failed job [{$id}] not found.");
+        return 1;
+    }
+}
+
+/**
+ * papastro queue:clear — clear pending queue jobs
+ */
+class QueueClearCommand extends Command
+{
+    public function execute(array $args): int
+    {
+        $queue = $this->app->make(\Papastro\Queue\QueueManager::class);
+        $count = $queue->clear();
+        $this->success("Cleared {$count} pending job(s) from queue.");
+        return 0;
+    }
+}
+
+/**
+ * papastro down — put application in maintenance mode
+ */
+class DownCommand extends Command
+{
+    public function execute(array $args): int
+    {
+        $secret = $this->option($args, 'secret', bin2hex(random_bytes(8)));
+        $message = $this->option($args, 'message', 'Application is currently undergoing maintenance.');
+        $retry = (int) $this->option($args, 'retry', 60);
+
+        $downFile = $this->app->storagePath('framework/down');
+        $dir = dirname($downFile);
+        if (!is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
+        file_put_contents($downFile, json_encode([
+            'secret'  => $secret,
+            'message' => $message,
+            'retry'   => $retry,
+            'time'    => time(),
+        ], JSON_PRETTY_PRINT));
+
+        $this->success("Application is now in maintenance mode.");
+        $this->line("  Bypass Secret: {$secret}", 'yellow');
+        $this->line("  Bypass URL   : /{$secret}", 'cyan');
+
+        return 0;
+    }
+}
+
+/**
+ * papastro up — bring application out of maintenance mode
+ */
+class UpCommand extends Command
+{
+    public function execute(array $args): int
+    {
+        $downFile = $this->app->storagePath('framework/down');
+        if (file_exists($downFile)) {
+            @unlink($downFile);
+            $this->success("Application is now live.");
+        } else {
+            $this->info("Application is already live.");
+        }
+
+        return 0;
+    }
+}
+
+/**
+ * papastro runtime:start / octane:start — start high-concurrency runtime server
+ */
+class RuntimeStartCommand extends Command
+{
+    public function execute(array $args): int
+    {
+        $host = (string) $this->option($args, 'host', '127.0.0.1');
+        $port = (int) $this->option($args, 'port', 8000);
+        $workers = (int) $this->option($args, 'workers', 0);
+        $maxRequests = (int) $this->option($args, 'max-requests', 10000);
+        $driver = (string) $this->option($args, 'driver', 'native');
+        $watch = $this->hasFlag($args, 'watch');
+
+        $manager = new \Papastro\Runtime\ServerManager($this->app);
+        $manager->serve($driver, $host, $port, $workers, $maxRequests, $watch);
+
+        return 0;
+    }
+}
+
+/**
+ * papastro runtime:stop — stop running runtime server
+ */
+class RuntimeStopCommand extends Command
+{
+    public function execute(array $args): int
+    {
+        $manager = new \Papastro\Runtime\ServerManager($this->app);
+        if ($manager->stop()) {
+            $this->success("Papastro runtime server stopped successfully.");
+            return 0;
+        }
+
+        $this->warn("No active Papastro runtime server found.");
+        return 1;
+    }
+}
+
+/**
+ * papastro runtime:reload — reload workers of runtime server
+ */
+class RuntimeReloadCommand extends Command
+{
+    public function execute(array $args): int
+    {
+        $manager = new \Papastro\Runtime\ServerManager($this->app);
+        if ($manager->reload()) {
+            $this->success("Papastro runtime workers reloaded.");
+            return 0;
+        }
+
+        $this->warn("No active Papastro runtime server found to reload.");
+        return 1;
+    }
+}
+
+/**
+ * papastro runtime:status — check status of runtime server
+ */
+class RuntimeStatusCommand extends Command
+{
+    public function execute(array $args): int
+    {
+        $manager = new \Papastro\Runtime\ServerManager($this->app);
+        if ($manager->isRunning()) {
+            $pid = $manager->getPid();
+            $this->success("Papastro runtime server is running [PID: {$pid}].");
+            return 0;
+        }
+
+        $this->line("Papastro runtime server is not running.", 'gray');
+        return 0;
+    }
+}
+
+/**
+ * papastro pasway:start — start Pasway realtime WebSocket daemon
+ */
+class PaswayStartCommand extends Command
+{
+    public function execute(array $args): int
+    {
+        $host = (string) $this->option($args, 'host', '0.0.0.0');
+        $port = (int) $this->option($args, 'port', 8080);
+        $ipcPort = (int) $this->option($args, 'ipc', 8081);
+
+        $server = new \Papastro\Pasway\Server($host, $port, $ipcPort);
+        $server->start();
+
+        return 0;
+    }
+}
