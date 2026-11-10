@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.2.0
+ *  Papastro Framework v3.0.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -35,6 +35,11 @@ class Response
     protected array $headers;
 
     /**
+     * Cookies queued to be sent with the response (SAPI independent, runtime-safe).
+     */
+    protected array $cookies = [];
+
+    /**
      * The HTTP status text map.
      */
     protected static array $statusTexts = [
@@ -42,6 +47,7 @@ class Response
         200 => 'OK',
         201 => 'Created',
         204 => 'No Content',
+        202 => 'Accepted',
         301 => 'Moved Permanently',
         302 => 'Found',
         304 => 'Not Modified',
@@ -49,6 +55,7 @@ class Response
         401 => 'Unauthorized',
         403 => 'Forbidden',
         404 => 'Not Found',
+        419 => 'Page Expired',
         405 => 'Method Not Allowed',
         422 => 'Unprocessable Entity',
         429 => 'Too Many Requests',
@@ -80,7 +87,7 @@ class Response
     public static function json(mixed $data, int $status = 200, array $headers = []): static
     {
         return new static(
-            json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT),
+            json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
             $status,
             array_merge($headers, ['Content-Type' => 'application/json'])
         );
@@ -91,7 +98,7 @@ class Response
      */
     public static function redirect(string $url, int $status = 302): static
     {
-        return new static('', $status, ['Location' => $url]);
+        return new static('', $status, ['Location' => static::cleanHeader($url)]);
     }
 
     /**
@@ -141,7 +148,7 @@ class Response
      */
     public function header(string $key, string $value): static
     {
-        $this->headers[$key] = $value;
+        $this->headers[static::cleanHeader($key)] = static::cleanHeader($value);
         return $this;
     }
 
@@ -164,7 +171,24 @@ class Response
     }
 
     /**
-     * Add a cookie to the response.
+     * Queue a cookie on the response.
+     */
+    public function withCookie(
+        string $name,
+        string $value,
+        int $minutes = 0,
+        string $path = '/',
+        string $domain = '',
+        bool $secure = false,
+        bool $httpOnly = true,
+        string $sameSite = 'Lax'
+    ): static {
+        $this->cookies[$name] = compact('value', 'minutes', 'path', 'domain', 'secure', 'httpOnly', 'sameSite');
+        return $this;
+    }
+
+    /**
+     * Backward compatible alias of withCookie().
      */
     public function cookie(
         string $name,
@@ -175,9 +199,51 @@ class Response
         bool $secure = false,
         bool $httpOnly = true
     ): static {
-        $expires = $minutes > 0 ? time() + ($minutes * 60) : 0;
-        setcookie($name, $value, $expires, $path, $domain, $secure, $httpOnly);
-        return $this;
+        return $this->withCookie($name, $value, $minutes, $path, $domain, $secure, $httpOnly);
+    }
+
+    /**
+     * Get the queued cookies.
+     */
+    public function getCookies(): array
+    {
+        return $this->cookies;
+    }
+
+    /**
+     * Build the Set-Cookie header lines for queued cookies.
+     */
+    public function cookieHeaderLines(): array
+    {
+        $lines = [];
+        foreach ($this->cookies as $name => $c) {
+            $line = rawurlencode($name) . '=' . rawurlencode($c['value']);
+            if ($c['minutes'] > 0) {
+                $line .= '; Expires=' . gmdate('D, d M Y H:i:s', time() + $c['minutes'] * 60) . ' GMT';
+                $line .= '; Max-Age=' . ($c['minutes'] * 60);
+            }
+            $line .= '; Path=' . $c['path'];
+            if ($c['domain'] !== '') {
+                $line .= '; Domain=' . $c['domain'];
+            }
+            if ($c['secure']) {
+                $line .= '; Secure';
+            }
+            if ($c['httpOnly']) {
+                $line .= '; HttpOnly';
+            }
+            $line .= '; SameSite=' . $c['sameSite'];
+            $lines[] = $line;
+        }
+        return $lines;
+    }
+
+    /**
+     * Strip CR/LF from header values to prevent header injection / response splitting.
+     */
+    protected static function cleanHeader(string $value): string
+    {
+        return str_replace(["\r", "\n", "\0"], '', $value);
     }
 
     /**
@@ -202,7 +268,11 @@ class Response
         header("HTTP/1.1 {$this->statusCode} {$statusText}");
 
         foreach ($this->headers as $key => $value) {
-            header("{$key}: {$value}");
+            header(static::cleanHeader($key) . ': ' . static::cleanHeader((string) $value));
+        }
+
+        foreach ($this->cookieHeaderLines() as $line) {
+            header('Set-Cookie: ' . static::cleanHeader($line), false);
         }
     }
 
@@ -212,6 +282,14 @@ class Response
     protected function sendContent(): void
     {
         echo $this->content;
+    }
+
+    /**
+     * Get the reason phrase for the current status code.
+     */
+    public function statusText(): string
+    {
+        return static::$statusTexts[$this->statusCode] ?? 'Unknown';
     }
 
     /**
@@ -227,7 +305,7 @@ class Response
      */
     public function isOk(): bool
     {
-        return $this->statusCode === 200;
+        return $this->statusCode >= 200 && $this->statusCode < 300;
     }
 
     /**

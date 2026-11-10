@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.2.0
+ *  Papastro Framework v3.0.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -67,6 +67,32 @@ class Request
     protected ?Closure $routeResolver = null;
 
     /**
+     * Raw request body (set by the runtime server or lazily read from php://input).
+     */
+    protected ?string $rawBody = null;
+
+    /**
+     * Trusted proxy IPs (or '*') for X-Forwarded-* headers.
+     */
+    protected static array $trustedProxies = [];
+
+    public static function setTrustedProxies(array $proxies): void
+    {
+        static::$trustedProxies = $proxies;
+    }
+
+    public function setRawBody(string $body): static
+    {
+        $this->rawBody = $body;
+        return $this;
+    }
+
+    public function rawBody(): string
+    {
+        return $this->rawBody ??= (string) @file_get_contents('php://input');
+    }
+
+    /**
      * Create a new Request instance.
      */
     public function __construct(
@@ -101,7 +127,7 @@ class Request
             $override = $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']
                 ?? $_POST['_method']
                 ?? null;
-            if ($override) {
+            if (is_string($override) && in_array(strtoupper($override), ['PUT', 'PATCH', 'DELETE'], true)) {
                 $method = strtoupper($override);
             }
         }
@@ -182,7 +208,7 @@ class Request
      */
     public function input(string $key, mixed $default = null): mixed
     {
-        return $this->data[$key] ?? $this->query[$key] ?? $default;
+        return $this->all()[$key] ?? $default;
     }
 
     /**
@@ -190,7 +216,11 @@ class Request
      */
     public function all(): array
     {
-        return array_merge($this->query, $this->data);
+        $json = [];
+        if (str_contains(strtolower((string) $this->header('Content-Type', '')), 'application/json')) {
+            $json = $this->json() ?: [];
+        }
+        return array_merge($this->query, $json, $this->data);
     }
 
     /**
@@ -233,13 +263,18 @@ class Request
     }
 
     /**
-     * Get a specific header.
+     * Get a specific header (case-insensitive, accepts "X-Foo", "x_foo", "HTTP_X_FOO").
      */
     public function header(string $key, mixed $default = null): mixed
     {
-        return $this->headers[strtoupper(str_replace('-', '_', $key))]
-            ?? $this->headers[$key]
-            ?? $default;
+        $norm = static fn (string $k): string => strtolower(str_replace('_', '-', preg_replace('/^HTTP_/i', '', $k)));
+        $needle = $norm($key);
+        foreach ($this->headers as $name => $value) {
+            if ($norm((string) $name) === $needle) {
+                return $value;
+            }
+        }
+        return $default;
     }
 
     /**
@@ -279,7 +314,7 @@ class Request
      */
     public function isAjax(): bool
     {
-        return strtolower($this->header('X-Requested-With', '')) === 'xmlhttprequest';
+        return strtolower((string) $this->header('X-Requested-With', '')) === 'xmlhttprequest';
     }
 
     /**
@@ -287,7 +322,7 @@ class Request
      */
     public function expectsJson(): bool
     {
-        return $this->isAjax() || str_contains($this->header('Accept', ''), 'application/json');
+        return $this->isAjax() || str_contains((string) $this->header('Accept', ''), 'application/json');
     }
 
     /**
@@ -303,7 +338,7 @@ class Request
      */
     public function has(string $key): bool
     {
-        return isset($this->data[$key]) || isset($this->query[$key]);
+        return array_key_exists($key, $this->all());
     }
 
     /**
@@ -322,8 +357,8 @@ class Request
      */
     public function json(?string $key = null, mixed $default = null): mixed
     {
-        $body    = file_get_contents('php://input');
-        $decoded = json_decode($body, true) ?? [];
+        $decoded = json_decode($this->rawBody(), true);
+        $decoded = is_array($decoded) ? $decoded : [];
 
         return $key === null ? $decoded : ($decoded[$key] ?? $default);
     }
@@ -366,14 +401,41 @@ class Request
     }
 
     /**
-     * Get the client IP address.
+     * Get the client IP address. X-Forwarded-For is honoured ONLY from trusted proxies
+     * (configure via app.trusted_proxies) so clients cannot spoof their IP / bypass rate limits.
      */
     public function ip(): string
     {
-        return $this->server['HTTP_X_FORWARDED_FOR']
-            ?? $this->server['HTTP_CLIENT_IP']
-            ?? $this->server['REMOTE_ADDR']
-            ?? '127.0.0.1';
+        $remote = (string) ($this->server['REMOTE_ADDR'] ?? '127.0.0.1');
+
+        $trusted = static::$trustedProxies;
+        if ($trusted && (in_array('*', $trusted, true) || in_array($remote, $trusted, true))) {
+            $forwarded = (string) $this->header('X-Forwarded-For', '');
+            if ($forwarded !== '') {
+                $candidate = trim(explode(',', $forwarded)[0]);
+                if (filter_var($candidate, FILTER_VALIDATE_IP)) {
+                    return $candidate;
+                }
+            }
+        }
+
+        return $remote;
+    }
+
+    /**
+     * Determine if the request was made over HTTPS.
+     */
+    public function isSecure(): bool
+    {
+        if (!empty($this->server['HTTPS']) && $this->server['HTTPS'] !== 'off') {
+            return true;
+        }
+        $remote = (string) ($this->server['REMOTE_ADDR'] ?? '');
+        $trusted = static::$trustedProxies;
+        if ($trusted && (in_array('*', $trusted, true) || in_array($remote, $trusted, true))) {
+            return strtolower((string) $this->header('X-Forwarded-Proto', '')) === 'https';
+        }
+        return false;
     }
 
     /**
@@ -389,7 +451,7 @@ class Request
      */
     public function url(): string
     {
-        $scheme = (!empty($this->server['HTTPS']) && $this->server['HTTPS'] !== 'off') ? 'https' : 'http';
+        $scheme = $this->isSecure() ? 'https' : 'http';
         return "{$scheme}://{$this->host()}{$this->uri()}";
     }
 
