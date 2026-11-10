@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.2.0
+ *  Papastro Framework v3.0.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -13,6 +13,8 @@
 declare(strict_types=1);
 
 namespace Papastro\ORM;
+
+use Papastro\Security\Security;
 
 /**
  * Fluent QueryBuilder — Eloquent-inspired SQL query builder.
@@ -42,7 +44,8 @@ class QueryBuilder
      */
     public function select(string|array $columns = ['*']): static
     {
-        $this->columns = is_array($columns) ? $columns : func_get_args();
+        $cols = is_array($columns) ? $columns : func_get_args();
+        $this->columns = array_map([Security::class, 'sanitizeSqlIdentifier'], $cols);
         return $this;
     }
 
@@ -51,11 +54,17 @@ class QueryBuilder
      */
     public function where(string $column, mixed $operatorOrValue, mixed $value = null): static
     {
-        if ($value === null) {
+        $column = Security::sanitizeSqlIdentifier($column);
+        if (func_num_args() === 2) {
             $value = $operatorOrValue;
             $operator = '=';
         } else {
-            $operator = $operatorOrValue;
+            $operator = $this->validOperator((string) $operatorOrValue);
+        }
+
+        if ($value === null) {
+            $this->wheres[] = $operator === '!=' || $operator === '<>' ? "{$column} IS NOT NULL" : "{$column} IS NULL";
+            return $this;
         }
 
         $this->wheres[] = "{$column} {$operator} ?";
@@ -65,10 +74,28 @@ class QueryBuilder
     }
 
     /**
+     * Whitelist SQL comparison operators (user input must never reach the query string).
+     */
+    protected function validOperator(string $operator): string
+    {
+        $op = strtoupper(trim($operator));
+        $allowed = ['=', '!=', '<>', '<', '>', '<=', '>=', 'LIKE', 'NOT LIKE'];
+        if (!in_array($op, $allowed, true)) {
+            throw new \InvalidArgumentException("Invalid SQL operator [{$operator}].");
+        }
+        return $op;
+    }
+
+    /**
      * Add a WHERE IN clause.
      */
     public function whereIn(string $column, array $values): static
     {
+        $column = Security::sanitizeSqlIdentifier($column);
+        if (empty($values)) {
+            $this->wheres[] = '0 = 1';
+            return $this;
+        }
         $placeholders = implode(', ', array_fill(0, count($values), '?'));
         $this->wheres[] = "{$column} IN ({$placeholders})";
         $this->bindings = array_merge($this->bindings, $values);
@@ -80,6 +107,10 @@ class QueryBuilder
      */
     public function whereNotIn(string $column, array $values): static
     {
+        $column = Security::sanitizeSqlIdentifier($column);
+        if (empty($values)) {
+            return $this;
+        }
         $placeholders = implode(', ', array_fill(0, count($values), '?'));
         $this->wheres[] = "{$column} NOT IN ({$placeholders})";
         $this->bindings = array_merge($this->bindings, $values);
@@ -91,7 +122,7 @@ class QueryBuilder
      */
     public function whereNull(string $column): static
     {
-        $this->wheres[] = "{$column} IS NULL";
+        $this->wheres[] = Security::sanitizeSqlIdentifier($column) . ' IS NULL';
         return $this;
     }
 
@@ -100,7 +131,7 @@ class QueryBuilder
      */
     public function whereNotNull(string $column): static
     {
-        $this->wheres[] = "{$column} IS NOT NULL";
+        $this->wheres[] = Security::sanitizeSqlIdentifier($column) . ' IS NOT NULL';
         return $this;
     }
 
@@ -117,7 +148,7 @@ class QueryBuilder
      */
     public function whereBetween(string $column, mixed $min, mixed $max): static
     {
-        $this->wheres[] = "{$column} BETWEEN ? AND ?";
+        $this->wheres[] = Security::sanitizeSqlIdentifier($column) . ' BETWEEN ? AND ?';
         $this->bindings[] = $min;
         $this->bindings[] = $max;
         return $this;
@@ -128,20 +159,25 @@ class QueryBuilder
      */
     public function orWhere(string $column, mixed $operatorOrValue, mixed $value = null): static
     {
-        if ($value === null) {
+        $column = Security::sanitizeSqlIdentifier($column);
+        if (func_num_args() === 2) {
             $value = $operatorOrValue;
             $operator = '=';
         } else {
-            $operator = $operatorOrValue;
+            $operator = $this->validOperator((string) $operatorOrValue);
         }
+
+        $clause = $value === null ? "{$column} IS NULL" : "{$column} {$operator} ?";
 
         $lastIndex = count($this->wheres) - 1;
         if ($lastIndex >= 0) {
-            $this->wheres[$lastIndex] = '(' . $this->wheres[$lastIndex] . " OR {$column} {$operator} ?)";
+            $this->wheres[$lastIndex] = '(' . $this->wheres[$lastIndex] . " OR {$clause})";
         } else {
-            $this->wheres[] = "{$column} {$operator} ?";
+            $this->wheres[] = $clause;
         }
-        $this->bindings[] = $value;
+        if ($value !== null) {
+            $this->bindings[] = $value;
+        }
 
         return $this;
     }
@@ -151,7 +187,8 @@ class QueryBuilder
      */
     public function orderBy(string $column, string $direction = 'ASC'): static
     {
-        $this->orders[] = "{$column} " . strtoupper($direction);
+        $direction = strtoupper($direction) === 'DESC' ? 'DESC' : 'ASC';
+        $this->orders[] = Security::sanitizeSqlIdentifier($column) . " {$direction}";
         return $this;
     }
 
@@ -210,7 +247,7 @@ class QueryBuilder
      */
     public function groupBy(string $column): static
     {
-        $this->groupBy = $column;
+        $this->groupBy = Security::sanitizeSqlIdentifier($column);
         return $this;
     }
 
@@ -219,7 +256,7 @@ class QueryBuilder
      */
     public function join(string $table, string $first, string $operator, string $second): static
     {
-        $this->joins[] = "INNER JOIN {$table} ON {$first} {$operator} {$second}";
+        $this->joins[] = 'INNER JOIN ' . Security::sanitizeSqlIdentifier($table) . ' ON ' . Security::sanitizeSqlIdentifier($first) . ' ' . $this->validOperator($operator) . ' ' . Security::sanitizeSqlIdentifier($second);
         return $this;
     }
 
@@ -228,7 +265,7 @@ class QueryBuilder
      */
     public function leftJoin(string $table, string $first, string $operator, string $second): static
     {
-        $this->joins[] = "LEFT JOIN {$table} ON {$first} {$operator} {$second}";
+        $this->joins[] = 'LEFT JOIN ' . Security::sanitizeSqlIdentifier($table) . ' ON ' . Security::sanitizeSqlIdentifier($first) . ' ' . $this->validOperator($operator) . ' ' . Security::sanitizeSqlIdentifier($second);
         return $this;
     }
 
@@ -284,7 +321,9 @@ class QueryBuilder
      */
     public function first(): ?array
     {
-        return $this->limit(1)->connection->selectOne($this->toSql(), $this->bindings);
+        $clone = clone $this;
+        $clone->limitValue = 1;
+        return $clone->connection->selectOne($clone->toSql(), $clone->bindings);
     }
 
     /**
@@ -296,51 +335,42 @@ class QueryBuilder
     }
 
     /**
-     * Count the number of results.
+     * Run an aggregate on a clone so LIMIT/OFFSET/ORDER of this builder are never mutated.
      */
+    protected function aggregate(string $expression): mixed
+    {
+        $clone = clone $this;
+        $clone->columns = ["{$expression} as aggregate"];
+        $clone->orders = [];
+        $clone->limitValue = null;
+        $clone->offsetValue = null;
+        $row = $clone->connection->selectOne($clone->toSql(), $clone->bindings);
+        return $row['aggregate'] ?? null;
+    }
+
     public function count(string $column = '*'): int
     {
-        $original = $this->columns;
-        $this->columns = ["COUNT({$column}) as aggregate"];
-        $result = $this->first();
-        $this->columns = $original;
-        return (int) ($result['aggregate'] ?? 0);
+        return (int) $this->aggregate('COUNT(' . Security::sanitizeSqlIdentifier($column) . ')');
     }
 
-    /**
-     * Get the maximum value for a column.
-     */
     public function max(string $column): mixed
     {
-        $original = $this->columns;
-        $this->columns = ["MAX({$column}) as aggregate"];
-        $result = $this->first();
-        $this->columns = $original;
-        return $result['aggregate'] ?? null;
+        return $this->aggregate('MAX(' . Security::sanitizeSqlIdentifier($column) . ')');
     }
 
-    /**
-     * Get the minimum value for a column.
-     */
     public function min(string $column): mixed
     {
-        $original = $this->columns;
-        $this->columns = ["MIN({$column}) as aggregate"];
-        $result = $this->first();
-        $this->columns = $original;
-        return $result['aggregate'] ?? null;
+        return $this->aggregate('MIN(' . Security::sanitizeSqlIdentifier($column) . ')');
     }
 
-    /**
-     * Get the sum of a column.
-     */
     public function sum(string $column): mixed
     {
-        $original = $this->columns;
-        $this->columns = ["SUM({$column}) as aggregate"];
-        $result = $this->first();
-        $this->columns = $original;
-        return $result['aggregate'] ?? 0;
+        return $this->aggregate('SUM(' . Security::sanitizeSqlIdentifier($column) . ')') ?? 0;
+    }
+
+    public function avg(string $column): mixed
+    {
+        return $this->aggregate('AVG(' . Security::sanitizeSqlIdentifier($column) . ')');
     }
 
     /**
@@ -348,8 +378,11 @@ class QueryBuilder
      */
     public function pluck(string $column): array
     {
-        $this->columns = [$column];
-        return array_column($this->get(), $column);
+        $col = Security::sanitizeSqlIdentifier($column);
+        $clone = clone $this;
+        $clone->columns = [$col];
+        $key = str_contains($col, '.') ? substr(strrchr($col, '.'), 1) : $col;
+        return array_column($clone->get(), $key);
     }
 
     /**
@@ -366,7 +399,7 @@ class QueryBuilder
     public function insert(array $data): string|false
     {
         $keys = array_keys($data);
-        $cols = implode(', ', array_map(fn($k) => "`{$k}`", $keys));
+        $cols = implode(', ', array_map(fn($k) => '`' . Security::sanitizeSqlIdentifier((string) $k) . '`', $keys));
         $phs = implode(', ', array_fill(0, count($keys), '?'));
         $sql = "INSERT INTO `{$this->table}` ({$cols}) VALUES ({$phs})";
 
@@ -384,7 +417,7 @@ class QueryBuilder
             return;
 
         $keys = array_keys($rows[0]);
-        $cols = implode(', ', array_map(fn($k) => "`{$k}`", $keys));
+        $cols = implode(', ', array_map(fn($k) => '`' . Security::sanitizeSqlIdentifier((string) $k) . '`', $keys));
         $phs = implode(', ', array_fill(0, count($keys), '?'));
         $sql = "INSERT INTO `{$this->table}` ({$cols}) VALUES ({$phs})";
 
@@ -398,7 +431,7 @@ class QueryBuilder
      */
     public function update(array $data): int
     {
-        $sets = implode(', ', array_map(fn($k) => "`{$k}` = ?", array_keys($data)));
+        $sets = implode(', ', array_map(fn($k) => '`' . Security::sanitizeSqlIdentifier((string) $k) . '` = ?', array_keys($data)));
         $bindings = array_merge(array_values($data), $this->bindings);
         $sql = "UPDATE `{$this->table}` SET {$sets}";
 
@@ -445,19 +478,20 @@ class QueryBuilder
      */
     public function paginate(int $perPage = 15, int $page = 1): array
     {
+        $perPage = max(1, min($perPage, 500));
+        $page = max(1, $page);
         $total = $this->count();
 
-        $results = $this->limit($perPage)
-            ->offset(($page - 1) * $perPage)
-            ->get();
+        $clone = clone $this;
+        $results = $clone->limit($perPage)->offset(($page - 1) * $perPage)->get();
 
         return [
             'data' => $results,
             'total' => $total,
             'per_page' => $perPage,
             'current_page' => $page,
-            'last_page' => (int) ceil($total / $perPage),
-            'from' => ($page - 1) * $perPage + 1,
+            'last_page' => max(1, (int) ceil($total / $perPage)),
+            'from' => $total === 0 ? 0 : ($page - 1) * $perPage + 1,
             'to' => min($page * $perPage, $total),
         ];
     }

@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.2.0
+ *  Papastro Framework v3.0.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -17,7 +17,14 @@ namespace Papastro\ORM;
 /**
  * PapastroModel — Base Active Record style model (Eloquent-inspired).
  */
-abstract class Model
+if (!function_exists('class_basename_of')) {
+    function class_basename_of(string $class): string
+    {
+        return basename(str_replace('\\', '/', $class));
+    }
+}
+
+abstract class Model implements \JsonSerializable
 {
     /**
      * The database table name.
@@ -150,8 +157,8 @@ abstract class Model
     public function fill(array $attributes): static
     {
         foreach ($attributes as $key => $value) {
-            if ($this->isFillable($key)) {
-                $this->attributes[$key] = $value;
+            if ($this->isFillable((string) $key)) {
+                $this->setAttribute((string) $key, $value);
             }
         }
         return $this;
@@ -178,7 +185,17 @@ abstract class Model
      */
     public function getAttribute(string $key): mixed
     {
-        return $this->attributes[$key] ?? null;
+        $value = $this->attributes[$key] ?? null;
+        $accessor = 'get' . static::studly($key) . 'Attribute';
+        if (method_exists($this, $accessor)) {
+            return $this->{$accessor}($value);
+        }
+        return $value;
+    }
+
+    protected static function studly(string $value): string
+    {
+        return str_replace(' ', '', ucwords(str_replace(['_', '-'], ' ', $value)));
     }
 
     /**
@@ -186,6 +203,12 @@ abstract class Model
      */
     public function setAttribute(string $key, mixed $value): void
     {
+        $mutator = 'set' . static::studly($key) . 'Attribute';
+        if (method_exists($this, $mutator)) {
+            // Mutators write to $this->attributes themselves (e.g. hash a password).
+            $this->{$mutator}($value);
+            return;
+        }
         $this->attributes[$key] = $value;
     }
 
@@ -227,7 +250,7 @@ abstract class Model
     /**
      * Create a new model from an array of attributes (skips fillable).
      */
-    protected static function newFromBuilder(array $attributes): static
+    public static function newFromBuilder(array $attributes): static
     {
         $instance = new static;
         $instance->attributes = $attributes;
@@ -273,7 +296,7 @@ abstract class Model
     {
         $model = static::find($id);
         if (!$model) {
-            throw new \RuntimeException(static::class . " with ID [{$id}] not found.");
+            throw new \Papastro\Http\Exception\NotFoundException(class_basename_of(static::class) . " [{$id}] not found.");
         }
         return $model;
     }
@@ -448,5 +471,10 @@ abstract class Model
     public function __isset(string $name): bool
     {
         return isset($this->attributes[$name]);
+    }
+
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
     }
 }

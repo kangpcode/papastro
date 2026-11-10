@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.2.0
+ *  Papastro Framework v3.0.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -158,39 +158,45 @@ if (!function_exists('request')) {
 }
 
 if (!function_exists('session')) {
-    function session(?string $key = null, mixed $default = null): mixed
+    /**
+     * Access the current request session (set up by StartSession middleware).
+     * session()            → Session instance
+     * session('key')       → get
+     * session(['k' => 'v'])→ put
+     */
+    function session(string|array|null $key = null, mixed $default = null): mixed
     {
-        if (!isset($_SESSION)) {
-            session_start();
+        $app = \Papastro\Foundation\Application::getInstance();
+        if (!$app->bound('session')) {
+            $store = new \Papastro\Session\Session(storage_path('sessions'));
+            $store->start();
+            $app->instance('session', $store);
+            $app->instance(\Papastro\Session\Session::class, $store);
         }
+        $session = $app->make('session');
 
         if ($key === null) {
-            return $_SESSION;
+            return $session;
         }
-
-        return $_SESSION[$key] ?? $default;
+        if (is_array($key)) {
+            $session->put($key);
+            return null;
+        }
+        return $session->get($key, $default);
     }
 }
 
 if (!function_exists('csrf_token')) {
     function csrf_token(): string
     {
-        if (!isset($_SESSION)) {
-            session_start();
-        }
-
-        if (empty($_SESSION['_token'])) {
-            $_SESSION['_token'] = bin2hex(random_bytes(32));
-        }
-
-        return $_SESSION['_token'];
+        return session()->token();
     }
 }
 
 if (!function_exists('csrf_field')) {
     function csrf_field(): string
     {
-        return '<input type="hidden" name="_token" value="' . htmlspecialchars(csrf_token()) . '">';
+        return '<input type="hidden" name="_token" value="' . e(csrf_token()) . '">';
     }
 }
 
@@ -243,25 +249,92 @@ if (!function_exists('event')) {
 }
 
 if (!function_exists('flash')) {
+    /**
+     * flash()           → pull all flash data
+     * flash('k')        → pull one value
+     * flash('k', 'v')   → flash a value for the next request
+     */
     function flash(?string $key = null, mixed $value = null): mixed
     {
-        if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
-            @session_start();
-        }
-
+        $session = session();
         if ($key === null) {
-            $flashes = $_SESSION['_flash'] ?? [];
-            $_SESSION['_flash'] = [];
-            return $flashes;
+            return $session->pullAllFlash();
         }
-
         if ($value === null) {
-            $msg = $_SESSION['_flash'][$key] ?? null;
-            unset($_SESSION['_flash'][$key]);
-            return $msg;
+            return $session->pullFlash($key);
         }
-
-        $_SESSION['_flash'][$key] = $value;
+        $session->flash($key, $value);
         return $value;
+    }
+}
+
+if (!function_exists('cache')) {
+    function cache(?string $key = null, mixed $default = null): mixed
+    {
+        $cache = app(\Papastro\Cache\CacheManager::class);
+        return $key === null ? $cache : $cache->get($key, $default);
+    }
+}
+
+if (!function_exists('logger')) {
+    function logger(?string $message = null, array $context = []): mixed
+    {
+        $log = app(\Papastro\Log\Logger::class);
+        if ($message === null) {
+            return $log;
+        }
+        $log->debug($message, $context);
+        return null;
+    }
+}
+
+if (!function_exists('value')) {
+    function value(mixed $value, mixed ...$args): mixed
+    {
+        return $value instanceof \Closure ? $value(...$args) : $value;
+    }
+}
+
+if (!function_exists('dispatch')) {
+    function dispatch(object $job, string $queue = 'default'): string
+    {
+        return app(\Papastro\Queue\QueueManager::class)->dispatch($job, $queue);
+    }
+}
+
+if (!function_exists('broadcast')) {
+    /**
+     * Broadcast a realtime event over Pasway (WebSocket/SSE).
+     * broadcast('orders', 'order.shipped', ['id' => 1]);
+     */
+    function broadcast(string|array $channels, string $event, array $data = []): bool
+    {
+        return app(\Papastro\Pasway\Pasway::class)->broadcast($channels, $event, $data);
+    }
+}
+
+if (!function_exists('go')) {
+    /**
+     * Spawn a Pastroutine (lightweight cooperative concurrent task).
+     */
+    function go(callable $task, mixed ...$args): \Papastro\Pastroutine\Pastroutine
+    {
+        return \Papastro\Pastroutine\Scheduler::current()->go($task, ...$args);
+    }
+}
+
+if (!function_exists('old')) {
+    function old(string $key, mixed $default = null): mixed
+    {
+        $old = session()->get('_old_input', []);
+        return $old[$key] ?? $default;
+    }
+}
+
+if (!function_exists('errors')) {
+    function errors(?string $key = null): mixed
+    {
+        $errors = session()->get('_errors', []);
+        return $key === null ? $errors : ($errors[$key] ?? []);
     }
 }
