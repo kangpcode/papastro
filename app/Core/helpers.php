@@ -309,7 +309,7 @@ if (!function_exists('broadcast')) {
      */
     function broadcast(string|array $channels, string $event, array $data = []): bool
     {
-        return app(\Papastro\Pasway\Pasway::class)->broadcast($channels, $event, $data);
+        return \Papastro\Pasway\Pasway::broadcast($channels, $event, $data);
     }
 }
 

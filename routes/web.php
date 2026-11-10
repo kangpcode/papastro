@@ -27,3 +27,11 @@ Route::get('/', function () {
 Route::get('/offline', function () {
     return view('offline');
 })->name('offline');
+
+/*
+|--------------------------------------------------------------------------
+| Pasway Realtime Routes
+|--------------------------------------------------------------------------
+*/
+Route::post('/pasway/auth', [\Papastro\Pasway\AuthController::class, 'authenticate'])->name('pasway.auth');
+Route::get('/pasway/sse', [\Papastro\Pasway\AuthController::class, 'sse'])->name('pasway.sse');
