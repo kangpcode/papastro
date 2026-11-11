@@ -15,7 +15,7 @@ $version = PAPASTRO_VERSION;
         <div style="margin-bottom: 24px;">
             <img src="/assets/img/logo-landscape.png" alt="Papastro Framework Logo" width="320" style="max-width: 100%; height: auto;">
         </div>
-        <div class="hero-badge">🚀 Now Available — v{{ $version }}</div>
+        <div class="hero-badge"><pascon:rocket size="16" class="inline-icon" style="vertical-align: middle; margin-right: 6px;" /> Now Available — v{{ $version }}</div>
         <h1 class="hero-title">
             Build Faster with<br>
             <span class="gradient-text">Papastro Framework</span>
@@ -25,7 +25,7 @@ $version = PAPASTRO_VERSION;
             Modular Monolith. Zero-JS by default. PWA-ready. SEO-first.
         </p>
         <div class="hero-actions">
-            <a href="/blog" class="btn btn-primary btn-lg">Read the Blog →</a>
+            <a href="/blog" class="btn btn-primary btn-lg">Read the Blog <pascon:arrow-right size="18" style="vertical-align: middle; margin-left: 4px;" /></a>
             <a href="https://github.com/kangpcode/papastro" class="btn btn-outline btn-lg">
                 GitHub
             </a>
@@ -42,32 +42,32 @@ cd my-app && php papastro dev</code></pre>
         <h2 class="section-title">Everything You Need</h2>
         <div class="features-grid">
             <div class="feature-card">
-                <div class="feature-icon">🏝️</div>
+                <div class="feature-icon"><pascon:island size="32" /></div>
                 <h3>Island Architecture</h3>
                 <p>Pages render in PHP, interactive islands hydrate selectively — load, idle, or visible.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon">📦</div>
+                <div class="feature-icon"><pascon:package size="32" /></div>
                 <h3>Modular Monolith</h3>
                 <p>Domain-driven modules, each with its own MVC + Routes + Islands + Pages.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon">🔍</div>
+                <div class="feature-icon"><pascon:search size="32" /></div>
                 <h3>SEO-First</h3>
                 <p>SSR by default, auto sitemap, Open Graph, Twitter Card, and JSON-LD helpers.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon">📱</div>
+                <div class="feature-icon"><pascon:mobile size="32" /></div>
                 <h3>PWA Ready</h3>
                 <p>Service worker, manifest.json, and offline caching generated with one command.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon">🛠️</div>
+                <div class="feature-icon"><pascon:wrench size="32" /></div>
                 <h3>Powerful CLI</h3>
                 <p>30+ commands for modules, generators, migrations, debug, and optimization.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon">🐛</div>
+                <div class="feature-icon"><pascon:bug size="32" /></div>
                 <h3>Debug Experience</h3>
                 <p>Debugbar with N+1 detection + Next.js-style dev overlay for errors.</p>
             </div>

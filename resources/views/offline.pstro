@@ -10,12 +10,12 @@ $pageTitle = 'Offline';
 @section('content')
 <div class="offline-page">
     <div class="container">
-        <div class="offline-icon">📡</div>
+        <div class="offline-icon"><pascon:antenna size="64" /></div>
         <h1>You're Offline</h1>
         <p>It looks like you've lost your internet connection.<br>
         Please check your connection and try again.</p>
         <button class="btn btn-primary" onclick="window.location.reload()">
-            Try Again
+            <pascon:refresh size="18" style="vertical-align: middle; margin-right: 6px;" /> Try Again
         </button>
     </div>
 </div>
