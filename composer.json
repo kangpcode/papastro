@@ -40,6 +40,15 @@
             "Tests\\": "tests/"
         }
     },
+    "extra": {
+        "branch-alias": {
+            "dev-main": "3.0.x-dev"
+        }
+    },
+    "support": {
+        "issues": "https://github.com/kangpcode/papastro/issues",
+        "source": "https://github.com/kangpcode/papastro"
+    },
     "config": {
         "optimize-autoloader": true,
         "sort-packages": true

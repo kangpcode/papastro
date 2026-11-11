@@ -3,20 +3,24 @@
         'name' => 'kangpcode/papastro',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '5215ccfe4950461b36cc099c94a048ba427b8f58',
+        'reference' => 'dfcec983f3cd4b575b1cc81477300009a3046e90',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
-        'aliases' => array(),
+        'aliases' => array(
+            0 => '3.0.x-dev',
+        ),
         'dev' => true,
     ),
     'versions' => array(
         'kangpcode/papastro' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '5215ccfe4950461b36cc099c94a048ba427b8f58',
+            'reference' => 'dfcec983f3cd4b575b1cc81477300009a3046e90',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
-            'aliases' => array(),
+            'aliases' => array(
+                0 => '3.0.x-dev',
+            ),
             'dev_requirement' => false,
         ),
         'myclabs/deep-copy' => array(
