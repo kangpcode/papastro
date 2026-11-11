@@ -375,6 +375,22 @@ class Request
     }
 
     /**
+     * Determine if the request wants JSON (alias for expectsJson()).
+     */
+    public function wantsJson(): bool
+    {
+        return $this->expectsJson();
+    }
+
+    /**
+     * Determine if the request is sending JSON.
+     */
+    public function isJson(): bool
+    {
+        return str_contains((string) $this->header('Content-Type', ''), 'application/json');
+    }
+
+    /**
      * Determine if the request is a specific HTTP method.
      */
     public function isMethod(string $method): bool
