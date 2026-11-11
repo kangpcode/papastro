@@ -41,7 +41,7 @@ class MaintenanceModeTest extends TestCase
     public function test_normal_requests_pass_when_maintenance_is_disabled(): void
     {
         $middleware = new PreventRequestsDuringMaintenance();
-        $request = new Request([], [], [], [], [], ['REQUEST_URI' => '/health']);
+        $request = Request::create('/health', 'GET');
 
         $response = $middleware->handle($request, function ($req) {
             return Response::make('OK', 200);
@@ -60,8 +60,7 @@ class MaintenanceModeTest extends TestCase
         ]));
 
         $middleware = new PreventRequestsDuringMaintenance();
-        $request = new Request([], [], [], [], [], [
-            'REQUEST_URI' => '/dashboard',
+        $request = Request::create('/dashboard', 'GET', [], [], [], [
             'HTTP_ACCEPT' => 'application/json',
         ]);
 
@@ -86,9 +85,7 @@ class MaintenanceModeTest extends TestCase
         $middleware = new PreventRequestsDuringMaintenance();
         $cookieHash = hash('sha256', $secret);
 
-        $request = new Request([], [], [], ['papastro_maintenance_bypass' => $cookieHash], [], [
-            'REQUEST_URI' => '/admin',
-        ]);
+        $request = Request::create('/admin', 'GET', [], ['papastro_maintenance_bypass' => $cookieHash]);
 
         $response = $middleware->handle($request, function ($req) {
             return Response::make('Authorized Admin Access', 200);
@@ -107,8 +104,7 @@ class MaintenanceModeTest extends TestCase
         ]));
 
         $middleware = new PreventRequestsDuringMaintenance();
-        $request = new Request([], [], [], [], [], [
-            'REQUEST_URI' => '/api/test',
+        $request = Request::create('/api/test', 'GET', [], [], [], [
             'HTTP_X_MAINTENANCE_SECRET' => $secret,
         ]);
 

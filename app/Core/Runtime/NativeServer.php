@@ -285,7 +285,8 @@ class NativeServer
                 $serverParams[$serverKey] = $hv;
             }
 
-            $request = new Request($queryParams, $parsedBody, [], $cookies, [], $serverParams, $body);
+            $request = new Request($method, $path, $queryParams, $parsedBody, $serverParams, [], $cookies, $headers);
+            $request->setRawBody($body);
             $this->app->instance('request', $request);
 
             try {

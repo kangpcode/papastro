@@ -32,7 +32,12 @@ if (!function_exists('app')) {
 if (!function_exists('config')) {
     function config(?string $key = null, mixed $default = null): mixed
     {
-        $repo = app('config');
+        $app = \Papastro\Foundation\Application::getInstance();
+        if ($app === null || !$app->resolved('config')) {
+            return $default;
+        }
+
+        $repo = $app->make('config');
 
         if ($key === null) {
             return $repo;

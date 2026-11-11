@@ -96,16 +96,20 @@ class SwooleServer
             }
 
             $rawBody = (string) $swooleReq->rawContent();
+            $method = (string) ($swooleReq->server['request_method'] ?? 'GET');
+            $path = (string) ($swooleReq->server['request_uri'] ?? '/');
 
             $request = new Request(
+                $method,
+                $path,
                 $swooleReq->get ?? [],
                 $swooleReq->post ?? [],
-                [],
-                $swooleReq->cookie ?? [],
-                $swooleReq->files ?? [],
                 $serverParams,
-                $rawBody
+                $swooleReq->files ?? [],
+                $swooleReq->cookie ?? [],
+                $headers
             );
+            $request->setRawBody($rawBody);
 
             $this->app->instance('request', $request);
 

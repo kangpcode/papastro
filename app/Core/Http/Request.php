@@ -116,6 +116,47 @@ class Request
     }
 
     /**
+     * Create a new Request instance for the given URI and parameters.
+     */
+    public static function create(
+        string $uri = '/',
+        string $method = 'GET',
+        array $parameters = [],
+        array $cookies = [],
+        array $files = [],
+        array $server = [],
+        ?string $content = null
+    ): static {
+        $parsed = parse_url($uri);
+        $path = $parsed['path'] ?? '/';
+        $queryString = $parsed['query'] ?? '';
+        parse_str($queryString, $queryParams);
+
+        $isPost = in_array(strtoupper($method), ['POST', 'PUT', 'PATCH', 'DELETE'], true);
+        $query = $isPost ? $queryParams : array_merge($queryParams, $parameters);
+        $data = $isPost ? $parameters : [];
+
+        $headers = static::extractHeaders($server);
+
+        $request = new static(
+            $method,
+            $path,
+            $query,
+            $data,
+            $server,
+            $files,
+            $cookies,
+            $headers
+        );
+
+        if ($content !== null) {
+            $request->setRawBody($content);
+        }
+
+        return $request;
+    }
+
+    /**
      * Create a new request from the PHP superglobals.
      */
     public static function capture(): static
@@ -175,6 +216,14 @@ class Request
      * Get the request path.
      */
     public function path(): string
+    {
+        return $this->path;
+    }
+
+    /**
+     * Get the request path (alias for path()).
+     */
+    public function getPath(): string
     {
         return $this->path;
     }

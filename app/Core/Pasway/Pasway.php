@@ -144,10 +144,16 @@ class Pasway
      */
     public static function getAppKey(): string
     {
+        $envKey = getenv('PASWAY_APP_KEY') ?: ($_ENV['PASWAY_APP_KEY'] ?? null);
+        if ($envKey) {
+            return (string) $envKey;
+        }
+
         if (function_exists('config')) {
             return (string) config('pasway.app_key', 'papastro-realtime-key');
         }
-        return (string) (getenv('PASWAY_APP_KEY') ?: 'papastro-realtime-key');
+
+        return 'papastro-realtime-key';
     }
 
     /**
@@ -155,10 +161,29 @@ class Pasway
      */
     public static function getAppSecret(): string
     {
+        $envSecret = getenv('PASWAY_APP_SECRET') ?: ($_ENV['PASWAY_APP_SECRET'] ?? null);
+        if ($envSecret) {
+            return (string) $envSecret;
+        }
+
         if (function_exists('config')) {
             return (string) config('pasway.app_secret', 'papastro-realtime-secret');
         }
-        return (string) (getenv('PASWAY_APP_SECRET') ?: 'papastro-realtime-secret');
+
+        return 'papastro-realtime-secret';
+    }
+
+    /**
+     * Get the absolute path to the SSE events cache file.
+     */
+    public static function getSseFilePath(): string
+    {
+        $app = \Papastro\Foundation\Application::getInstance();
+        if ($app !== null) {
+            return $app->storagePath('framework/pasway/sse_events.json');
+        }
+
+        return dirname(__DIR__, 3) . '/storage/framework/pasway/sse_events.json';
     }
 
     /**
@@ -166,10 +191,7 @@ class Pasway
      */
     protected static function recordSseEvent(array $payload): void
     {
-        $sseFile = function_exists('storage_path')
-            ? storage_path('framework/pasway/sse_events.json')
-            : dirname(__DIR__, 2) . '/storage/framework/pasway/sse_events.json';
-
+        $sseFile = self::getSseFilePath();
         $dir = dirname($sseFile);
         if (!is_dir($dir)) {
             @mkdir($dir, 0755, true);
@@ -195,10 +217,7 @@ class Pasway
      */
     public static function getSseEvents(array $channels, float $since = 0): array
     {
-        $sseFile = function_exists('storage_path')
-            ? storage_path('framework/pasway/sse_events.json')
-            : dirname(__DIR__, 2) . '/storage/framework/pasway/sse_events.json';
-
+        $sseFile = self::getSseFilePath();
         if (!is_file($sseFile)) {
             return [];
         }

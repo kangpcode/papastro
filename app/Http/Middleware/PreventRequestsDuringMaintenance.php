@@ -25,9 +25,10 @@ class PreventRequestsDuringMaintenance
      */
     public function handle(Request $request, Closure $next): mixed
     {
-        $downFile = function_exists('storage_path')
-            ? storage_path('framework/down')
-            : dirname(__DIR__, 2) . '/storage/framework/down';
+        $app = \Papastro\Foundation\Application::getInstance();
+        $downFile = $app !== null
+            ? $app->storagePath('framework/down')
+            : dirname(__DIR__, 3) . '/storage/framework/down';
 
         if (!file_exists($downFile)) {
             return $next($request);
