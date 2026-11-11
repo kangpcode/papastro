@@ -27,3 +27,4 @@ Harap sertakan:
 3. Usulan perbaikan kode jika ada.
 
 Kami akan merespons dalam waktu 1x24 jam dan merilis patch keamanan secepatnya.
+
