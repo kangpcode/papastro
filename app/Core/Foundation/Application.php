@@ -67,9 +67,7 @@ class Application extends Container
      */
     public function __construct(string $basePath = '')
     {
-        if ($basePath) {
-            $this->setBasePath($basePath);
-        }
+        $this->setBasePath($basePath ?: dirname(__DIR__, 3));
 
         $this->registerBaseBindings();
         $this->registerBaseServiceProviders();
