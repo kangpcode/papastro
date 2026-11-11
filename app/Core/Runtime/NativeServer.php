@@ -314,27 +314,40 @@ class NativeServer
             }
 
             // Send cookies
-            foreach ($response->getCookies() as $cookie) {
-                $out .= "Set-Cookie: {$cookie['name']}=" . urlencode($cookie['value']);
-                if (!empty($cookie['expires'])) {
-                    $out .= "; Expires=" . gmdate('D, d M Y H:i:s T', $cookie['expires']);
+            if (method_exists($response, 'cookieHeaderLines')) {
+                foreach ($response->cookieHeaderLines() as $line) {
+                    $out .= "Set-Cookie: {$line}\r\n";
                 }
-                if (!empty($cookie['path'])) {
-                    $out .= "; Path={$cookie['path']}";
+            } else {
+                foreach ($response->getCookies() as $cKey => $cookie) {
+                    $cName = $cookie['name'] ?? (is_string($cKey) ? $cKey : '');
+                    if ($cName === '') {
+                        continue;
+                    }
+                    $out .= "Set-Cookie: " . rawurlencode($cName) . "=" . rawurlencode($cookie['value'] ?? '');
+                    if (!empty($cookie['expires'])) {
+                        $out .= "; Expires=" . gmdate('D, d M Y H:i:s T', $cookie['expires']);
+                    } elseif (!empty($cookie['minutes'])) {
+                        $out .= "; Expires=" . gmdate('D, d M Y H:i:s', time() + $cookie['minutes'] * 60) . " GMT";
+                        $out .= "; Max-Age=" . ($cookie['minutes'] * 60);
+                    }
+                    if (!empty($cookie['path'])) {
+                        $out .= "; Path={$cookie['path']}";
+                    }
+                    if (!empty($cookie['domain'])) {
+                        $out .= "; Domain={$cookie['domain']}";
+                    }
+                    if (!empty($cookie['secure'])) {
+                        $out .= "; Secure";
+                    }
+                    if (!empty($cookie['httpOnly'])) {
+                        $out .= "; HttpOnly";
+                    }
+                    if (!empty($cookie['sameSite'])) {
+                        $out .= "; SameSite={$cookie['sameSite']}";
+                    }
+                    $out .= "\r\n";
                 }
-                if (!empty($cookie['domain'])) {
-                    $out .= "; Domain={$cookie['domain']}";
-                }
-                if (!empty($cookie['secure'])) {
-                    $out .= "; Secure";
-                }
-                if (!empty($cookie['httpOnly'])) {
-                    $out .= "; HttpOnly";
-                }
-                if (!empty($cookie['sameSite'])) {
-                    $out .= "; SameSite={$cookie['sameSite']}";
-                }
-                $out .= "\r\n";
             }
 
             $out .= "\r\n" . $responseBody;

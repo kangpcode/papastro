@@ -125,11 +125,16 @@ class SwooleServer
                 $swooleRes->header($name, $value);
             }
 
-            foreach ($response->getCookies() as $cookie) {
+            foreach ($response->getCookies() as $cKey => $cookie) {
+                $cName = $cookie['name'] ?? (is_string($cKey) ? $cKey : '');
+                if ($cName === '') {
+                    continue;
+                }
+                $expires = $cookie['expires'] ?? (isset($cookie['minutes']) ? time() + $cookie['minutes'] * 60 : 0);
                 $swooleRes->cookie(
-                    $cookie['name'],
-                    $cookie['value'],
-                    $cookie['expires'] ?? 0,
+                    $cName,
+                    $cookie['value'] ?? '',
+                    $expires,
                     $cookie['path'] ?? '/',
                     $cookie['domain'] ?? '',
                     $cookie['secure'] ?? false,
