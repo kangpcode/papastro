@@ -9,3 +9,4 @@
 [2026-11-10 16:48:24] local.ERROR: App\Modules\User\Models\User::findByEmail(): Argument #1 ($email) must be of type string, null given, called in /home/kangpcode/wwwsite/papastro/app/Modules/User/Http/Controllers/AuthController.php on line 33 {"file":"/home/kangpcode/wwwsite/papastro/app/Modules/User/Models/User.php","line":45}
 [2026-11-11 00:04:30] production.ERROR: Pastroutine #5 failed: boom
 [2026-11-11 00:04:43] production.ERROR: Pastroutine #5 failed: boom
+[2026-11-11 00:08:16] production.ERROR: Pastroutine #5 failed: boom
