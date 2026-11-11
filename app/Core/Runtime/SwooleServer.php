@@ -74,11 +74,11 @@ class SwooleServer
 
         $server->on('Start', function ($server) {
             echo "\033[32m";
-            echo "  ⚡ Papastro Swoole Coroutine Server (v3.0.0)\n";
+            echo "  [Swoole] Papastro Coroutine Server (v3.0.0)\n";
             echo "  @author kangpcode (Dhafa Nazula Permadi)\n";
             echo "\033[0m";
-            echo "  🚀 Listening on: http://{$this->host}:{$this->port}\n";
-            echo "  👷 Workers     : {$this->workers} Swoole coroutine workers\n";
+            echo "  - Listening on: http://{$this->host}:{$this->port}\n";
+            echo "  - Workers     : {$this->workers} Swoole coroutine workers\n";
             echo "  Press Ctrl+C to stop.\n\n";
 
             $pidFile = $this->app->storagePath('framework/runtime.pid');
