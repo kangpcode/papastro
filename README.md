@@ -92,6 +92,7 @@ Papastro dirancang untuk memberikan pengalaman pengembang (*Developer Experience
 
 ## Fitur Unggulan v3.0.0
 
+- **Ekstensi Resmi IDE (VS Code, Antigravity IDE & Cursor)**: Dukungan bahasa penuh untuk file `.pstro`, penyorotan sintaksis TextMate, auto-complete snippets, dan tema ikon file astronot resmi di [`extension-vscode/`](file:///home/kangpcode/wwwsite/papastro/extension-vscode).
 - **Auto-Update Non-Destructive**: Upgrade aman dari v1.2.0/v2.0.0 ke v3.0.0 tanpa merusak modul aplikasi atau data yang sudah dibuat.
 - **Pastroutine Concurrency Engine**: Menjalankan eksekusi konkuren ringan di PHP dengan channel pesan dan sinkronisasi thread-safe, dilengkapi fluent `catch()` dan `then()`.
 - **Octane-Style Persistent Runtime Server**: Menghilangkan bootstrap overhead PHP pada setiap request, dilengkapi `StateResetter` otomatis (anti memory-leak).
@@ -359,6 +360,14 @@ php papastro dev
 # atau server performa tinggi:
 php papastro runtime:start
 ```
+
+### Ekstensi Resmi IDE (VS Code, Antigravity IDE & Cursor)
+Untuk penyorotan sintaks file `.pstro`, auto-complete snippets, dan tema ikon file astronot resmi:
+```bash
+# Instal file .vsix langsung ke editor (VS Code / Antigravity)
+code --install-extension extension-vscode/papastro-vscode-3.0.0.vsix
+```
+*Atau di VS Code / Antigravity IDE: buka panel **Extensions** (`Ctrl+Shift+X`) → klik menu titik tiga (**...**) di sudut kanan atas → pilih **Install from VSIX...** → arahkan ke file `extension-vscode/papastro-vscode-3.0.0.vsix`.*
 
 ---
 
