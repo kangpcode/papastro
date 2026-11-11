@@ -155,7 +155,13 @@ if (!function_exists('abort')) {
 if (!function_exists('request')) {
     function request(?string $key = null, mixed $default = null): mixed
     {
-        $req = app('request');
+        $app = \Papastro\Foundation\Application::getInstance();
+        if (!$app->bound('request')) {
+            $req = \Papastro\Http\Request::capture();
+            $app->instance('request', $req);
+        } else {
+            $req = $app->make('request');
+        }
         if ($key === null)
             return $req;
         return $req->input($key, $default);

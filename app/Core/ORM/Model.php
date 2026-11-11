@@ -106,6 +106,14 @@ abstract class Model implements \JsonSerializable
     }
 
     /**
+     * Check if a database connection resolver has been set.
+     */
+    public static function hasConnectionResolver(): bool
+    {
+        return static::$resolver !== null || static::$resolvedConnection !== null;
+    }
+
+    /**
      * Get the database connection, resolving lazily if needed.
      */
     protected static function getConnection(): Connection

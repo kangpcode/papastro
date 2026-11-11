@@ -50,8 +50,12 @@ class PostController
             'excerpt' => 'nullable',
         ]);
 
-        $data['user_id']   = session('user_id') ?? 1;
-        $data['published'] = 0;
+        $data['user_id'] = session('user_id') ?? 1;
+        $isPublished = $request->input('published');
+        $data['published'] = ($isPublished === '1' || $isPublished === 1 || $isPublished === 'on') ? 1 : 0;
+        if ($data['published']) {
+            $data['published_at'] = date('Y-m-d H:i:s');
+        }
 
         $post = Post::create($data);
 
@@ -68,9 +72,17 @@ class PostController
     {
         $post = Post::findOrFail($id);
         $data = $request->validate([
-            'title' => 'required',
-            'body'  => 'required',
+            'title'   => 'required|min:3',
+            'body'    => 'required|min:10',
+            'excerpt' => 'nullable',
         ]);
+
+        $isPublished = $request->input('published');
+        $data['published'] = ($isPublished === '1' || $isPublished === 1 || $isPublished === 'on') ? 1 : 0;
+        if ($data['published'] && empty($post->published_at)) {
+            $data['published_at'] = date('Y-m-d H:i:s');
+        }
+
         $post->update($data);
         return redirect("/blog/{$post->slug}");
     }
