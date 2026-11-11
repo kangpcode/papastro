@@ -1,0 +1,76 @@
+name: Papastro CI & Release
+
+on:
+  push:
+    branches: [ "main" ]
+    tags: [ "v*" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    name: Test PHP ${{ matrix.php }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['8.2', '8.3']
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: pdo, sqlite3, pdo_sqlite, mbstring, json, pcntl, sockets
+          coverage: none
+
+      - name: Validate composer.json
+        run: composer validate --strict
+
+      - name: Install Dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Run PHPUnit Test Suite
+        run: php vendor/bin/phpunit
+
+      - name: Run Pastroutine Concurrency Test
+        run: php papastro pastroutine:test --count=1000
+
+      - name: Run Framework Upgrade Simulation
+        run: php papastro upgrade
+
+  release:
+    name: Build & Publish Release
+    needs: test
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Package VS Code Extension
+        run: |
+          cd extension-vscode
+          npx --yes @vscode/vsce package --no-git-tag-version
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            extension-vscode/*.vsix
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

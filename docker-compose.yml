@@ -1,0 +1,50 @@
+# ==============================================================================
+# Papastro Framework v3.0.0 Production Stack (Octane + Pasway + Queue)
+# @author kangpcode (Dhafa Nazula Permadi)
+# ==============================================================================
+
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: papastro_app
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - PASWAY_HOST=pasway
+      - PASWAY_PORT=8080
+    volumes:
+      - ./storage:/var/www/papastro/storage
+      - ./database:/var/www/papastro/database
+    depends_on:
+      - pasway
+
+  pasway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: papastro_pasway
+    restart: unless-stopped
+    command: ["php", "papastro", "pasway:start", "--port=8080", "--ipc=8081"]
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    volumes:
+      - ./storage:/var/www/papastro/storage
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: papastro_worker
+    restart: unless-stopped
+    command: ["php", "papastro", "queue:work", "--sleep=2", "--tries=3"]
+    volumes:
+      - ./storage:/var/www/papastro/storage
+      - ./database:/var/www/papastro/database

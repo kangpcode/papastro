@@ -87,9 +87,38 @@ Restart IDE setelah penyalinan.
 
 ```bash
 cd extension-vscode
-npx @vscode/vsce package
+npx --yes @vscode/vsce package --no-git-tag-version
 ```
 Perintah ini akan menghasilkan file `papastro-vscode-3.0.0.vsix`.
+
+---
+
+## Panduan Publikasi ke Marketplace Resmi
+
+### 1. Publikasi ke Visual Studio Marketplace (Microsoft)
+*Menyediakan ekstensi untuk pengguna VS Code di seluruh dunia:*
+
+1. Buat publisher `kangpcode` di [Marketplace Manage Portal](https://marketplace.visualstudio.com/manage).
+2. Buat Personal Access Token (PAT) di Azure DevOps (`Marketplace: Manage`).
+3. Jalankan publish via CLI:
+   ```bash
+   cd extension-vscode
+   npx --yes @vscode/vsce login kangpcode
+   npx --yes @vscode/vsce publish
+   ```
+   *Atau unggah langsung file `papastro-vscode-3.0.0.vsix` melalui tombol **New Extension → None (VSIX)** di portal.*
+
+### 2. Publikasi ke Open VSX Registry (Antigravity IDE, Cursor & VSCodium)
+*Menyediakan ekstensi untuk Google Antigravity IDE, Cursor, VSCodium, dan platform open-source:*
+
+1. Masuk ke [open-vsx.org](https://open-vsx.org) menggunakan akun GitHub Anda.
+2. Buat namespace `kangpcode` di menu profil Anda.
+3. Buat Access Token di menu **Settings → Access Tokens**.
+4. Terbitkan paket via CLI:
+   ```bash
+   cd extension-vscode
+   npx --yes ovsx publish papastro-vscode-3.0.0.vsix -p <TOKEN_OPENVSX_ANDA>
+   ```
 
 ---
 
