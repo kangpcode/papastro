@@ -1,1 +1,10 @@
 /AGENTS.md
+/vendor/
+/storage/cache/
+/storage/framework/down
+/storage/framework/*.pid
+/storage/framework/*.sock
+/storage/framework/pasway/
+/storage/logs/
+/.phpunit.cache/
+.env
