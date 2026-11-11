@@ -263,7 +263,7 @@ class Kernel
 </head>
 <body>
     <div class="header">
-        <h1>🌟 Papastro Framework — Unhandled Exception</h1>
+        <h1>Papastro Framework — Unhandled Exception</h1>
         <h2>{$message}</h2>
         <div class="class">{$class}</div>
     </div>

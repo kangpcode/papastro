@@ -67,6 +67,8 @@ class PreventRequestsDuringMaintenance
             ], 503, ['Retry-After' => (string) $retry]);
         }
 
+        $gearIcon = \Papastro\Pascon\Pascon::svg('gear', ['size' => 48, 'stroke-width' => '1.5', 'style' => 'margin-bottom: 12px; color: #38bdf8; display: inline-block;']);
+
         $html = <<<HTML
 <!DOCTYPE html>
 <html lang="en">
@@ -84,7 +86,8 @@ class PreventRequestsDuringMaintenance
 </head>
 <body>
     <div class="card">
-        <h1>⚙️ Under Maintenance</h1>
+        {$gearIcon}
+        <h1>Under Maintenance</h1>
         <p>{$message}</p>
         <div class="badge">Papastro Framework 3.0</div>
     </div>

@@ -74,14 +74,14 @@ class NativeServer
         $this->running = true;
 
         echo "\033[36m";
-        echo "  🚀 Papastro Octane-Style Runtime Server (v3.0.0)\n";
+        echo "  [Runtime] Papastro Octane Server (v3.0.0)\n";
         echo "  @author kangpcode (Dhafa Nazula Permadi)\n";
         echo "\033[0m";
-        echo "  ⚡ Host & Port : http://{$this->host}:{$this->port}\n";
-        echo "  👷 Workers     : {$this->workers} pre-forked workers\n";
-        echo "  🔄 Max Requests: {$this->maxRequests} reqs/worker\n";
-        echo "  👀 Hot Watch   : " . ($this->watch ? "\033[32mEnabled\033[0m" : "Disabled") . "\n";
-        echo "  Server PID     : " . getmypid() . "\n";
+        echo "  - Host & Port : http://{$this->host}:{$this->port}\n";
+        echo "  - Workers     : {$this->workers} pre-forked workers\n";
+        echo "  - Max Requests: {$this->maxRequests} reqs/worker\n";
+        echo "  - Hot Watch   : " . ($this->watch ? "\033[32mEnabled\033[0m" : "Disabled") . "\n";
+        echo "  - Server PID  : " . getmypid() . "\n";
         echo "  Press Ctrl+C to stop.\n\n";
 
         // Register master signal handlers
