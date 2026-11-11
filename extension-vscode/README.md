@@ -98,3 +98,4 @@ Perintah ini akan menghasilkan file `papastro-vscode-3.0.0.vsix`.
 - **Author**: kangpcode (Dhafa Nazula Permadi)
 - **License**: MIT License
 - **Framework Website**: [https://github.com/kangpcode/papastro](https://github.com/kangpcode/papastro)
+

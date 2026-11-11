@@ -14,3 +14,4 @@
 - **Code Snippets**: Quick templates for `.pstro` pages, layouts, islands, and directives.
 - **Language Configuration**: Auto-closing brackets, tag pairing, and code folding.
 - **Cross-IDE Compatibility**: Verified for VS Code, Google Antigravity IDE, Cursor, and VSCodium.
+
