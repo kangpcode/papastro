@@ -1,0 +1,130 @@
+{
+  "Papastro Page Template": {
+    "prefix": "pstro-page",
+    "body": [
+      "<!--",
+      "  Papastro Framework v3.0.0 — created by kangpcode (Dhafa Nazula Permadi)",
+      "  Free to use & extend. This watermark must remain in source code.",
+      "-->",
+      "---",
+      "// ${1:Page title & logic}",
+      "\\$title = '${2:Welcome}';",
+      "---",
+      "@layout('${3:layouts.base}')",
+      "",
+      "@section('content')",
+      "<div class=\"container\">",
+      "    <h1>{{ \\$title }}</h1>",
+      "    $0",
+      "</div>",
+      "@endsection"
+    ],
+    "description": "Scaffold a complete Papastro page template (.pstro)"
+  },
+  "Papastro PHP Frontmatter": {
+    "prefix": "pstro-frontmatter",
+    "body": [
+      "---",
+      "$0",
+      "---"
+    ],
+    "description": "Insert PHP frontmatter block"
+  },
+  "Papastro Layout": {
+    "prefix": "pstro-layout",
+    "body": [
+      "@layout('${1:layouts.base}')"
+    ],
+    "description": "Inherit master layout"
+  },
+  "Papastro Section": {
+    "prefix": "pstro-section",
+    "body": [
+      "@section('${1:content}')",
+      "    $0",
+      "@endsection"
+    ],
+    "description": "Define a template section"
+  },
+  "Papastro Yield": {
+    "prefix": "pstro-yield",
+    "body": [
+      "@yield('${1:content}')"
+    ],
+    "description": "Yield layout section"
+  },
+  "Papastro Island Load": {
+    "prefix": "pstro-island-load",
+    "body": [
+      "<island:load component=\"${1:Module/Component}\" $0 />"
+    ],
+    "description": "Papastro Island hydrated on page load"
+  },
+  "Papastro Island Visible": {
+    "prefix": "pstro-island-visible",
+    "body": [
+      "<island:visible component=\"${1:Module/Component}\" $0 />"
+    ],
+    "description": "Papastro Island hydrated when scrolled into viewport"
+  },
+  "Papastro Island Idle": {
+    "prefix": "pstro-island-idle",
+    "body": [
+      "<island:idle component=\"${1:Module/Component}\" $0 />"
+    ],
+    "description": "Papastro Island hydrated when browser is idle"
+  },
+  "Astro-style Island Component": {
+    "prefix": "pstro-component",
+    "body": [
+      "<${1:Counter} client:${2|visible,load,idle,media,only|} $0 />"
+    ],
+    "description": "Astro-style hydrated Island component"
+  },
+  "Papastro If": {
+    "prefix": "pstro-if",
+    "body": [
+      "@if (${1:\\$condition})",
+      "    $0",
+      "@endif"
+    ],
+    "description": "Conditional if directive"
+  },
+  "Papastro Foreach": {
+    "prefix": "pstro-foreach",
+    "body": [
+      "@foreach (${1:\\$items} as ${2:\\$item})",
+      "    $0",
+      "@endforeach"
+    ],
+    "description": "Foreach loop directive"
+  },
+  "Papastro Echo Escaped": {
+    "prefix": "pstro-echo",
+    "body": [
+      "{{ ${1:\\$var} }}"
+    ],
+    "description": "Escaped HTML output"
+  },
+  "Papastro Echo Raw": {
+    "prefix": "pstro-raw",
+    "body": [
+      "{!! ${1:\\$var} !!}"
+    ],
+    "description": "Raw unescaped HTML output"
+  },
+  "Papastro CSRF Token": {
+    "prefix": "pstro-csrf",
+    "body": [
+      "@csrf"
+    ],
+    "description": "Inject CSRF token hidden input"
+  },
+  "Papastro Method Field": {
+    "prefix": "pstro-method",
+    "body": [
+      "@method('${1|PUT,PATCH,DELETE|}')"
+    ],
+    "description": "HTTP method spoofing input"
+  }
+}

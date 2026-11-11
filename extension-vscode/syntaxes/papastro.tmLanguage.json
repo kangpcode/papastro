@@ -1,0 +1,345 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Papastro",
+  "scopeName": "text.html.papastro",
+  "fileTypes": ["pstro"],
+  "patterns": [
+    {
+      "include": "#frontmatter"
+    },
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#directives"
+    },
+    {
+      "include": "#echos"
+    },
+    {
+      "include": "#islands"
+    },
+    {
+      "include": "#html-tags"
+    },
+    {
+      "include": "text.html.basic"
+    }
+  ],
+  "repository": {
+    "frontmatter": {
+      "begin": "^---\\s*$",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.frontmatter.begin.papastro keyword.operator.frontmatter.papastro"
+        }
+      },
+      "end": "^---\\s*$",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.frontmatter.end.papastro keyword.operator.frontmatter.papastro"
+        }
+      },
+      "name": "meta.embedded.block.frontmatter.php",
+      "patterns": [
+        {
+          "include": "source.php"
+        }
+      ]
+    },
+    "comments": {
+      "patterns": [
+        {
+          "begin": "<!--",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.comment.html"
+            }
+          },
+          "end": "-->",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.comment.html"
+            }
+          },
+          "name": "comment.block.html"
+        },
+        {
+          "begin": "\\{\\{--",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.comment.papastro"
+            }
+          },
+          "end": "--\\}\\}",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.comment.papastro"
+            }
+          },
+          "name": "comment.block.papastro"
+        }
+      ]
+    },
+    "echos": {
+      "patterns": [
+        {
+          "begin": "\\{!!",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.section.embedded.begin.papastro punctuation.definition.tag.papastro"
+            }
+          },
+          "end": "!!\\}",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.section.embedded.end.papastro punctuation.definition.tag.papastro"
+            }
+          },
+          "name": "meta.embedded.expression.raw.papastro",
+          "patterns": [
+            {
+              "include": "source.php"
+            }
+          ]
+        },
+        {
+          "begin": "\\{\\{\\{",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.section.embedded.begin.papastro"
+            }
+          },
+          "end": "\\}\\}\\}",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.section.embedded.end.papastro"
+            }
+          },
+          "name": "meta.embedded.expression.raw.papastro",
+          "patterns": [
+            {
+              "include": "source.php"
+            }
+          ]
+        },
+        {
+          "begin": "\\{\\{",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.section.embedded.begin.papastro punctuation.definition.tag.papastro"
+            }
+          },
+          "end": "\\}\\}",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.section.embedded.end.papastro punctuation.definition.tag.papastro"
+            }
+          },
+          "name": "meta.embedded.expression.escaped.papastro",
+          "patterns": [
+            {
+              "include": "source.php"
+            }
+          ]
+        }
+      ]
+    },
+    "directives": {
+      "patterns": [
+        {
+          "match": "@(layout|section|yield|include)\\b",
+          "name": "keyword.control.directive.layout.papastro"
+        },
+        {
+          "match": "@(endsection|show|overwrite|stop)\\b",
+          "name": "keyword.control.directive.layout.papastro"
+        },
+        {
+          "match": "@(if|elseif|else|endif|unless|endunless|isset|endisset|empty|endempty)\\b",
+          "name": "keyword.control.directive.conditional.papastro"
+        },
+        {
+          "match": "@(foreach|endforeach|forelse|endforelse|for|endfor|while|endwhile|continue|break)\\b",
+          "name": "keyword.control.directive.loop.papastro"
+        },
+        {
+          "match": "@(auth|endauth|guest|endguest|can|cannot|elsecan|elsecannot|endcan|endcannot)\\b",
+          "name": "keyword.control.directive.auth.papastro"
+        },
+        {
+          "match": "@(csrf|method|vite|livewire|island)\\b",
+          "name": "keyword.control.directive.security.papastro"
+        },
+        {
+          "match": "@(verbatim|endverbatim|php|endphp)\\b",
+          "name": "keyword.control.directive.special.papastro"
+        },
+        {
+          "match": "@[a-zA-Z0-9_]+\\b",
+          "name": "keyword.control.directive.custom.papastro"
+        }
+      ]
+    },
+    "islands": {
+      "patterns": [
+        {
+          "begin": "(<)(island:(load|idle|visible))\\b",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.definition.tag.begin.html"
+            },
+            "2": {
+              "name": "entity.name.tag.island.papastro support.class.component.papastro"
+            }
+          },
+          "end": "(/>|>)",
+          "endCaptures": {
+            "1": {
+              "name": "punctuation.definition.tag.end.html"
+            }
+          },
+          "name": "meta.tag.island.papastro",
+          "patterns": [
+            {
+              "include": "#island-attributes"
+            }
+          ]
+        },
+        {
+          "begin": "(<)([A-Z][a-zA-Z0-9_]*)\\b(?=[^>]*\\bclient:(load|idle|visible|media|only))",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.definition.tag.begin.html"
+            },
+            "2": {
+              "name": "entity.name.tag.component.papastro support.class.component.papastro"
+            }
+          },
+          "end": "(/>|>)",
+          "endCaptures": {
+            "1": {
+              "name": "punctuation.definition.tag.end.html"
+            }
+          },
+          "name": "meta.tag.astro-island.papastro",
+          "patterns": [
+            {
+              "include": "#island-attributes"
+            }
+          ]
+        }
+      ]
+    },
+    "island-attributes": {
+      "patterns": [
+        {
+          "match": "\\b(client:(load|idle|visible|media|only))\\b",
+          "name": "entity.other.attribute-name.island-client.papastro keyword.operator.hydration.papastro"
+        },
+        {
+          "match": "\\b(:[a-zA-Z0-9_-]+)\\b",
+          "name": "entity.other.attribute-name.island-prop.papastro variable.parameter.island.papastro"
+        },
+        {
+          "match": "\\b([a-zA-Z0-9_-]+)\\b",
+          "name": "entity.other.attribute-name.html"
+        },
+        {
+          "begin": "=\"",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.separator.key-value.html"
+            }
+          },
+          "end": "\"",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.end.html"
+            }
+          },
+          "name": "string.quoted.double.html",
+          "patterns": [
+            {
+              "include": "#echos"
+            }
+          ]
+        },
+        {
+          "begin": "='",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.separator.key-value.html"
+            }
+          },
+          "end": "'",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.end.html"
+            }
+          },
+          "name": "string.quoted.single.html",
+          "patterns": [
+            {
+              "include": "#echos"
+            }
+          ]
+        }
+      ]
+    },
+    "html-tags": {
+      "patterns": [
+        {
+          "begin": "(<)(style)\\b",
+          "beginCaptures": {
+            "1": { "name": "punctuation.definition.tag.begin.html" },
+            "2": { "name": "entity.name.tag.html" }
+          },
+          "end": "(</)(style)(>)",
+          "endCaptures": {
+            "1": { "name": "punctuation.definition.tag.begin.html" },
+            "2": { "name": "entity.name.tag.html" },
+            "3": { "name": "punctuation.definition.tag.end.html" }
+          },
+          "patterns": [
+            {
+              "begin": ">",
+              "beginCaptures": { "0": { "name": "punctuation.definition.tag.end.html" } },
+              "end": "(?=</style>)",
+              "name": "source.css",
+              "patterns": [{ "include": "source.css" }]
+            },
+            {
+              "include": "text.html.basic#attribute"
+            }
+          ]
+        },
+        {
+          "begin": "(<)(script)\\b",
+          "beginCaptures": {
+            "1": { "name": "punctuation.definition.tag.begin.html" },
+            "2": { "name": "entity.name.tag.html" }
+          },
+          "end": "(</)(script)(>)",
+          "endCaptures": {
+            "1": { "name": "punctuation.definition.tag.begin.html" },
+            "2": { "name": "entity.name.tag.html" },
+            "3": { "name": "punctuation.definition.tag.end.html" }
+          },
+          "patterns": [
+            {
+              "begin": ">",
+              "beginCaptures": { "0": { "name": "punctuation.definition.tag.end.html" } },
+              "end": "(?=</script>)",
+              "name": "source.js",
+              "patterns": [{ "include": "source.js" }]
+            },
+            {
+              "include": "text.html.basic#attribute"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

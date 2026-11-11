@@ -1,0 +1,28 @@
+{
+  "iconDefinitions": {
+    "_papastro": {
+      "iconPath": "./papastro.svg"
+    },
+    "_papastro_config": {
+      "iconPath": "./papastro-config.svg"
+    },
+    "_papastro_cli": {
+      "iconPath": "./papastro.svg"
+    }
+  },
+  "file": "_papastro",
+  "fileExtensions": {
+    "pstro": "_papastro"
+  },
+  "fileNames": {
+    "papastro": "_papastro_cli",
+    "papastro.php": "_papastro",
+    "papastro.config.js": "_papastro_config",
+    "papastro.config.ts": "_papastro_config",
+    "pasway.php": "_papastro",
+    "pasway.js": "_papastro"
+  },
+  "languageIds": {
+    "papastro": "_papastro"
+  }
+}
