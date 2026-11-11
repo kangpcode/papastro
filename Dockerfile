@@ -55,3 +55,4 @@ EXPOSE 8000 8080 8081
 
 # Default: Start Papastro Octane High-Concurrency Server
 CMD ["php", "papastro", "runtime:start", "--host=0.0.0.0", "--port=8000", "--workers=4"]
+

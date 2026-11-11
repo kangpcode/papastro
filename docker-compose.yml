@@ -48,3 +48,4 @@ services:
     volumes:
       - ./storage:/var/www/papastro/storage
       - ./database:/var/www/papastro/database
+

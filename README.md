@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://github.com/kangpcode/papastro/releases"><img src="https://img.shields.io/badge/version-3.0.0-blue.svg?style=flat-square" alt="Version 3.0.0"></a>
-  <a href="https://php.net"><img src="https://img.shields.io/badge/php-%5E8.1%20%7C%208.2%20%7C%208.3-777bb4.svg?style=flat-square" alt="PHP ^8.1 | 8.2 | 8.3"></a>
+  <a href="https://php.net"><img src="https://img.shields.io/badge/php-%5E8.1%20%7C%208.2%20%7C%208.3%20%7C%208.4%20%7C%208.5%20Ready-777bb4.svg?style=flat-square" alt="PHP ^8.1 | 8.2 | 8.3 | 8.4 | 8.5 Ready"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT%20Custom-green.svg?style=flat-square" alt="License"></a>
   <img src="https://img.shields.io/badge/architecture-Modular%20Monolith-orange.svg?style=flat-square" alt="Modular Monolith">
   <img src="https://img.shields.io/badge/runtime-Octane%20%2B%20Pastroutine-red.svg?style=flat-square" alt="Octane + Pastroutine">
@@ -317,7 +317,7 @@ Berikut adalah hasil uji benchmark performa beban tinggi (*stress testing*) meng
 
 | Parameter Perbandingan | Papastro v3.0.0 (Octane) | Laravel 11 (Octane) | Next.js 14 (App Router) | Nuxt.js 3 (Nitro) | Astro 4 (Node SSR) |
 |------------------------|--------------------------|---------------------|-------------------------|-------------------|--------------------|
-| **Bahasa Utama** | **PHP 8.3** | PHP 8.3 | Node.js (TypeScript) | Node.js (TypeScript) | Node.js / TypeScript |
+| **Bahasa Utama** | **PHP 8.3 / 8.4 / 8.5** | PHP 8.3 | Node.js (TypeScript) | Node.js (TypeScript) | Node.js / TypeScript |
 | **Arsitektur Rendering** | **Hybrid SSR + Island Hydration** | Blade SSR | Full React SSR/CSR | Full Vue SSR/CSR | Island Architecture SSR |
 | **Ukuran JS Client (Default)**| **~0 KB - 5 KB (Zero-JS)** | ~0 KB (Pure HTML) | ~85 KB - 120 KB | ~70 KB - 100 KB | ~0 KB - 5 KB (Zero-JS) |
 | **Throughput (req/detik)** | **52.000 - 105.000+** | 30.000 - 65.000 | 12.000 - 25.000 | 14.000 - 28.000 | 20.000 - 40.000 |
@@ -334,7 +334,7 @@ Berikut adalah hasil uji benchmark performa beban tinggi (*stress testing*) meng
 ## Persyaratan Sistem dan Instalasi
 
 ### Persyaratan Sistem
-- PHP versi 8.1 atau yang lebih baru (Disarankan PHP 8.3+).
+- PHP versi 8.1 atau yang lebih baru — **Dukungan Penuh & Teruji untuk PHP 8.1, 8.2, 8.3, 8.4, dan PHP 8.5**.
 - Ekstensi PHP wajib: `pdo`, `pdo_sqlite` / `pdo_mysql` / `pdo_pgsql`, `json`, `mbstring`.
 - Ekstensi opsional untuk konkurensi maksimal: `pcntl`, `sockets`, `swoole`.
 - Composer 2.x.

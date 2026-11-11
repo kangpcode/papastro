@@ -100,6 +100,11 @@ License: Free to use & modify. Watermark must remain in source code.
   - Added primary icon logo (`art/logo-icon.png`) and landscape banner logo (`art/logo-landscape.png`).
   - Integrated brand assets into welcome landing page, base layout, and repository documentation.
 
+#### 6. PHP 8.4 & PHP 8.5 Enterprise Compatibility
+- **Explicit Type Declarations**: 100% compliant with PHP 8.4 deprecation rules regarding implicit nullable parameters (`?Type $param = null` used everywhere).
+- **Zero Dynamic Property Warnings**: Fully declared class properties across all core subsystems (`Application`, `Container`, `Model`, `Request`, `Response`, `Router`, `Scheduler`, `Pastroutine`).
+- **Multi-Version CI Matrix**: Automated GitHub Actions workflow testing on PHP 8.1, 8.2, 8.3, 8.4, and PHP 8.5.
+
 ### Fixed
 - **Pastroutine Error Isolation**:
   - Handled errors via `->catch()` or `->wait()` no longer produce false-alarm error logs in `storage/logs/papastro.log`.
