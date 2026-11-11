@@ -42,8 +42,12 @@ class User extends Model
     /**
      * Find a user by email.
      */
-    public static function findByEmail(string $email): ?static
+    public static function findByEmail(?string $email): ?static
     {
+        if (empty($email)) {
+            return null;
+        }
+
         $row = static::query()->where('email', $email)->first();
         return $row ? static::newFromBuilder($row) : null;
     }

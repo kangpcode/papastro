@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v1.2.0
+ *  Papastro Framework v3.0.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -106,6 +106,11 @@ class Kernel
             'dev' => Commands\DevServerCommand::class,
             'serve' => Commands\ServeCommand::class,
             'build' => Commands\BuildCommand::class,
+
+            // Framework Upgrade & Concurrency Test
+            'upgrade' => Commands\UpgradeCommand::class,
+            'update' => Commands\UpgradeCommand::class,
+            'pastroutine:test' => Commands\PastroutineTestCommand::class,
         ];
     }
 
@@ -170,7 +175,8 @@ class Kernel
             'SEO & PWA' => ['seo:sitemap', 'pwa:generate', 'pwa:precache'],
             'Debug' => ['debug:route', 'debug:island', 'debug:clear'],
             'Cache & Optimize' => ['cache:clear', 'optimize', 'route:cache', 'route:list'],
-            'App' => ['key:generate'],
+            'Concurrency & Engine' => ['pastroutine:test'],
+            'App & Maintenance' => ['key:generate', 'upgrade'],
         ];
 
         foreach ($groups as $group => $cmds) {

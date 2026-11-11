@@ -7,6 +7,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/assets/img/logo-icon.png">
     {!! app(\Papastro\SEO\SeoManager::class)->render() !!}
     {!! \Papastro\SEO\SeoManager::pwaHead() !!}
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,7 +20,7 @@
     <nav class="navbar">
         <div class="container navbar-inner">
             <a href="/" class="navbar-brand">
-                <span class="brand-icon">🌟</span>
+                <img src="/assets/img/logo-icon.png" alt="Papastro Logo" height="32" class="brand-logo" style="vertical-align: middle; margin-right: 8px;">
                 <span>{{ config('app.name', 'Papastro') }}</span>
             </a>
             <div class="navbar-links">
@@ -36,7 +37,7 @@
 
     <footer class="footer">
         <div class="container">
-            <p>Built with <span class="brand-icon">🌟</span> Papastro Framework &middot; &copy; {{ date('Y') }}</p>
+            <p>Built with <img src="/assets/img/logo-icon.png" alt="Papastro" height="18" style="vertical-align: middle; margin: 0 4px;"> Papastro Framework &middot; &copy; {{ date('Y') }}</p>
         </div>
     </footer>
 

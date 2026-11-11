@@ -12,6 +12,9 @@ $version = PAPASTRO_VERSION;
 @section('content')
 <div class="hero">
     <div class="container hero-inner">
+        <div style="margin-bottom: 24px;">
+            <img src="/assets/img/logo-landscape.png" alt="Papastro Framework Logo" width="320" style="max-width: 100%; height: auto;">
+        </div>
         <div class="hero-badge">🚀 Now Available — v{{ $version }}</div>
         <h1 class="hero-title">
             Build Faster with<br>

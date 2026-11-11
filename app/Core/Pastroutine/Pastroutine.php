@@ -47,6 +47,11 @@ final class Pastroutine implements Waitable
     private ?Throwable $error = null;
     private mixed $resumeValue = null;
     private bool $started = false;
+    private bool $handled = false;
+    /** @var callable|null */
+    private $errorHandler = null;
+    /** @var callable|null */
+    private $successHandler = null;
     /** @var Waitable[] */
     private array $joiners = [];
 
@@ -140,6 +145,7 @@ final class Pastroutine implements Waitable
             $this->joiners[] = $waiter = $this->scheduler->currentWaiter();
             $this->scheduler->park($waiter);
         }
+        $this->handled = true;
         if ($this->error) {
             throw $this->error;
         }
@@ -153,6 +159,7 @@ final class Pastroutine implements Waitable
 
     public function error(): ?Throwable
     {
+        $this->handled = true;
         return $this->error;
     }
 
@@ -164,6 +171,35 @@ final class Pastroutine implements Waitable
     public function isFinished(): bool
     {
         return $this->status === self::DONE || $this->status === self::FAILED;
+    }
+
+    public function isHandled(): bool
+    {
+        return $this->handled || !empty($this->joiners) || $this->errorHandler !== null;
+    }
+
+    /** Register an error callback if the pastroutine throws an exception. */
+    public function catch(callable $callback): self
+    {
+        $this->errorHandler = $callback;
+        $this->handled = true;
+        if ($this->status === self::FAILED && $this->error !== null) {
+            ($this->errorHandler)($this->error);
+        }
+        return $this;
+    }
+
+    /** Register a success callback, with optional error fallback. */
+    public function then(callable $onSuccess, ?callable $onFailure = null): self
+    {
+        $this->successHandler = $onSuccess;
+        if ($onFailure !== null) {
+            $this->catch($onFailure);
+        }
+        if ($this->status === self::DONE) {
+            ($this->successHandler)($this->result);
+        }
+        return $this;
     }
 
     // ------------------------------------------------------------------
@@ -192,6 +228,10 @@ final class Pastroutine implements Waitable
         } catch (Throwable $e) {
             $this->error = $e;
             $this->status = self::FAILED;
+            if ($this->errorHandler !== null) {
+                $this->handled = true;
+                ($this->errorHandler)($e);
+            }
             $this->releaseJoiners();
             return null;
         }
@@ -199,6 +239,9 @@ final class Pastroutine implements Waitable
         if ($this->fiber->isTerminated()) {
             $this->result = $this->fiber->getReturn();
             $this->status = self::DONE;
+            if ($this->successHandler !== null) {
+                ($this->successHandler)($this->result);
+            }
             $this->releaseJoiners();
             return null;
         }

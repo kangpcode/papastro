@@ -202,7 +202,11 @@ final class Scheduler
 
     private function reportFailure(Pastroutine $p): void
     {
-        // A failure is "handled" if someone joined it; otherwise surface it from run()/log it.
+        // A failure is handled if someone joined it or attached an error handler.
+        if ($p->isHandled()) {
+            return;
+        }
+
         $e = $p->error();
         $this->unhandled[] = $e;
         if (count($this->unhandled) > 100) {
@@ -210,7 +214,7 @@ final class Scheduler
         }
         if (function_exists('app') && \Papastro\Foundation\Application::getInstance()->bound(\Papastro\Log\Logger::class)) {
             \Papastro\Foundation\Application::getInstance()->make(\Papastro\Log\Logger::class)
-                ->error('Pastroutine #' . $p->id . ' failed: ' . $e->getMessage());
+                ->error('Pastroutine #' . $p->id . ' unhandled error: ' . $e->getMessage());
         }
     }
 

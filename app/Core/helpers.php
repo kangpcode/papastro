@@ -344,3 +344,24 @@ if (!function_exists('errors')) {
         return $key === null ? $errors : ($errors[$key] ?? []);
     }
 }
+
+if (!function_exists('bcrypt')) {
+    function bcrypt(string $value, array $options = []): string
+    {
+        return \Papastro\Security\Hash::make($value, $options);
+    }
+}
+
+if (!function_exists('encrypt')) {
+    function encrypt(mixed $value, bool $serialize = true): string
+    {
+        return app(\Papastro\Security\Encrypter::class)->encrypt($value, $serialize);
+    }
+}
+
+if (!function_exists('decrypt')) {
+    function decrypt(string $payload, bool $unserialize = true): mixed
+    {
+        return app(\Papastro\Security\Encrypter::class)->decrypt($payload, $unserialize);
+    }
+}

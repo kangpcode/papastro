@@ -174,4 +174,33 @@ final class PastroutineTest extends TestCase
         $this->expectExceptionMessage('exploded');
         Pastroutine::parallel([fn () => throw new \LogicException('exploded')]);
     }
+
+    public function test_catch_handles_exception(): void
+    {
+        $caught = null;
+        $p = pastroutine(function () {
+            throw new \RuntimeException('handled error');
+        })->catch(function (\Throwable $e) use (&$caught) {
+            $caught = $e->getMessage();
+        });
+
+        Pastroutine::run();
+        $this->assertSame('handled error', $caught);
+        $this->assertSame(Pastroutine::FAILED, $p->status());
+        $this->assertTrue($p->isHandled());
+    }
+
+    public function test_then_handles_success(): void
+    {
+        $value = null;
+        $p = pastroutine(function () {
+            return 'success value';
+        })->then(function ($res) use (&$value) {
+            $value = $res;
+        });
+
+        $this->assertSame('success value', $p->wait());
+        $this->assertSame('success value', $value);
+        $this->assertSame(Pastroutine::DONE, $p->status());
+    }
 }
