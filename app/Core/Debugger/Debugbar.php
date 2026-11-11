@@ -115,7 +115,7 @@ class Debugbar
 <link rel="stylesheet" href="/papastro-debugbar.css">
 <div id="papastro-debugbar" class="pdb">
     <div class="pdb-bar">
-        <span class="pdb-brand">🌟 Papastro</span>
+        <span class="pdb-brand"><img src="/assets/img/logo-landscape.png" alt="Papastro" height="20"></span>
         <span class="pdb-tab pdb-tab--active" data-tab="queries">
             Queries <span class="pdb-badge">{$queryCount}</span> {$n1Warning}
             <span class="pdb-time">{$queryTime}ms</span>

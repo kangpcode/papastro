@@ -44,6 +44,18 @@
     margin-right: 16px;
     white-space: nowrap;
     letter-spacing: 0.05em;
+    display: inline-flex;
+    align-items: center;
+}
+
+.pdb-brand img {
+    height: 20px;
+    max-height: 20px;
+    width: auto;
+    vertical-align: middle;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2px 6px;
+    border-radius: 4px;
 }
 
 .pdb-tab {
