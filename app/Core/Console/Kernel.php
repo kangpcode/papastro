@@ -158,7 +158,7 @@ class Kernel
     protected function showHelp(): void
     {
         $this->output("", 'default');
-        $this->output("  🌟  Papastro Framework " . Application::VERSION, 'purple');
+        $this->output("  Papastro Framework " . Application::VERSION, 'purple');
         $this->output("  Hybrid PHP + Astro-style Modular Monolith Framework", 'gray');
         $this->output("  @author kangpcode (Dhafa Nazula Permadi)", 'gray');
         $this->output("", 'default');

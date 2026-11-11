@@ -82,11 +82,11 @@ class Server
         $this->running = true;
 
         echo "\033[35m";
-        echo "  ⚡ Pasway Realtime WebSocket Server (v3.0.0)\n";
+        echo "  [Pasway] Realtime WebSocket Server (v3.0.0)\n";
         echo "  @author kangpcode (Dhafa Nazula Permadi)\n";
         echo "\033[0m";
-        echo "  📡 WebSocket Listening on : ws://{$this->host}:{$this->port}\n";
-        echo "  🔗 Broadcast IPC Listening: tcp://127.0.0.1:{$this->ipcPort}\n";
+        echo "  - WebSocket Listening on : ws://{$this->host}:{$this->port}\n";
+        echo "  - Broadcast IPC Listening: tcp://127.0.0.1:{$this->ipcPort}\n";
         echo "  Press Ctrl+C to stop.\n\n";
 
         $this->registerSignalHandlers();

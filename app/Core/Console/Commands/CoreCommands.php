@@ -360,7 +360,7 @@ class DevServerCommand extends Command
         $port = $this->option($args, 'port', '8000');
 
         $this->newLine();
-        $this->line("  🌟  Papastro Framework " . \Papastro\Foundation\Application::VERSION, 'purple');
+        $this->line("  Papastro Framework " . \Papastro\Foundation\Application::VERSION, 'purple');
         $this->newLine();
         $this->success("Development server started!");
         $this->info("  Local:   http://{$host}:{$port}");
@@ -786,7 +786,7 @@ class UpgradeCommand extends Command
     public function execute(array $args): int
     {
         $this->newLine();
-        $this->line("  🌟  Papastro Framework Auto-Updater & Migrator", 'purple');
+        $this->line("  Papastro Framework Auto-Updater & Migrator", 'purple');
         $this->line("  Safe Core Synchronization Engine (Non-Destructive)", 'gray');
         $this->newLine();
 
@@ -878,7 +878,7 @@ class PastroutineTestCommand extends Command
     public function execute(array $args): int
     {
         $this->newLine();
-        $this->line("  ⚡  Pastroutine Concurrency Self-Test & Benchmark", 'purple');
+        $this->line("  Pastroutine Concurrency Self-Test & Benchmark", 'purple');
         $this->line("  High-Performance Cooperative Coroutines (Go-style CSP)", 'gray');
         $this->newLine();
 

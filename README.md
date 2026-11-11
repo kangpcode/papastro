@@ -500,7 +500,7 @@ stdout_logfile=/var/www/papastro/storage/logs/pasway.log
 ## Dokumentasi Lengkap CLI (papastro)
 
 ```bash
-  🌟  Papastro Framework 3.0.0
+  Papastro Framework 3.0.0
   Hybrid PHP + Astro-style Modular Monolith Framework
   @author kangpcode (Dhafa Nazula Permadi)
 
