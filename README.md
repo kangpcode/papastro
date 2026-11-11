@@ -1,34 +1,80 @@
+<p align="center">
+  <a href="https://github.com/kangpcode/papastro" target="_blank">
+    <img src="art/logo-landscape.png" width="460" alt="Papastro Framework Logo">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/kangpcode/papastro/releases"><img src="https://img.shields.io/badge/version-3.0.0-blue.svg?style=flat-square" alt="Version 3.0.0"></a>
+  <a href="https://php.net"><img src="https://img.shields.io/badge/php-%5E8.1%20%7C%208.2%20%7C%208.3-777bb4.svg?style=flat-square" alt="PHP ^8.1 | 8.2 | 8.3"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT%20Custom-green.svg?style=flat-square" alt="License"></a>
+  <img src="https://img.shields.io/badge/architecture-Modular%20Monolith-orange.svg?style=flat-square" alt="Modular Monolith">
+  <img src="https://img.shields.io/badge/runtime-Octane%20%2B%20Pastroutine-red.svg?style=flat-square" alt="Octane + Pastroutine">
+  <img src="https://img.shields.io/badge/production-ready-brightgreen.svg?style=flat-square" alt="Production Ready">
+</p>
+
 # Papastro Framework v3.0.0
 
-> **Papastro Framework** adalah framework web hybrid berskala tinggi yang menggabungkan keandalan **Backend PHP (bergaya Laravel)** dengan efisiensi **Frontend Modern (bergaya Astro Island Architecture)** dalam arsitektur **Modular Monolith Scalable**, dilengkapi dengan engine konkurensi **Pastroutine** (Go-style Coroutine), runtime ultra-cepat **Octane Server**, dan sistem realtime **Pasway** (Echo/Pusher-compatible).
+> **Papastro Framework** adalah framework web hybrid berskala tinggi yang menggabungkan keandalan **Backend PHP (bergaya Laravel)** dengan efisiensi **Frontend Modern (bergaya Astro Island Architecture)** dalam arsitektur **Modular Monolith Scalable**, dilengkapi dengan engine konkurensi **Pastroutine** (Go-style Coroutine), runtime ultra-cepat **Octane Server**, sistem realtime **Pasway** (Echo/Pusher-compatible), dan engine **Auto-Update Non-Destructive** yang aman untuk upgrade dari versi sebelumnya (v1.2.0/v2.0.0).
 
 - **Pembuat:** kangpcode (Dhafa Nazula Permadi)
 - **Versi Framework:** 3.0.0 (Latest Stable Release)
+- **Status Produksi:** Siap Produksi (Enterprise-grade High-Concurrency)
 - **Lisensi:** Bebas digunakan dan dikembangkan — watermark kepemilikan wajib dipertahankan pada kode sumber.
 
 ---
 
 ## Daftar Isi
 
-1. [Visi dan Konsep Utama](#visi-dan-konsep-utama)
-2. [Fitur Unggulan v3.0.0](#fitur-unggulan-v300)
-3. [Pastroutine — Go-style Concurrency](#pastroutine--go-style-concurrency)
-4. [High-Concurrency Octane Runtime Server](#high-concurrency-octane-runtime-server)
-5. [Pasway — Realtime WebSocket & SSE Broadcaster](#pasway--realtime-websocket--sse-broadcaster)
-6. [Benchmark dan Perbandingan Framework](#benchmark-dan-perbandingan-framework)
-7. [Persyaratan Sistem dan Instalasi](#persyaratan-sistem-dan-instalasi)
-8. [Struktur Direktori Proyek](#struktur-direktori-proyek)
-9. [Arsitektur Modular Monolith](#arsitektur-modular-monolith)
-10. [Island Architecture dan Hydration Engine](#island-architecture-dan-hydration-engine)
-11. [Router Engine](#router-engine)
-12. [Active Record ORM dan Migrasi](#active-record-orm-dan-migrasi)
-13. [Queue dan Background Jobs](#queue-dan-background-jobs)
-14. [Security, Enkripsi dan Rate Limiting](#security-enkripsi-dan-rate-limiting)
-15. [Optimasi SEO dan Structured Data](#optimasi-seo-dan-structured-data)
-16. [Progressive Web App (PWA) Engine](#progressive-web-app-pwa-engine)
-17. [Debugger dan Dev Overlay](#debugger-dan-dev-overlay)
-18. [Dokumentasi Lengkap CLI (papastro)](#dokumentasi-lengkap-cli-papastro)
-19. [Lisensi dan Watermark Kepemilikan](#lisensi-dan-watermark-kepemilikan)
+1. [Brand & Identitas Visual](#brand--identitas-visual)
+2. [Visi dan Konsep Utama](#visi-dan-konsep-utama)
+3. [Fitur Unggulan v3.0.0](#fitur-unggulan-v300)
+4. [Auto-Update & Migrasi Versi Aman (Non-Destructive)](#auto-update--migrasi-versi-aman-non-destructive)
+5. [Pastroutine — Go-style Concurrency](#pastroutine--go-style-concurrency)
+6. [High-Concurrency Octane Runtime Server](#high-concurrency-octane-runtime-server)
+7. [Pasway — Realtime WebSocket & SSE Broadcaster](#pasway--realtime-websocket--sse-broadcaster)
+8. [Benchmark dan Perbandingan Framework](#benchmark-dan-perbandingan-framework)
+9. [Persyaratan Sistem dan Instalasi](#persyaratan-sistem-dan-instalasi)
+10. [Panduan Distribusi & Siap Produksi (Production Ready)](#panduan-distribusi--siap-produksi-production-ready)
+11. [Struktur Direktori Proyek](#struktur-direktori-proyek)
+12. [Arsitektur Modular Monolith](#arsitektur-modular-monolith)
+13. [Island Architecture dan Hydration Engine](#island-architecture-dan-hydration-engine)
+14. [Router Engine](#router-engine)
+15. [Active Record ORM dan Migrasi](#active-record-orm-dan-migrasi)
+16. [Queue dan Background Jobs](#queue-dan-background-jobs)
+17. [Security, Enkripsi dan Rate Limiting](#security-enkripsi-dan-rate-limiting)
+18. [Optimasi SEO dan Structured Data](#optimasi-seo-dan-structured-data)
+19. [Progressive Web App (PWA) Engine](#progressive-web-app-pwa-engine)
+20. [Debugger dan Dev Overlay](#debugger-dan-dev-overlay)
+21. [Dokumentasi Lengkap CLI (papastro)](#dokumentasi-lengkap-cli-papastro)
+22. [Lisensi dan Watermark Kepemilikan](#lisensi-dan-watermark-kepemilikan)
+
+---
+
+## Brand & Identitas Visual
+
+Papastro Framework hadir dengan identitas visual resmi:
+
+<p align="center">
+  <table align="center" style="border: none;">
+    <tr>
+      <td align="center" style="padding: 20px; border: none;">
+        <img src="art/logo-icon.png" width="130" alt="Logo Utama / Icon Papastro"><br>
+        <b>Logo Utama (Icon / Mark)</b><br>
+        <code>art/logo-icon.png</code>
+      </td>
+      <td align="center" style="padding: 20px; border: none;">
+        <img src="art/logo-landscape.png" width="360" alt="Logo Landscape Papastro"><br>
+        <b>Logo Landscape (Header / Banner)</b><br>
+        <code>art/logo-landscape.png</code>
+      </td>
+    </tr>
+  </table>
+</p>
+
+Aset logo juga tersedia di direktori web publik untuk digunakan pada aplikasi Anda:
+- `public/assets/img/logo-icon.png` (Favicon / Icon brand)
+- `public/assets/img/logo-landscape.png` (Navbar / Hero banner)
 
 ---
 
@@ -46,7 +92,8 @@ Papastro dirancang untuk memberikan pengalaman pengembang (*Developer Experience
 
 ## Fitur Unggulan v3.0.0
 
-- **Pastroutine Concurrency Engine**: Menjalankan eksekusi konkuren ringan di PHP dengan channel pesan dan sinkronisasi thread-safe.
+- **Auto-Update Non-Destructive**: Upgrade aman dari v1.2.0/v2.0.0 ke v3.0.0 tanpa merusak modul aplikasi atau data yang sudah dibuat.
+- **Pastroutine Concurrency Engine**: Menjalankan eksekusi konkuren ringan di PHP dengan channel pesan dan sinkronisasi thread-safe, dilengkapi fluent `catch()` dan `then()`.
 - **Octane-Style Persistent Runtime Server**: Menghilangkan bootstrap overhead PHP pada setiap request, dilengkapi `StateResetter` otomatis (anti memory-leak).
 - **Pasway Realtime Engine**: Server WebSocket terintegrasi dengan protokol Pusher & Laravel Echo out-of-the-box.
 - **Modular Monolith Architecture**: Setiap domain aplikasi dipisahkan ke dalam modul independen yang memiliki MVC, Routes, Pages, dan Islands sendiri.
@@ -54,6 +101,32 @@ Papastro dirancang untuk memberikan pengalaman pengembang (*Developer Experience
 - **Background Queue System**: Driver Sync dan File queue, retry otomatis, pelacakan kegagalan, dan CLI daemon `queue:work`.
 - **Maintenance Mode**: Perintah `down` dan `up` dengan proteksi token bypass via URL, cookie, atau header HTTP.
 - **Enterprise Security**: Argon2id Hasher, AES-256 HMAC-authenticated Encrypter, sliding-window RateLimiter, dan CSRF guard.
+
+---
+
+## Auto-Update & Migrasi Versi Aman (Non-Destructive)
+
+Papastro v3.0.0 dilengkapi dengan engine pembaruan otomatis yang **non-destructive (tanpa merusak kode aplikasi pengguna)**. Ketika Anda atau pengguna lain memiliki proyek yang dibuat menggunakan **Papastro versi 1.2.0 atau di bawahnya**, Anda dapat langsung melakukan pembaruan ke versi terbaru dengan satu perintah:
+
+```bash
+php papastro upgrade
+# atau:
+php papastro update
+```
+
+### Jaminan Keamanan Kode Aplikasi Pengguna:
+1. **Modul Pengguna Terlindungi 100%**: Direktori `app/Modules/**` (seluruh controller, model, view, island, service bisnis yang sudah Anda buat) **TIDAK AKAN PERNAH** ditimpa atau dihapus.
+2. **Rute & Halaman Kustom Aman**: File rute `routes/web.php`, `routes/api.php`, dan template di `resources/**` dipertahankan sepenuhnya.
+3. **Konfigurasi Lingkungan & Basis Data Aman**: File `.env` beserta seluruh variabel environment, kredensial koneksi, dan data database SQLite/MySQL/PostgreSQL tidak akan diubah atau di-reset.
+4. **Sinkronisasi Inti Framework Otomatis**:
+   - File inti engine (`app/Core/**`) dan CLI `papastro` diperbarui ke engine v3.0.0 terbaru.
+   - Konfigurasi baru yang dibutuhkan (seperti `config/pasway.php`) akan dibuat otomatis jika belum ada, tanpa menyentuh konfigurasi lama.
+   - Aset client terbaru (`public/pasway.js`, logo resmi di `art/` dan `public/assets/img/`) disinkronkan otomatis.
+5. **Migrasi Otomatis & Rebuild Cache**:
+   - Memeriksa skema database dan menjalankan migrasi pending yang aman.
+   - Membersihkan dan mengompilasi ulang view cache (`storage/cache/views/**`).
+6. **Backward Compatibility Layer**:
+   - Kode aplikasi dari v1.0, v1.1, v1.2, maupun v2.0 tetap berjalan normal berkat layer kompatibilitas mundur (termasuk helper `bcrypt()`, `encrypt()`, `decrypt()`, session otomatis, dan parser directive template).
 
 ---
 
@@ -72,9 +145,25 @@ $routine = pastroutine(function () {
     return file_get_contents('https://api.example.com/data');
 });
 
+// Fluent Promise-style handling (Opsional)
+$routine->then(function ($data) {
+    logger('Task selesai dengan sukses');
+})->catch(function (Throwable $e) {
+    logger('Task gagal: ' . $e->getMessage());
+});
+
 // Tunggu hasil (blocking secara selektif saat dibutuhkan)
 $result = $routine->wait();
 ```
+
+### 2. Pengujian Kesehatan & Benchmark Konkurensi CLI
+
+Anda dapat menguji performa engine Pastroutine secara langsung di server Anda:
+
+```bash
+php papastro pastroutine:test --count=1000
+```
+Perintah ini akan mengeksekusi 1.000 coroutine konkuren, menguji channel FIFO, mutex thread-safe, dan waitgroup, serta memvalidasi bahwa tidak ada error sama sekali.
 
 ### 2. Channels (CSP Communication)
 

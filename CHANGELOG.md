@@ -85,6 +85,30 @@ License: Free to use & modify. Watermark must remain in source code.
 - `php papastro up`: Brings the application out of maintenance mode.
 - `PreventRequestsDuringMaintenance` middleware with bypass cookie, secret URL (`/{secret}`), and header (`X-Maintenance-Secret`) support.
 
+#### 5. Auto-Update & Migration Engine (`php papastro upgrade`)
+- **Non-Destructive Core Synchronizer**:
+  - Safe, automatic upgrade path for applications running on Papastro v1.0.0, v1.1.0, v1.2.0, or v2.0.0.
+  - Automatically synchronizes core framework components (`app/Core/`, CLI tools, runtime server scripts).
+  - **Zero Data Loss Guarantee**: Strictly isolates and preserves all user modules in `app/Modules/`, custom routes in `routes/`, custom views in `resources/`, database data, and `.env` credentials without overwriting any user modifications.
+  - Automatic migration runner and cache rebuilder.
+- **Backward Compatibility Layer**:
+  - Seamless support for legacy view directives and island tags.
+  - Added Laravel-style helper functions: `bcrypt($value)`, `encrypt($value)`, `decrypt($payload)`.
+- **Concurrency Health Self-Test**:
+  - `php papastro pastroutine:test`: Live benchmark and concurrency verification tool testing 1,000+ coroutines, channels, mutex, and waitgroups.
+- **Official Brand Assets**:
+  - Added primary icon logo (`art/logo-icon.png`) and landscape banner logo (`art/logo-landscape.png`).
+  - Integrated brand assets into welcome landing page, base layout, and repository documentation.
+
+### Fixed
+- **Pastroutine Error Isolation**:
+  - Handled errors via `->catch()` or `->wait()` no longer produce false-alarm error logs in `storage/logs/papastro.log`.
+  - Added fluent `->catch(callable $fn)` and `->then(callable $onSuccess, ?callable $onFailure)` API for promises-style concurrency handling.
+- **User Authentication Null Safety**:
+  - `User::findByEmail(?string $email)` now gracefully handles null or empty inputs without throwing `TypeError`.
+- **View Compiler Comments**:
+  - Compiler now properly parses frontmatter blocks preceded by HTML comments and whitespace.
+
 ---
 
 ## [2.0.0] - 2026-11-10 — *Enterprise Core Hardening & Security*
