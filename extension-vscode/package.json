@@ -14,6 +14,18 @@
     "type": "git",
     "url": "https://github.com/kangpcode/papastro.git"
   },
+  "bugs": {
+    "url": "https://github.com/kangpcode/papastro/issues"
+  },
+  "scripts": {
+    "package": "vsce package --no-git-tag-version",
+    "publish:vscode": "vsce publish",
+    "publish:openvsx": "ovsx publish papastro-vscode-3.0.0.vsix"
+  },
+  "galleryBanner": {
+    "color": "#08305b",
+    "theme": "dark"
+  },
   "license": "MIT",
   "icon": "icon.png",
   "engines": {
