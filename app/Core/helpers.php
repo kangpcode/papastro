@@ -365,3 +365,17 @@ if (!function_exists('decrypt')) {
         return app(\Papastro\Security\Encrypter::class)->decrypt($payload, $unserialize);
     }
 }
+
+if (!function_exists('pascon')) {
+    /**
+     * Render a Pascon native SVG icon.
+     *
+     * @param string $name
+     * @param array $attributes
+     * @return string
+     */
+    function pascon(string $name, array $attributes = []): string
+    {
+        return \Papastro\Pascon\Pascon::svg($name, $attributes);
+    }
+}

@@ -69,6 +69,7 @@ class Compiler
 
         // 2. Compile islands, echos, and directives
         $content = $this->compileIslands($content);
+        $content = $this->compilePascon($content);
         $content = $this->compileEchos($content);
         $content = $this->compileDirectives($content);
 
@@ -239,6 +240,22 @@ PHP;
 \\Papastro\\Island\\IslandRenderer::renderPlaceholder('{$id}', '{$escapedComponent}', '{$escapedStrategy}', \$__islandProps);
 ?>
 PHP;
+    }
+
+    /**
+     * Compile Pascon native SVG icon tags: <pascon:name attr="val" />
+     */
+    protected function compilePascon(string $content): string
+    {
+        return preg_replace_callback(
+            '/<pascon:([\w\-]+)([^>]*)\/?>/i',
+            function ($matches) {
+                $name = addslashes($matches[1]);
+                $attrs = addslashes($matches[2]);
+                return "<?php echo \\Papastro\\Pascon\\Pascon::renderTag('{$name}', '{$attrs}'); ?>";
+            },
+            $content
+        );
     }
 
     /**
