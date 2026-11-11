@@ -110,6 +110,7 @@ class Debugbar
         }
 
         $n1Warning = $n1Count > 0 ? "<span class=\"pdb-badge pdb-badge--danger\">{$n1Count} N+1</span>" : '';
+        $chevronIcon = \Papastro\Pascon\Pascon::svg('chevron-down', ['size' => 14, 'class' => 'pdb-icon']);
 
         return <<<HTML
 <link rel="stylesheet" href="/papastro-debugbar.css">
@@ -126,7 +127,7 @@ class Debugbar
         <span class="pdb-meta">
             {$renderTime}ms | {$memUsage}MB | PHP {$phpVersion}
         </span>
-        <button class="pdb-close" onclick="document.getElementById('papastro-debugbar').classList.toggle('pdb--minimized')">▼</button>
+        <button class="pdb-close" onclick="document.getElementById('papastro-debugbar').classList.toggle('pdb--minimized')" title="Toggle Debugbar">{$chevronIcon}</button>
     </div>
     <div class="pdb-panels">
         <div class="pdb-panel pdb-panel--active" id="pdb-queries">

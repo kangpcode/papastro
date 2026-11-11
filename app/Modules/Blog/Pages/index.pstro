@@ -20,8 +20,8 @@ $pageTitle = 'Blog';
 <div class="container">
     @if(empty($posts['data']))
         <div style="text-align: center; padding: 80px 0; color: var(--color-muted);">
-            <p style="font-size: 48px">📝</p>
-            <p style="margin-top: 16px; font-size: 18px;">No posts yet. <a href="/blog/create" style="color: var(--color-primary);">Write the first one →</a></p>
+            <div style="display: flex; justify-content: center; margin-bottom: 12px; color: var(--color-primary);"><pascon:document-text size="56" /></div>
+            <p style="margin-top: 16px; font-size: 18px;">No posts yet. <a href="/blog/create" style="color: var(--color-primary);">Write the first one <pascon:arrow-right size="16" style="vertical-align: middle; margin-left: 4px;" /></a></p>
         </div>
     @else
         <div class="posts-grid">
@@ -35,7 +35,7 @@ $pageTitle = 'Blog';
                     <p style="margin-top: 10px;">{{ $post->excerpt }}</p>
                     @endif
                     <div style="margin-top: 16px; color: var(--color-primary); font-size: 14px; font-weight: 600;">
-                        Read more →
+                        Read more <pascon:arrow-right size="14" style="vertical-align: middle; margin-left: 2px;" />
                     </div>
                 </a>
             @endforeach

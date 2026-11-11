@@ -13,7 +13,7 @@ $readTime = $post->getReadingTime();
     <div class="container" style="max-width: 760px;">
 
         <div style="margin-bottom: 32px;">
-            <a href="/blog" style="color: var(--color-muted); text-decoration: none; font-size: 14px;">← Back to Blog</a>
+            <a href="/blog" style="color: var(--color-muted); text-decoration: none; font-size: 14px;"><pascon:arrow-left size="14" style="vertical-align: middle; margin-right: 4px;" /> Back to Blog</a>
         </div>
 
         <header style="margin-bottom: 48px;">

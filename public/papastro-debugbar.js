@@ -50,7 +50,7 @@
         sessionStorage.setItem(key, isMin ? '' : 'minimized');
     });
 
-    console.log('%c🌟 Papastro Debugbar%c — Press Alt+D to toggle', 
+    console.log('%c[Papastro Debugbar]%c — Press Alt+D to toggle', 
         'color: #a5b4fc; font-weight: bold;', 
         'color: #64748b;');
 })();
