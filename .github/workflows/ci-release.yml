@@ -77,3 +77,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Publish to Open VSX Registry
+        if: env.OVSX_PAT != ''
+        run: |
+          cd extension-vscode
+          npx --yes ovsx publish *.vsix -p ${{ secrets.OVSX_PAT }}
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
+
