@@ -368,7 +368,13 @@ class DevServerCommand extends Command
         $this->newLine();
 
         $docRoot = $this->app->publicPath();
-        $cmd = "php -S {$host}:{$port} -t \"{$docRoot}\" \"{$docRoot}/index.php\"";
+        $baseDir = dirname($docRoot);
+        $serverScript = $baseDir . '/server.php';
+        if (file_exists($serverScript)) {
+            $cmd = "php -S {$host}:{$port} -t \"{$docRoot}\" \"{$serverScript}\"";
+        } else {
+            $cmd = "php -S {$host}:{$port} -t \"{$docRoot}\" \"{$docRoot}/index.php\"";
+        }
         passthru($cmd);
         return 0;
     }

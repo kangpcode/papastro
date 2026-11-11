@@ -12,6 +12,13 @@
 
 declare(strict_types=1);
 
+if (PHP_SAPI === 'cli-server') {
+    $uri = rawurldecode(parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?? '');
+    if ($uri !== '/' && file_exists(__DIR__ . $uri) && is_file(__DIR__ . $uri)) {
+        return false;
+    }
+}
+
 define('PAPASTRO_START', microtime(true));
 define('PAPASTRO_ROOT', dirname(__DIR__));
 define('PAPASTRO_VERSION', '3.0.0');
