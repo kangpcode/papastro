@@ -247,6 +247,12 @@ class NativeServer
             $parsedUrl = parse_url($target);
             $path = $parsedUrl['path'] ?? '/';
             $queryString = $parsedUrl['query'] ?? '';
+
+            // Fast static asset serving from public directory
+            if ($path !== '/' && $this->serveStaticFile($conn, $path)) {
+                @fclose($conn);
+                continue;
+            }
             parse_str($queryString, $queryParams);
 
             $parsedBody = [];
@@ -469,5 +475,76 @@ class NativeServer
         ];
 
         return $texts[$code] ?? 'Unknown';
+    }
+
+    /**
+     * Fast static asset serving directly from the public directory.
+     *
+     * @param resource $conn
+     * @param string $path
+     * @return bool True if static asset was served, false otherwise.
+     */
+    protected function serveStaticFile($conn, string $path): bool
+    {
+        $publicDir = realpath($this->app->publicPath());
+        if (!$publicDir) {
+            return false;
+        }
+
+        $decodedPath = rawurldecode($path);
+        $fullPath = realpath($publicDir . '/' . ltrim($decodedPath, '/'));
+
+        // Prevent directory traversal and ensure target is a readable regular file
+        if (
+            !$fullPath ||
+            !str_starts_with($fullPath, $publicDir) ||
+            !is_file($fullPath) ||
+            basename($fullPath) === 'index.php'
+        ) {
+            return false;
+        }
+
+        $ext = strtolower(pathinfo($fullPath, PATHINFO_EXTENSION));
+        $mimes = [
+            'css'   => 'text/css; charset=UTF-8',
+            'js'    => 'application/javascript; charset=UTF-8',
+            'mjs'   => 'application/javascript; charset=UTF-8',
+            'json'  => 'application/json; charset=UTF-8',
+            'png'   => 'image/png',
+            'jpg'   => 'image/jpeg',
+            'jpeg'  => 'image/jpeg',
+            'gif'   => 'image/gif',
+            'svg'   => 'image/svg+xml',
+            'webp'  => 'image/webp',
+            'ico'   => 'image/x-icon',
+            'woff'  => 'font/woff',
+            'woff2' => 'font/woff2',
+            'ttf'   => 'font/ttf',
+            'eot'   => 'application/vnd.ms-fontobject',
+            'xml'   => 'application/xml; charset=UTF-8',
+            'txt'   => 'text/plain; charset=UTF-8',
+            'html'  => 'text/html; charset=UTF-8',
+            'htm'   => 'text/html; charset=UTF-8',
+            'map'   => 'application/json',
+        ];
+
+        $mime = $mimes[$ext] ?? (function_exists('mime_content_type') ? @mime_content_type($fullPath) : 'application/octet-stream');
+        if (!$mime) {
+            $mime = 'application/octet-stream';
+        }
+
+        $content = file_get_contents($fullPath);
+        $len = strlen($content);
+
+        $out  = "HTTP/1.1 200 OK\r\n";
+        $out .= "Content-Type: {$mime}\r\n";
+        $out .= "Content-Length: {$len}\r\n";
+        $out .= "Connection: close\r\n";
+        $out .= "Cache-Control: public, max-age=86400\r\n";
+        $out .= "Server: Papastro-Octane/3.0.0\r\n\r\n";
+        $out .= $content;
+
+        @fwrite($conn, $out);
+        return true;
     }
 }

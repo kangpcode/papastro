@@ -68,6 +68,8 @@ class SwooleServer
             'package_max_length'       => 20 * 1024 * 1024,
             'reload_async'             => true,
             'max_wait_time'            => 10,
+            'enable_static_handler'    => true,
+            'document_root'            => $this->app->publicPath(),
         ]);
 
         $server->on('Start', function ($server) {

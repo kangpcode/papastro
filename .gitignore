@@ -6,5 +6,6 @@
 /storage/framework/*.sock
 /storage/framework/pasway/
 /storage/logs/
+/storage/sessions/
 /.phpunit.cache/
 .env
