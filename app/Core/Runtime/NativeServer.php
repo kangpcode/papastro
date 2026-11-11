@@ -494,6 +494,16 @@ class NativeServer
         $decodedPath = rawurldecode($path);
         $fullPath = realpath($publicDir . '/' . ltrim($decodedPath, '/'));
 
+        // If not directly found, check if it is a relative static asset from a subpath (e.g. /blog/icons/icon-192.png)
+        if (!$fullPath || !is_file($fullPath)) {
+            if (preg_match('#/(icons/.*|assets/.*|islands/.*|[^/]+\.(css|js|png|jpg|jpeg|gif|svg|webp|ico|json|woff2?|ttf|map))$#', $decodedPath, $matches)) {
+                $candidate = realpath($publicDir . '/' . $matches[1]);
+                if ($candidate && is_file($candidate) && str_starts_with($candidate, $publicDir)) {
+                    $fullPath = $candidate;
+                }
+            }
+        }
+
         // Prevent directory traversal and ensure target is a readable regular file
         if (
             !$fullPath ||
