@@ -173,7 +173,7 @@ HTML;
     window.Papastro = window.Papastro || {};
     window.Papastro.islands = islands;
     window.Papastro.loadIsland = loadIsland;
-    window.Papastro.version = '1.2.0';
+    window.Papastro.version = '3.0.0';
 
 })();
 </script>
