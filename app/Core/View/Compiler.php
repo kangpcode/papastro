@@ -343,6 +343,7 @@ PHP;
             'dd'      => '<?php var_dump$1; die(); ?>',
             'dump'    => '<?php var_dump$1; ?>',
             'method'  => '<?php echo method_field$1; ?>',
+            'pascon'  => '<?php echo pascon$1; ?>',
         ];
 
         // @forelse is rewritten manually (needs the iterable expression twice)
