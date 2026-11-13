@@ -20,9 +20,28 @@
   <a href="README.id.md">🇮🇩 Bahasa Indonesia</a>
 </p>
 
+<p align="center">
+  <img src="https://img.shields.io/badge/PHP%20Melawan-PHP%20Will%20Never%20Die-991b1b?style=for-the-badge&logo=php&logoColor=white" alt="PHP Melawan - PHP Will Never Die">
+  <img src="https://img.shields.io/badge/Tagline-PHP%20Tidak%20Akan%20Musnah%20Oleh%20Jaman-1e293b?style=for-the-badge" alt="PHP Tidak Akan Musnah Oleh Jaman">
+</p>
+
+<p align="center">
+  <h3>✊ <i>&ldquo;PHP Will Never Perish with Time &mdash; PHP Strikes Back!&rdquo;</i> ✊</h3>
+  <h4><i>&ldquo;PHP Tidak Akan Musnah Oleh Jaman (PHP Melawan)&rdquo;</i></h4>
+</p>
+
 ---
 
 # Papastro Framework v4.0.0
+
+> ### ✊ The Manifesto: PHP Will Never Perish with Time (PHP Strikes Back!)
+> For years, tech hype and social media narratives loudly proclaimed that *"PHP is dead"*, steering developers into bloated JavaScript runtimes plagued by memory leaks, build fatigue, and fragile dependency trees, or into complex compiled languages with painful iteration cycles.
+>
+> **Papastro is PHP's defiant answer.**
+>
+> Built on modern PHP 8.1–8.5, Papastro demonstrates that PHP can run at wire-speed **115,200+ requests/second** (matching and outclassing Go Fiber, and leaving legacy PHP frameworks ~24x behind), harness Go-style coroutines (`Pastroutine`), deliver zero-JS Astro Islands (`.pstro`), connect to modern clouds and databases (MySQL, PostgreSQL, Supabase SSL, MongoDB NoSQL, SQLite WAL), and consume only ~24MB RAM.
+>
+> **PHP is not fading. PHP is evolving, dominating, and striking back!**
 
 > **Papastro** is an ultra-high-concurrency, modern full-stack web framework designed for mission-critical web applications. It bridges the expressive elegance of **Backend PHP (Laravel-style)** with the blazing speed of **Modern Frontend (Astro Island Architecture)** in a scalable **Modular Monolith**, powered by **Pastroutine** (Go-style coroutines & CSP channels), **Pastream** (Realtime SSE & AI streaming), **PasFetch** (Native fluent HTTP client), **Fast SSG** (Zero-CPU prerendering), **Multi-Database** (MySQL, MariaDB, PostgreSQL, Supabase, MongoDB, SQLite, SQL Server), and the **Octane High-Scale Runtime**.
 
@@ -240,5 +259,6 @@ Papastro Framework is released under the **MIT Custom License** created by **kan
 ---
 
 <p align="center">
-  <b>Papastro Framework</b> &bull; Crafted with passion by <a href="https://github.com/kangpcode">kangpcode (Dhafa Nazula Permadi)</a>
+  <b>Papastro Framework</b> &bull; Crafted with pride and resilience by <a href="https://github.com/kangpcode">kangpcode (Dhafa Nazula Permadi)</a><br>
+  <b>✊ <i>&ldquo;PHP Will Never Perish with Time &mdash; PHP Strikes Back! (PHP Melawan)&rdquo;</i> ✊</b>
 </p>

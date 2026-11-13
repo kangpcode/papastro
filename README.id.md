@@ -19,7 +19,28 @@
   <b>🇮🇩 Bahasa Indonesia</b>
 </p>
 
+<p align="center">
+  <img src="https://img.shields.io/badge/PHP%20Melawan-PHP%20Tidak%20Akan%20Musnah%20Oleh%20Jaman-991b1b?style=for-the-badge&logo=php&logoColor=white" alt="PHP Melawan - PHP Tidak Akan Musnah Oleh Jaman">
+  <img src="https://img.shields.io/badge/Tagline-PHP%20Strikes%20Back-1e293b?style=for-the-badge" alt="PHP Strikes Back">
+</p>
+
+<p align="center">
+  <h3>✊ <i>&ldquo;PHP Tidak Akan Musnah Oleh Jaman (PHP Melawan)&rdquo;</i> ✊</h3>
+  <h4><i>&ldquo;PHP Will Never Perish with Time &mdash; PHP Strikes Back!&rdquo;</i></h4>
+</p>
+
+---
+
 # Papastro Framework v4.0.0
+
+> ### ✊ Manifesto: PHP Tidak Akan Musnah Oleh Jaman (PHP Melawan)
+> Selama bertahun-tahun, banyak narasi dan tren teknologi menggembar-gemborkan bahwa *"PHP sudah mati atau ketinggalan jaman"*, menggiring para developer ke tumpukan ekosistem JavaScript yang berat (*memory leak*, kelelahan *build pipeline*, dependensi rapuh), atau ke bahasa kompilasi mikro yang lambat dalam proses *development*.
+>
+> **Papastro hadir sebagai perlawanan nyata PHP.**
+>
+> Dibangun di atas fondasi PHP modern (8.1 hingga 8.5), Papastro membuktikan bahwa PHP mampu menembus kecepatan kabel jaringan **115.200+ request/detik** (menandingi Go Fiber dan melesat ~24x lebih kencang dibanding CodeIgniter/Yii), menjalankan *coroutine CSP* ala Go (`Pastroutine`), menyajikan arsitektur *Astro Island* tanpa JavaScript berat di browser, dan mengelola *multi-database* (MySQL, PostgreSQL, Supabase SSL, MongoDB NoSQL, SQLite WAL) hanya dengan konsumsi memori ~24 MB.
+>
+> **PHP tidak akan pernah musnah oleh jaman. PHP berevolusi, mendominasi, dan MELAWAN!**
 
 > **Papastro Framework** adalah framework web hybrid berskala tinggi yang menggabungkan keandalan **Backend PHP (bergaya Laravel)** dengan efisiensi **Frontend Modern (bergaya Astro Island Architecture)** dalam arsitektur **Modular Monolith Scalable**, dilengkapi dengan engine konkurensi **Pastroutine** (Go-style Coroutine), **Pastream** (Realtime SSE & AI Streaming Response), klien HTTP **PasFetch**, engine SSG **Prerenderer**, runtime ultra-cepat **Octane Server**, sistem realtime **Pasway**, dan ikon vektor mandiri **Pascon**.
 
