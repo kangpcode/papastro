@@ -73,3 +73,4 @@ git subtree push --prefix landingpage-sass origin gh-pages
 
 ## 📄 Hak Cipta
 Hak Cipta © 2026 **kangpcode (Dhafa Nazula Permadi)**. Seluruh hak cipta dilindungi undang-undang di bawah ketentuan **MIT License**.
+
