@@ -1,0 +1,149 @@
+// Papastro Real-World Benchmark Showcase
+@use "variables" as *;
+
+.benchmark-section {
+  padding: 5rem 0;
+  position: relative;
+
+  .benchmark-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 2.5rem;
+    align-items: start;
+
+    @media (max-width: $bp-lg) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .benchmark-chart-card {
+    padding: 2rem;
+
+    .svg-anim-wrapper {
+      width: 100%;
+      border-radius: $radius-md;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: #090e1a;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+
+      img {
+        width: 100%;
+        height: auto;
+      }
+    }
+  }
+
+  .benchmark-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+
+    .bar-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+
+      .bar-header {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.85rem;
+        font-weight: 600;
+
+        .bar-name {
+          color: $text-light;
+        }
+
+        .bar-speed {
+          font-family: $font-mono;
+          color: $accent-cyan;
+        }
+      }
+
+      .bar-track {
+        height: 10px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: $radius-full;
+        overflow: hidden;
+        position: relative;
+
+        .bar-fill {
+          height: 100%;
+          border-radius: $radius-full;
+          transition: width 1s ease-in-out;
+
+          &.fill-papastro {
+            width: 100%;
+            background: $gradient-primary;
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+          }
+
+          &.fill-fiber {
+            width: 97%;
+            background: #00add8;
+          }
+
+          &.fill-goravel {
+            width: 68%;
+            background: #06b6d4;
+          }
+
+          &.fill-octane {
+            width: 39%;
+            background: #f43f5e;
+          }
+
+          &.fill-franken {
+            width: 33%;
+            background: #10b981;
+          }
+
+          &.fill-ci {
+            width: 5%;
+            background: #ef4444;
+          }
+
+          &.fill-yii {
+            width: 3.5%;
+            background: #8b5cf6;
+          }
+        }
+      }
+    }
+  }
+
+  .reproduce-card {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    p {
+      color: $text-muted;
+      font-size: 0.925rem;
+      line-height: 1.6;
+    }
+
+    .step-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      .step-title {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: $accent-emerald;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+    }
+  }
+}
