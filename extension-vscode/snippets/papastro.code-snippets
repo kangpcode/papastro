@@ -3,7 +3,7 @@
     "prefix": "pstro-page",
     "body": [
       "<!--",
-      "  Papastro Framework v3.0.0 — created by kangpcode (Dhafa Nazula Permadi)",
+      "  Papastro Framework v4.0.0 — created by kangpcode (Dhafa Nazula Permadi)",
       "  Free to use & extend. This watermark must remain in source code.",
       "-->",
       "---",
@@ -126,6 +126,37 @@
       "@method('${1|PUT,PATCH,DELETE|}')"
     ],
     "description": "HTTP method spoofing input"
+  },
+  "Papastro Pascon Tag": {
+    "prefix": "pstro-pascon",
+    "body": [
+      "<pascon:${1|stream,server,cloud,git,folder,file,bell,calendar,lock,unlock,sun,moon,download,upload,filter|} size=\"${2:20}\" class=\"${3:text-primary}\" />"
+    ],
+    "description": "Papastro Pascon Standalone SVG Vector Icon"
+  },
+  "Papastro Pascon Directive": {
+    "prefix": "pstro-pascon-directive",
+    "body": [
+      "@pascon('${1:stream}', ['size' => ${2:20}, 'class' => '${3:text-primary}'])$0"
+    ],
+    "description": "Papastro Pascon blade directive"
+  },
+  "Papastro PasFetch HTTP Client": {
+    "prefix": "pstro-http",
+    "body": [
+      "\\$response = http()->asJson()->timeout(10)->get('${1:https://api.example.com}');",
+      "\\$data = \\$response->json();$0"
+    ],
+    "description": "Papastro PasFetch fluent HTTP client"
+  },
+  "Papastro SSE Stream Response": {
+    "prefix": "pstro-sse",
+    "body": [
+      "return Response::sse(function (\\$emitter) {",
+      "    \\$emitter->event(['message' => '${1:Hello World}'], '${2:update}');",
+      "});"
+    ],
+    "description": "Papastro Pastream Server-Sent Events (SSE) streaming response"
   }
 }
 

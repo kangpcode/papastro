@@ -95,8 +95,15 @@ Papastro dirancang untuk memberikan pengalaman pengembang (*Developer Experience
 - **Pastream Realtime SSE & AI Streaming**: Streaming respon chunked dan Server-Sent Events untuk AI LLM tokens (OpenAI, Gemini, Claude, Ollama) dan live data updates dengan helper `stream()` dan `sse()`.
 - **PasFetch Fluent HTTP Client**: Klien HTTP native modern tanpa dependensi Guzzle dengan request pooling via coroutine Pastroutine (`http()`, `Http::pool()`).
 - **Fast SSG & Prerendering**: Pre-komputasi halaman statis dan islands ke file HTML di `public/` untuk pengiriman mikrodetik 0 CPU runtime (`Route::prerender()`, `php papastro prerender`).
+- **High-Scale Engine (10M–100M+ Concurrency)**:
+  - **HTTP/1.1 Persistent Keep-Alive**: Dukungan koneksi persisten hingga 100 request per socket di `NativeServer` dan socket backlog `65535`.
+  - **FullPageCache & Edge CDN Offloading**: Caching halaman ultra-cepat dengan validasi ETag HTTP `304 Not Modified` dan direktif CDN global (`s-maxage`, `stale-while-revalidate`), didukung macro fluent `Route::cache($seconds)`.
+  - **Dynamic Gzip Compression**: Kompresi gzip otomatis untuk teks/HTML/JSON > 1KB via middleware `CompressResponse`.
+  - **Distributed Redis Caching**: Driver cache Redis native dengan atomic increment dan L1 in-memory cache.
+  - **Multi-Node DB Read/Write Replica Splitting**: Pemisahan otomatis query `select()` ke database replica dan write/transaction ke master.
 - **Zero-Config SQLite & Composer Setup**: SQLite dengan WAL mode default langsung pakai out-of-the-box dan wizard interaktif `php papastro setup`.
 - **Ekspansi Koleksi Pascon SVG**: Ikon vektor mandiri modern tanpa font icon eksternal (`<pascon:... />` dan `@pascon(...)`).
+- **Resilience & Anti-Crash**: Cadangan memori 32KB (anti-OOM), penanganan fatal error aman, dan auto-provisioning database SQLite.
 - **Ekstensi Resmi IDE (VS Code, Antigravity IDE & Cursor)**: Dukungan bahasa penuh untuk file `.pstro`, penyorotan sintaksis TextMate, auto-complete snippets, dan tema ikon file astronot resmi di [`extension-vscode/`](file:///home/kangpcode/wwwsite/papastro/extension-vscode).
 - **Auto-Update Non-Destructive**: Upgrade aman dari v1.2.0/v2.0.0/v3.0.0 ke v4.0.0 tanpa merusak modul aplikasi atau data yang sudah dibuat.
 - **Pastroutine Concurrency Engine**: Menjalankan eksekusi konkuren ringan di PHP dengan channel pesan dan sinkronisasi thread-safe, dilengkapi fluent `catch()` dan `then()`.
