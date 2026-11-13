@@ -59,6 +59,11 @@ class Route
     protected array $middleware = [];
 
     /**
+     * Whether this route should be statically prerendered at build time (SSG).
+     */
+    protected bool $prerender = false;
+
+    /**
      * The route name.
      */
     protected ?string $name = null;
@@ -318,6 +323,23 @@ class Route
     public function getParameters(): array
     {
         return $this->parameters;
+    }
+
+    /**
+     * Mark this route to be statically prerendered at build time (SSG).
+     */
+    public function prerender(bool $prerender = true): static
+    {
+        $this->prerender = $prerender;
+        return $this;
+    }
+
+    /**
+     * Determine if this route is marked for static prerendering.
+     */
+    public function isPrerender(): bool
+    {
+        return $this->prerender;
     }
 
     /**

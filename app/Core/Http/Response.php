@@ -110,6 +110,22 @@ class Response
     }
 
     /**
+     * Create a streaming response.
+     */
+    public static function stream(callable $callback, int $status = 200, array $headers = []): StreamResponse
+    {
+        return new StreamResponse($callback, $status, $headers);
+    }
+
+    /**
+     * Create a Server-Sent Events (SSE) stream response.
+     */
+    public static function sse(callable $callback, array $headers = []): StreamResponse
+    {
+        return StreamResponse::sse($callback, $headers);
+    }
+
+    /**
      * Set the response content.
      */
     public function setContent(string $content): static
@@ -150,6 +166,22 @@ class Response
     {
         $this->headers[static::cleanHeader($key)] = static::cleanHeader($value);
         return $this;
+    }
+
+    /**
+     * Determine if a header exists.
+     */
+    public function hasHeader(string $key): bool
+    {
+        return array_key_exists(static::cleanHeader($key), $this->headers);
+    }
+
+    /**
+     * Set a response header (alias of header()).
+     */
+    public function setHeader(string $key, string $value): static
+    {
+        return $this->header($key, $value);
     }
 
     /**

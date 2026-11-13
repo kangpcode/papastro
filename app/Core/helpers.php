@@ -136,6 +136,27 @@ if (!function_exists('response')) {
     }
 }
 
+if (!function_exists('stream')) {
+    function stream(callable $callback, int $status = 200, array $headers = []): \Papastro\Http\StreamResponse
+    {
+        return \Papastro\Http\Response::stream($callback, $status, $headers);
+    }
+}
+
+if (!function_exists('sse')) {
+    function sse(callable $callback, array $headers = []): \Papastro\Http\StreamResponse
+    {
+        return \Papastro\Http\Response::sse($callback, $headers);
+    }
+}
+
+if (!function_exists('http')) {
+    function http(): \Papastro\Http\Client\PendingRequest
+    {
+        return \Papastro\Http\Client\Http::create();
+    }
+}
+
 if (!function_exists('view')) {
     function view(string $template, array $data = []): \Papastro\Http\Response
     {

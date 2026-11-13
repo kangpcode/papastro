@@ -1,5 +1,5 @@
 # ==============================================================================
-# Papastro Framework v3.0.0 Production Dockerfile
+# Papastro Framework v4.0.0 Production Dockerfile
 # High-Concurrency Hybrid PHP + Astro Island Architecture
 # @author kangpcode (Dhafa Nazula Permadi)
 # ==============================================================================

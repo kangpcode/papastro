@@ -25,7 +25,7 @@ class Application extends Container
     /**
      * The Papastro framework version.
      */
-    public const VERSION = '3.0.0';
+    public const VERSION = '4.0.0';
 
     /**
      * The base path for the Papastro installation.

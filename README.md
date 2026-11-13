@@ -5,20 +5,20 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/kangpcode/papastro/releases"><img src="https://img.shields.io/badge/version-3.0.0-blue.svg?style=flat-square" alt="Version 3.0.0"></a>
+  <a href="https://github.com/kangpcode/papastro/releases"><img src="https://img.shields.io/badge/version-4.0.0-blue.svg?style=flat-square" alt="Version 4.0.0"></a>
   <a href="https://php.net"><img src="https://img.shields.io/badge/php-%5E8.1%20%7C%208.2%20%7C%208.3%20%7C%208.4%20%7C%208.5%20Ready-777bb4.svg?style=flat-square" alt="PHP ^8.1 | 8.2 | 8.3 | 8.4 | 8.5 Ready"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT%20Custom-green.svg?style=flat-square" alt="License"></a>
   <img src="https://img.shields.io/badge/architecture-Modular%20Monolith-orange.svg?style=flat-square" alt="Modular Monolith">
-  <img src="https://img.shields.io/badge/runtime-Octane%20%2B%20Pastroutine-red.svg?style=flat-square" alt="Octane + Pastroutine">
+  <img src="https://img.shields.io/badge/runtime-Octane%20%2B%20Pastroutine%20%2B%20Pastream-red.svg?style=flat-square" alt="Octane + Pastroutine + Pastream">
   <img src="https://img.shields.io/badge/production-ready-brightgreen.svg?style=flat-square" alt="Production Ready">
 </p>
 
-# Papastro Framework v3.0.0
+# Papastro Framework v4.0.0
 
-> **Papastro Framework** adalah framework web hybrid berskala tinggi yang menggabungkan keandalan **Backend PHP (bergaya Laravel)** dengan efisiensi **Frontend Modern (bergaya Astro Island Architecture)** dalam arsitektur **Modular Monolith Scalable**, dilengkapi dengan engine konkurensi **Pastroutine** (Go-style Coroutine), runtime ultra-cepat **Octane Server**, sistem realtime **Pasway** (Echo/Pusher-compatible), dan engine **Auto-Update Non-Destructive** yang aman untuk upgrade dari versi sebelumnya (v1.2.0/v2.0.0).
+> **Papastro Framework** adalah framework web hybrid berskala tinggi yang menggabungkan keandalan **Backend PHP (bergaya Laravel)** dengan efisiensi **Frontend Modern (bergaya Astro Island Architecture)** dalam arsitektur **Modular Monolith Scalable**, dilengkapi dengan engine konkurensi **Pastroutine** (Go-style Coroutine), **Pastream** (Realtime SSE & AI Streaming Response), klien HTTP **PasFetch**, engine SSG **Prerenderer**, runtime ultra-cepat **Octane Server**, sistem realtime **Pasway**, dan ikon vektor mandiri **Pascon**.
 
 - **Pembuat:** kangpcode (Dhafa Nazula Permadi)
-- **Versi Framework:** 3.0.0 (Latest Stable Release)
+- **Versi Framework:** 4.0.0 (Latest Stable Release)
 - **Status Produksi:** Siap Produksi (Enterprise-grade High-Concurrency)
 - **Lisensi:** Bebas digunakan dan dikembangkan — watermark kepemilikan wajib dipertahankan pada kode sumber.
 
@@ -393,11 +393,11 @@ code --install-extension extension-vscode/papastro-vscode-3.0.0.vsix
 
 ## Panduan Distribusi & Siap Produksi (Production Ready)
 
-Papastro v3.0.0 siap didistribusikan dan di-deploy langsung ke lingkungan produksi berskala enterprise.
+Papastro v4.0.0 siap didistribusikan dan di-deploy langsung ke lingkungan produksi berskala enterprise.
 
 ### 1. Saluran Distribusi Resmi
 - **Composer / Packagist**: `kangpcode/papastro`
-- **GitHub Release Tag**: [v3.0.0 (Latest Release)](https://github.com/kangpcode/papastro/releases)
+- **GitHub Release Tag**: [v4.0.0 (Latest Release)](https://github.com/kangpcode/papastro/releases)
 - **Git Branch**: `main` (Branch utama stabil)
 
 ### 2. Optimasi OPcache & JIT Produksi (`php.ini`)
@@ -520,7 +520,7 @@ stdout_logfile=/var/www/papastro/storage/logs/pasway.log
 ## Dokumentasi Lengkap CLI (papastro)
 
 ```bash
-  Papastro Framework 3.0.0
+  Papastro Framework 4.0.0
   Hybrid PHP + Astro-style Modular Monolith Framework
   @author kangpcode (Dhafa Nazula Permadi)
 
@@ -531,7 +531,8 @@ stdout_logfile=/var/www/papastro/storage/logs/pasway.log
 ```bash
 php papastro dev                      # Server pengembang PHP bawaan
 php papastro serve                    # Server produksi standar
-php papastro build                    # Build & optimasi asset produksi
+php papastro build                    # Build & optimasi asset produksi (termasuk SSG)
+php papastro prerender                # Statically prerender halaman (SSG) ke public/
 php papastro runtime:start            # Jalankan server Octane multi-worker (--watch, --workers, --port)
 php papastro runtime:stop             # Hentikan server runtime via PID
 php papastro runtime:reload           # Zero-downtime worker reload
@@ -643,4 +644,4 @@ Papastro Framework didistribusikan di bawah ketentuan lisensi bebas penggunaan d
 
 ---
 
-*Papastro Framework v3.0.0 dikembangkan oleh kangpcode (Dhafa Nazula Permadi).*
+*Papastro Framework v4.0.0 dikembangkan oleh kangpcode (Dhafa Nazula Permadi).*

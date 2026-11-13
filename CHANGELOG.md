@@ -10,6 +10,40 @@ License: Free to use & modify. Watermark must remain in source code.
 
 ---
 
+## [4.0.0] - 2026-11-13 — *Pastream SSE, PasFetch HTTP Client, Fast SSG & Zero-Config SQLite*
+
+### Added
+
+#### 1. Pastream (Realtime SSE & Streaming Response Engine)
+- **Streaming & Server-Sent Events** (`Papastro\Http\StreamResponse`):
+  - Native streaming chunked transfer responses and SSE support for real-time AI token generation (ChatGPT, Gemini, Claude), live logs, and metrics.
+  - Automatic `Cache-Control: no-cache, no-transform`, `X-Accel-Buffering: no` headers for seamless proxy pass-through (Nginx, Caddy, Apache).
+  - Global helpers `stream(callable $callback)` and `sse(callable $callback)`.
+
+#### 2. PasFetch (Lightweight Native Fluent HTTP Client)
+- **Zero-Dependency Native HTTP Client** (`Papastro\Http\Client\Http`, `PendingRequest`, `Response`):
+  - Fluent request builder: `http()->asJson()->withToken($token)->get($url)`.
+  - Automatic JSON serialization, URL query formatting, form data encoding, timeouts, and automatic retry mechanism with backoff.
+  - Concurrent multi-request dispatching with `Http::pool()` powered by Pastroutine coroutines.
+  - Global helper `http()`.
+
+#### 3. Fast SSG & Prerendering (Astro-style Hybrid Architecture)
+- **Static Site Generation Engine** (`Papastro\SSG\Prerenderer`):
+  - Statically pre-computes HTML for static and island routes into `public/` for instantaneous microsecond delivery.
+  - Fluent route registration: `Route::get('/about', ...)->prerender()`.
+  - CLI command: `php papastro prerender [uris...]` and automated integration in `php papastro build`.
+
+#### 4. Expanded Pascon Standalone SVG Vector Icons
+- Added new modern icons: `stream`, `server`, `cloud`, `git`, `folder`, `file`, `bell`, `calendar`, `lock`, `unlock`, `sun`, `moon`, `download`, `upload`, `filter`.
+- Fully scalable, customizable stroke and dimensions with `<pascon:... />` and `@pascon(...)`.
+
+#### 5. Composer `create-project` & Zero-Config SQLite
+- Defaults to zero-config SQLite with Write-Ahead Logging (WAL) mode for immediate local development without MySQL setup.
+- Dual autoloader support seamlessly detecting `libs/autoload.php` and `vendor/autoload.php`.
+- Complete interactive setup wizard `php papastro setup`.
+
+---
+
 ## [3.0.0] - 2026-11-11 — *High-Concurrency Runtime, Pastroutine & Pasway Realtime*
 
 ### Added

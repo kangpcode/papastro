@@ -135,7 +135,7 @@
             }
 
             const protocol = this.options.encrypted || (typeof window !== 'undefined' && window.location.protocol === 'https:') ? 'wss' : 'ws';
-            const url = `${protocol}://${this.options.host}:${this.options.port}/app/${this.options.key}?protocol=7&client=js&version=3.0.0`;
+            const url = `${protocol}://${this.options.host}:${this.options.port}/app/${this.options.key}?protocol=7&client=js&version=4.0.0`;
 
             try {
                 this.socket = new WebSocket(url);

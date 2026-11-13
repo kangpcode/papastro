@@ -74,7 +74,7 @@ class NativeServer
         $this->running = true;
 
         echo "\033[36m";
-        echo "  [Runtime] Papastro Octane Server (v3.0.0)\n";
+        echo "  [Runtime] Papastro Octane Server (v4.0.0)\n";
         echo "  @author kangpcode (Dhafa Nazula Permadi)\n";
         echo "\033[0m";
         echo "  - Host & Port : http://{$this->host}:{$this->port}\n";
@@ -312,7 +312,7 @@ class NativeServer
             $resHeaders = $response->getHeaders();
             $resHeaders['Content-Length'] = (string) strlen($responseBody);
             $resHeaders['Connection'] = 'close';
-            $resHeaders['Server'] = 'Papastro-Octane/3.0.0';
+            $resHeaders['Server'] = 'Papastro-Octane/4.0.0';
 
             $out = "HTTP/1.1 {$statusCode} {$statusText}\r\n";
             foreach ($resHeaders as $hk => $hv) {
@@ -551,7 +551,7 @@ class NativeServer
         $out .= "Content-Length: {$len}\r\n";
         $out .= "Connection: close\r\n";
         $out .= "Cache-Control: public, max-age=86400\r\n";
-        $out .= "Server: Papastro-Octane/3.0.0\r\n\r\n";
+        $out .= "Server: Papastro-Octane/4.0.0\r\n\r\n";
         $out .= $content;
 
         @fwrite($conn, $out);

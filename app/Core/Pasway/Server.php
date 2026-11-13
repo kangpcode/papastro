@@ -82,7 +82,7 @@ class Server
         $this->running = true;
 
         echo "\033[35m";
-        echo "  [Pasway] Realtime WebSocket Server (v3.0.0)\n";
+        echo "  [Pasway] Realtime WebSocket Server (v4.0.0)\n";
         echo "  @author kangpcode (Dhafa Nazula Permadi)\n";
         echo "\033[0m";
         echo "  - WebSocket Listening on : ws://{$this->host}:{$this->port}\n";

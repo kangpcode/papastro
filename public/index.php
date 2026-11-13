@@ -45,7 +45,7 @@ if (PHP_SAPI === 'cli-server') {
 
 define('PAPASTRO_START', microtime(true));
 define('PAPASTRO_ROOT', dirname(__DIR__));
-define('PAPASTRO_VERSION', '3.0.0');
+define('PAPASTRO_VERSION', '4.0.0');
 
 /*
 |--------------------------------------------------------------------------

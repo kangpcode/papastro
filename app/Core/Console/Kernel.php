@@ -115,6 +115,7 @@ class Kernel
             'dev' => Commands\DevServerCommand::class,
             'serve' => Commands\ServeCommand::class,
             'build' => Commands\BuildCommand::class,
+            'prerender' => Commands\PrerenderCommand::class,
 
             // Framework Upgrade & Concurrency Test
             'upgrade' => Commands\UpgradeCommand::class,
@@ -176,7 +177,7 @@ class Kernel
 
         $groups = [
             'Project' => ['setup'],
-            'Server & Runtime' => ['dev', 'serve', 'build', 'runtime:start', 'runtime:stop', 'runtime:reload', 'runtime:status', 'pasway:start'],
+            'Server & Runtime' => ['dev', 'serve', 'build', 'prerender', 'runtime:start', 'runtime:stop', 'runtime:reload', 'runtime:status', 'pasway:start'],
             'Module' => ['module:make', 'module:enable', 'module:disable', 'module:list'],
             'Plugin' => ['plugin:make', 'plugin:enable', 'plugin:disable', 'plugin:list'],
             'Generator' => ['make:controller', 'make:model', 'make:migration', 'make:island', 'make:page', 'make:middleware', 'make:service', 'make:event', 'make:listener'],

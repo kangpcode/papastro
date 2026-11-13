@@ -6,10 +6,11 @@ Keamanan framework dan aplikasi pengguna merupakan prioritas tertinggi kami.
 
 | Versi | Didukung Patch Keamanan |
 |-------|-------------------------|
-| 3.0.x | :white_check_mark: Ya (Versi Aktif) |
+| 4.0.x | :white_check_mark: Ya (Versi Aktif) |
+| 3.0.x | :white_check_mark: Ya (Versi Stabil LTS) |
 | 2.0.x | :white_check_mark: Ya (Via `php papastro upgrade`) |
 | 1.2.x | :white_check_mark: Ya (Via `php papastro upgrade`) |
-| < 1.2 | :arrow_up: Harap upgrade ke v3.0.0 via `php papastro upgrade` |
+| < 1.2 | :arrow_up: Harap upgrade ke v4.0.0 via `php papastro upgrade` |
 
 ---
 

@@ -152,6 +152,14 @@ class RouteCollection
     }
 
     /**
+     * Get all registered routes (alias of all()).
+     */
+    public function getRoutes(): array
+    {
+        return $this->allRoutes;
+    }
+
+    /**
      * Get all routes indexed by method.
      */
     public function getRoutesByMethod(): array

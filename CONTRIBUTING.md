@@ -5,7 +5,7 @@ Terima kasih atas ketertarikan Anda untuk berkontribusi pada pengembangan **Papa
 - **Pembuat / Maintainer:** kangpcode (Dhafa Nazula Permadi)
 - **Email:** dhafanavy@gmail.com
 - **Repository:** [https://github.com/kangpcode/papastro](https://github.com/kangpcode/papastro)
-- **Versi:** 3.0.0
+- **Versi:** 4.0.0
 
 ---
 
@@ -16,7 +16,7 @@ Terima kasih atas ketertarikan Anda untuk berkontribusi pada pengembangan **Papa
    ```php
    /**
     * ------------------------------------------------------------------
-    *  Papastro Framework v3.0.0
+    *  Papastro Framework v4.0.0
     *  Hybrid PHP + Astro-style Modular Monolith Framework
     *
     *  @author     kangpcode (Dhafa Nazula Permadi)

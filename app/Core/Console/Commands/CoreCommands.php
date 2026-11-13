@@ -412,8 +412,51 @@ class BuildCommand extends Command
         // Cache routes
         (new RouteCacheCommand($this->app, $this->console))->execute([]);
 
+        // Fast SSG Prerendering
+        $prerenderer = new \Papastro\SSG\Prerenderer($this->app);
+        $pages = $prerenderer->prerender();
+        if (!empty($pages)) {
+            $this->info("Statically prerendered " . count($pages) . " page(s).");
+        }
+
         $this->newLine();
         $this->success('Build complete! Your app is ready for production.');
+        return 0;
+    }
+}
+
+/**
+ * papastro prerender — Statically prerender pages (SSG)
+ */
+class PrerenderCommand extends Command
+{
+    public function execute(array $args): int
+    {
+        $this->newLine();
+        $this->line("  Papastro Fast SSG Prerenderer (v4.0.0)", 'purple');
+        $this->line("  Pre-computes static HTML for instantaneous delivery", 'gray');
+        $this->newLine();
+
+        $prerenderer = new \Papastro\SSG\Prerenderer($this->app);
+        $uris = [];
+        if (!empty($args)) {
+            $uris = array_filter($args, fn($a) => !str_starts_with($a, '-'));
+        }
+
+        $results = $prerenderer->prerender($uris);
+
+        if (empty($results)) {
+            $this->warn('No prerenderable routes found. Mark routes with ->prerender() in routes/web.php');
+            return 0;
+        }
+
+        foreach ($results as $uri => $file) {
+            $rel = str_replace($this->app->basePath() . '/', '', $file);
+            $this->line("  ✓ {$uri} → {$rel}", 'green');
+        }
+
+        $this->newLine();
+        $this->success("Successfully prerendered " . count($results) . " page(s)!");
         return 0;
     }
 }
