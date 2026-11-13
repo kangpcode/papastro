@@ -71,6 +71,19 @@ License: Free to use & modify. Watermark must remain in source code.
 - **New CLI Command**:
   - `php papastro route:clear` for quick route cache invalidation.
 
+#### 9. Enterprise Multi-Database Support (MySQL, MariaDB, PostgreSQL, Supabase, MongoDB, SQLite, SQL Server)
+- **Multi-Database Management** (`Papastro\ORM\DatabaseManager`):
+  - Support switching and combining multiple database connections across SQLite, MySQL, MariaDB, PostgreSQL, Supabase cloud, MongoDB document store, and SQL Server.
+  - Global helper functions `db(?string $connection = null)` and `mongodb(?string $collection = null)`.
+- **Cloud `DATABASE_URL` Support**:
+  - Automatic parsing of unified connection strings from Supabase, Railway, Neon, and Render with SSL modes (`sslmode=require`).
+- **MongoDB NoSQL Support** (`Papastro\ORM\MongoConnection`):
+  - Document database connectivity supporting local MongoDB and MongoDB Atlas.
+
+#### 10. Official `.pstro` Format Specification & Copyright Terms
+- Formalized copyright and licensing for the `.pstro` template file specification created by **kangpcode (Dhafa Nazula Permadi)** in `LICENSE` and `README.md`.
+- Unrestricted free commercial and open-source usage for developers worldwide, with format authorship attribution preserved for third-party tooling and editors.
+
 ---
 
 ## [3.0.0] - 2026-11-11 — *High-Concurrency Runtime, Pastroutine & Pasway Realtime*
