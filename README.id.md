@@ -779,6 +779,7 @@ $analytics = mongodb('analytics')->find(['event' => 'page_view']);
 
 ---
 
----
-
-*Papastro Framework v4.0.0 dikembangkan oleh kangpcode (Dhafa Nazula Permadi).*
+<p align="center">
+  <b>Papastro Framework</b> &bull; Dibuat dengan dedikasi, kebanggaan, dan perlawanan oleh <a href="https://github.com/kangpcode">kangpcode (Dhafa Nazula Permadi)</a><br>
+  <b>✊ <i>&ldquo;PHP Tidak Akan Musnah Oleh Jaman (PHP Melawan) &#8212; PHP Strikes Back!&rdquo;</i> ✊</b>
+</p>
