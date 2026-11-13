@@ -43,7 +43,7 @@ Terima kasih atas ketertarikan Anda untuk berkontribusi pada pengembangan **Papa
 3. Lakukan perubahan kode dan sertakan unit test / feature test di folder `tests/`.
 4. Jalankan pengujian menyeluruh:
    ```bash
-   php vendor/bin/phpunit
+   php libs/bin/phpunit
    php papastro pastroutine:test
    ```
 5. Commit perubahan dengan pesan commit deskriptif (mengikuti Semantic Commit Messages: `feat:`, `fix:`, `docs:`, `chore:`).
@@ -56,7 +56,7 @@ Terima kasih atas ketertarikan Anda untuk berkontribusi pada pengembangan **Papa
 Pastikan semua test suite lolos sebelum mengajukan Pull Request:
 ```bash
 # Jalankan seluruh unit test
-php vendor/bin/phpunit
+php libs/bin/phpunit
 
 # Jalankan self-test engine konkurensi Pastroutine
 php papastro pastroutine:test --count=1000

@@ -52,7 +52,7 @@ define('PAPASTRO_VERSION', '3.0.0');
 | Register The Auto Loader
 |--------------------------------------------------------------------------
 */
-require dirname(__DIR__) . '/vendor/autoload.php';
+require dirname(__DIR__) . '/libs/autoload.php';
 
 /*
 |--------------------------------------------------------------------------

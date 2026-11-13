@@ -115,6 +115,13 @@ if (!function_exists('database_path')) {
     }
 }
 
+if (!function_exists('plugin_path')) {
+    function plugin_path(string $path = ''): string
+    {
+        return app()->pluginPath($path);
+    }
+}
+
 if (!function_exists('redirect')) {
     function redirect(string $url, int $status = 302): \Papastro\Http\Response
     {

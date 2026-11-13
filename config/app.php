@@ -77,5 +77,6 @@ return [
         \App\Providers\DatabaseServiceProvider::class,
         \App\Providers\EventServiceProvider::class,
         \App\Providers\ModuleServiceProvider::class,
+        \App\Providers\PluginServiceProvider::class,
     ],
 ];

@@ -151,6 +151,14 @@ class Application extends Container
     }
 
     /**
+     * Get the path to the plugins directory.
+     */
+    public function pluginPath(string $path = ''): string
+    {
+        return $this->basePath('plugins' . ($path !== '' ? DIRECTORY_SEPARATOR . $path : ''));
+    }
+
+    /**
      * Bind all of the application paths in the container.
      */
     protected function bindPathsInContainer(): void
@@ -162,6 +170,7 @@ class Application extends Container
         $this->instance('path.storage',  $this->storagePath());
         $this->instance('path.resource', $this->resourcePath());
         $this->instance('path.database', $this->databasePath());
+        $this->instance('path.plugin',   $this->pluginPath());
     }
 
     /**

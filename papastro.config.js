@@ -19,6 +19,7 @@ export default {
         dirs: [
             './resources/islands',
             './app/Modules/*/Islands',
+            './plugins/*/Islands',
         ],
 
         // Output directory (relative to public/)

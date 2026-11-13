@@ -38,7 +38,7 @@ jobs:
         run: composer install --prefer-dist --no-progress
 
       - name: Run PHPUnit Test Suite
-        run: php vendor/bin/phpunit
+        run: php libs/bin/phpunit
 
       - name: Run Pastroutine Concurrency Test
         run: php papastro pastroutine:test --count=1000
