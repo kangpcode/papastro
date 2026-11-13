@@ -119,3 +119,4 @@ class Response implements JsonSerializable
         return $this->json();
     }
 }
+

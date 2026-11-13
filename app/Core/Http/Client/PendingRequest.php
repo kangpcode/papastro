@@ -234,3 +234,4 @@ class PendingRequest
         return $headers;
     }
 }
+
