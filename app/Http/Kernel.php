@@ -46,6 +46,7 @@ class Kernel extends BaseKernel
     protected array $middleware = [
         \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
         \App\Http\Middleware\SecurityHeaders::class,
+        \App\Http\Middleware\CompressResponse::class,
         \App\Http\Middleware\TrimStrings::class,
         \App\Http\Middleware\ConvertEmptyStringsToNull::class,
     ];
@@ -74,5 +75,7 @@ class Kernel extends BaseKernel
         'cors' => \App\Http\Middleware\HandleCors::class,
         'security' => \App\Http\Middleware\SecurityHeaders::class,
         'session' => \App\Http\Middleware\StartSession::class,
+        'cache.page' => \App\Http\Middleware\FullPageCache::class,
+        'compress' => \App\Http\Middleware\CompressResponse::class,
     ];
 }

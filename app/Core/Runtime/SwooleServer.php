@@ -64,6 +64,8 @@ class SwooleServer
             'send_yield'               => true,
             'open_tcp_nodelay'         => true,
             'max_coroutine'            => 100000,
+            'backlog'                  => 65535,
+            'http_compression'         => true,
             'buffer_output_size'       => 32 * 1024 * 1024,
             'package_max_length'       => 20 * 1024 * 1024,
             'reload_async'             => true,

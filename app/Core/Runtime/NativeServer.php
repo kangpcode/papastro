@@ -174,7 +174,7 @@ class NativeServer
             'socket' => [
                 'so_reuseport' => 1,
                 'so_reuseaddr' => 1,
-                'backlog'      => 4096,
+                'backlog'      => 65535,
             ],
         ]);
 
@@ -204,174 +204,189 @@ class NativeServer
                 continue;
             }
 
-            stream_set_timeout($conn, 5);
+            $keepAliveRequests = 0;
+            $maxKeepAlive = 100;
 
-            // Read raw HTTP request
-            $raw = '';
-            while (!str_contains($raw, "\r\n\r\n")) {
-                $buf = @fread($conn, 4096);
-                if ($buf === false || $buf === '') {
+            while ($keepAliveRequests < $maxKeepAlive && is_resource($conn) && !feof($conn)) {
+                stream_set_timeout($conn, 5);
+
+                // Read raw HTTP request
+                $raw = '';
+                while (!str_contains($raw, "\r\n\r\n")) {
+                    $buf = @fread($conn, 8192);
+                    if ($buf === false || $buf === '') {
+                        break;
+                    }
+                    $raw .= $buf;
+                }
+
+                if (empty($raw)) {
                     break;
                 }
-                $raw .= $buf;
-            }
 
-            if (empty($raw)) {
-                @fclose($conn);
-                continue;
-            }
+                [$head, $initialBody] = explode("\r\n\r\n", $raw, 2);
+                $lines = explode("\r\n", $head);
+                $requestLine = array_shift($lines);
+                [$method, $target] = array_pad(explode(' ', $requestLine, 3), 2, '/');
 
-            [$head, $initialBody] = explode("\r\n\r\n", $raw, 2);
-            $lines = explode("\r\n", $head);
-            $requestLine = array_shift($lines);
-            [$method, $target] = array_pad(explode(' ', $requestLine, 3), 2, '/');
+                $headers = [];
+                foreach ($lines as $line) {
+                    if (str_contains($line, ':')) {
+                        [$k, $v] = explode(':', $line, 2);
+                        $headers[strtolower(trim($k))] = trim($v);
+                    }
+                }
 
-            $headers = [];
-            foreach ($lines as $line) {
-                if (str_contains($line, ':')) {
-                    [$k, $v] = explode(':', $line, 2);
-                    $headers[strtolower(trim($k))] = trim($v);
+                // Read full body if Content-Length is present
+                $body = $initialBody;
+                $contentLength = (int) ($headers['content-length'] ?? 0);
+                while (strlen($body) < $contentLength) {
+                    $buf = @fread($conn, 8192);
+                    if ($buf === false || $buf === '') break;
+                    $body .= $buf;
+                }
+
+                // Construct Papastro Request
+                $parsedUrl = parse_url($target);
+                $path = $parsedUrl['path'] ?? '/';
+                $queryString = $parsedUrl['query'] ?? '';
+
+                // Fast static asset serving from public directory
+                if ($path !== '/' && $this->serveStaticFile($conn, $path)) {
+                    break;
+                }
+                parse_str($queryString, $queryParams);
+
+                $parsedBody = [];
+                $contentType = $headers['content-type'] ?? '';
+                if (str_contains($contentType, 'application/json')) {
+                    $parsedBody = json_decode($body, true) ?: [];
+                } elseif (str_contains($contentType, 'application/x-www-form-urlencoded')) {
+                    parse_str($body, $parsedBody);
+                }
+
+                $cookies = [];
+                if (!empty($headers['cookie'])) {
+                    $cookiePairs = explode(';', $headers['cookie']);
+                    foreach ($cookiePairs as $pair) {
+                        if (str_contains($pair, '=')) {
+                            [$ck, $cv] = explode('=', trim($pair), 2);
+                            $cookies[trim($ck)] = urldecode(trim($cv));
+                        }
+                    }
+                }
+
+                $serverParams = [
+                    'REQUEST_METHOD'  => strtoupper($method),
+                    'REQUEST_URI'     => $target,
+                    'PATH_INFO'       => $path,
+                    'QUERY_STRING'    => $queryString,
+                    'SERVER_PROTOCOL' => 'HTTP/1.1',
+                    'SERVER_NAME'     => $this->host,
+                    'SERVER_PORT'     => (string) $this->port,
+                    'REMOTE_ADDR'     => stream_socket_get_name($conn, true) ?: '127.0.0.1',
+                    'HTTP_HOST'       => $headers['host'] ?? "{$this->host}:{$this->port}",
+                ];
+
+                foreach ($headers as $hk => $hv) {
+                    $serverKey = 'HTTP_' . strtoupper(str_replace('-', '_', $hk));
+                    $serverParams[$serverKey] = $hv;
+                }
+
+                $request = new Request($method, $path, $queryParams, $parsedBody, $serverParams, [], $cookies, $headers);
+                $request->setRawBody($body);
+                $this->app->instance('request', $request);
+
+                try {
+                    $response = $kernel->handle($request);
+                } catch (\Throwable $e) {
+                    $response = Response::html(
+                        "<h1>500 Internal Server Error</h1><pre>" . htmlspecialchars($e->getMessage()) . "</pre>",
+                        500
+                    );
+                }
+
+                // Write HTTP Response
+                $statusCode = $response->getStatusCode();
+                $statusText = $this->getStatusText($statusCode);
+                $responseBody = (string) $response->getContent();
+
+                $clientWantsClose = strtolower($headers['connection'] ?? '') === 'close';
+                $shouldKeepAlive = !$clientWantsClose && ($keepAliveRequests + 1 < $maxKeepAlive);
+
+                $resHeaders = $response->getHeaders();
+                $resHeaders['Content-Length'] = (string) strlen($responseBody);
+                $resHeaders['Connection'] = $shouldKeepAlive ? 'keep-alive' : 'close';
+                if ($shouldKeepAlive) {
+                    $resHeaders['Keep-Alive'] = 'timeout=5, max=' . ($maxKeepAlive - $keepAliveRequests);
+                }
+                $resHeaders['Server'] = 'Papastro-Octane/4.0.0';
+
+                $out = "HTTP/1.1 {$statusCode} {$statusText}\r\n";
+                foreach ($resHeaders as $hk => $hv) {
+                    $out .= "{$hk}: {$hv}\r\n";
+                }
+
+                // Send cookies
+                if (method_exists($response, 'cookieHeaderLines')) {
+                    foreach ($response->cookieHeaderLines() as $line) {
+                        $out .= "Set-Cookie: {$line}\r\n";
+                    }
+                } else {
+                    foreach ($response->getCookies() as $cKey => $cookie) {
+                        $cName = $cookie['name'] ?? (is_string($cKey) ? $cKey : '');
+                        if ($cName === '') {
+                            continue;
+                        }
+                        $out .= "Set-Cookie: " . rawurlencode($cName) . "=" . rawurlencode($cookie['value'] ?? '');
+                        if (!empty($cookie['expires'])) {
+                            $out .= "; Expires=" . gmdate('D, d M Y H:i:s T', $cookie['expires']);
+                        } elseif (!empty($cookie['minutes'])) {
+                            $out .= "; Expires=" . gmdate('D, d M Y H:i:s', time() + $cookie['minutes'] * 60) . " GMT";
+                            $out .= "; Max-Age=" . ($cookie['minutes'] * 60);
+                        }
+                        if (!empty($cookie['path'])) {
+                            $out .= "; Path={$cookie['path']}";
+                        }
+                        if (!empty($cookie['domain'])) {
+                            $out .= "; Domain={$cookie['domain']}";
+                        }
+                        if (!empty($cookie['secure'])) {
+                            $out .= "; Secure";
+                        }
+                        if (!empty($cookie['httpOnly'])) {
+                            $out .= "; HttpOnly";
+                        }
+                        if (!empty($cookie['sameSite'])) {
+                            $out .= "; SameSite={$cookie['sameSite']}";
+                        }
+                        $out .= "\r\n";
+                    }
+                }
+
+                $out .= "\r\n" . $responseBody;
+                @fwrite($conn, $out);
+
+                // Request lifecycle completion
+                $kernel->terminate($request, $response);
+                StateResetter::reset($this->app);
+
+                $requestsHandled++;
+                $keepAliveRequests++;
+
+                if (!$shouldKeepAlive) {
+                    break;
+                }
+
+                if ($requestsHandled >= $this->maxRequests || memory_get_usage(true) > ($this->maxMemoryMB * 1024 * 1024)) {
+                    break;
                 }
             }
 
-            // Read full body if Content-Length is present
-            $body = $initialBody;
-            $contentLength = (int) ($headers['content-length'] ?? 0);
-            while (strlen($body) < $contentLength) {
-                $buf = @fread($conn, 8192);
-                if ($buf === false || $buf === '') break;
-                $body .= $buf;
-            }
-
-            // Construct Papastro Request
-            $parsedUrl = parse_url($target);
-            $path = $parsedUrl['path'] ?? '/';
-            $queryString = $parsedUrl['query'] ?? '';
-
-            // Fast static asset serving from public directory
-            if ($path !== '/' && $this->serveStaticFile($conn, $path)) {
-                @fclose($conn);
-                continue;
-            }
-            parse_str($queryString, $queryParams);
-
-            $parsedBody = [];
-            $contentType = $headers['content-type'] ?? '';
-            if (str_contains($contentType, 'application/json')) {
-                $parsedBody = json_decode($body, true) ?: [];
-            } elseif (str_contains($contentType, 'application/x-www-form-urlencoded')) {
-                parse_str($body, $parsedBody);
-            }
-
-            $cookies = [];
-            if (!empty($headers['cookie'])) {
-                $cookiePairs = explode(';', $headers['cookie']);
-                foreach ($cookiePairs as $pair) {
-                    if (str_contains($pair, '=')) {
-                        [$ck, $cv] = explode('=', trim($pair), 2);
-                        $cookies[trim($ck)] = urldecode(trim($cv));
-                    }
-                }
-            }
-
-            $serverParams = [
-                'REQUEST_METHOD'  => strtoupper($method),
-                'REQUEST_URI'     => $target,
-                'PATH_INFO'       => $path,
-                'QUERY_STRING'    => $queryString,
-                'SERVER_PROTOCOL' => 'HTTP/1.1',
-                'SERVER_NAME'     => $this->host,
-                'SERVER_PORT'     => (string) $this->port,
-                'REMOTE_ADDR'     => stream_socket_get_name($conn, true) ?: '127.0.0.1',
-                'HTTP_HOST'       => $headers['host'] ?? "{$this->host}:{$this->port}",
-            ];
-
-            foreach ($headers as $hk => $hv) {
-                $serverKey = 'HTTP_' . strtoupper(str_replace('-', '_', $hk));
-                $serverParams[$serverKey] = $hv;
-            }
-
-            $request = new Request($method, $path, $queryParams, $parsedBody, $serverParams, [], $cookies, $headers);
-            $request->setRawBody($body);
-            $this->app->instance('request', $request);
-
-            try {
-                $response = $kernel->handle($request);
-            } catch (\Throwable $e) {
-                $response = Response::html(
-                    "<h1>500 Internal Server Error</h1><pre>" . htmlspecialchars($e->getMessage()) . "</pre>",
-                    500
-                );
-            }
-
-            // Write HTTP Response
-            $statusCode = $response->getStatusCode();
-            $statusText = $this->getStatusText($statusCode);
-            $responseBody = (string) $response->getContent();
-
-            $resHeaders = $response->getHeaders();
-            $resHeaders['Content-Length'] = (string) strlen($responseBody);
-            $resHeaders['Connection'] = 'close';
-            $resHeaders['Server'] = 'Papastro-Octane/4.0.0';
-
-            $out = "HTTP/1.1 {$statusCode} {$statusText}\r\n";
-            foreach ($resHeaders as $hk => $hv) {
-                $out .= "{$hk}: {$hv}\r\n";
-            }
-
-            // Send cookies
-            if (method_exists($response, 'cookieHeaderLines')) {
-                foreach ($response->cookieHeaderLines() as $line) {
-                    $out .= "Set-Cookie: {$line}\r\n";
-                }
-            } else {
-                foreach ($response->getCookies() as $cKey => $cookie) {
-                    $cName = $cookie['name'] ?? (is_string($cKey) ? $cKey : '');
-                    if ($cName === '') {
-                        continue;
-                    }
-                    $out .= "Set-Cookie: " . rawurlencode($cName) . "=" . rawurlencode($cookie['value'] ?? '');
-                    if (!empty($cookie['expires'])) {
-                        $out .= "; Expires=" . gmdate('D, d M Y H:i:s T', $cookie['expires']);
-                    } elseif (!empty($cookie['minutes'])) {
-                        $out .= "; Expires=" . gmdate('D, d M Y H:i:s', time() + $cookie['minutes'] * 60) . " GMT";
-                        $out .= "; Max-Age=" . ($cookie['minutes'] * 60);
-                    }
-                    if (!empty($cookie['path'])) {
-                        $out .= "; Path={$cookie['path']}";
-                    }
-                    if (!empty($cookie['domain'])) {
-                        $out .= "; Domain={$cookie['domain']}";
-                    }
-                    if (!empty($cookie['secure'])) {
-                        $out .= "; Secure";
-                    }
-                    if (!empty($cookie['httpOnly'])) {
-                        $out .= "; HttpOnly";
-                    }
-                    if (!empty($cookie['sameSite'])) {
-                        $out .= "; SameSite={$cookie['sameSite']}";
-                    }
-                    $out .= "\r\n";
-                }
-            }
-
-            $out .= "\r\n" . $responseBody;
-            @fwrite($conn, $out);
             @fclose($conn);
 
-            // Request lifecycle completion
-            $kernel->terminate($request, $response);
-            StateResetter::reset($this->app);
-
-            $requestsHandled++;
-
             // Recycle worker if limits reached
-            if ($requestsHandled >= $this->maxRequests) {
-                break;
-            }
-
-            if (memory_get_usage(true) > ($this->maxMemoryMB * 1024 * 1024)) {
+            if ($requestsHandled >= $this->maxRequests || memory_get_usage(true) > ($this->maxMemoryMB * 1024 * 1024)) {
                 break;
             }
         }

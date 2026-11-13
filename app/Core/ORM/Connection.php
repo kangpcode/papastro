@@ -24,6 +24,7 @@ use Papastro\Debugger\QueryCollector;
 class Connection
 {
     protected ?PDO $pdo = null;
+    protected ?PDO $readPdo = null;
     protected array $config;
     protected ?QueryCollector $collector = null;
 
@@ -33,28 +34,58 @@ class Connection
     }
 
     /**
-     * Get the PDO instance (lazy connection).
+     * Get the PDO instance (lazy connection for writes and transactions).
      */
     public function getPdo(): PDO
     {
         if ($this->pdo === null) {
-            $this->pdo = $this->createPdo();
+            $writeConfig = $this->config;
+            if (!empty($this->config['write']) && is_array($this->config['write'])) {
+                $writeConfig = array_merge($this->config, $this->config['write']);
+            }
+            $this->pdo = $this->createPdoFromConfig($writeConfig);
         }
         return $this->pdo;
     }
 
     /**
-     * Create a new PDO instance from config.
+     * Get the PDO instance for read queries (supports read replicas).
      */
-    protected function createPdo(): PDO
+    public function getReadPdo(): PDO
     {
-        $driver = $this->config['driver'] ?? 'mysql';
-        $host = $this->config['host'] ?? 'localhost';
-        $port = $this->config['port'] ?? '3306';
-        $dbname = $this->config['database'] ?? '';
-        $charset = $this->config['charset'] ?? 'utf8mb4';
-        $username = $this->config['username'] ?? 'root';
-        $password = $this->config['password'] ?? '';
+        if ($this->inTransaction()) {
+            return $this->getPdo();
+        }
+
+        if ($this->readPdo !== null) {
+            return $this->readPdo;
+        }
+
+        if (!empty($this->config['read']) && is_array($this->config['read'])) {
+            $readConfig = $this->config['read'];
+            // Load balance randomly if multiple read replica hosts provided
+            if (isset($readConfig[0]) && is_array($readConfig[0])) {
+                $readConfig = $readConfig[array_rand($readConfig)];
+            }
+            $merged = array_merge($this->config, $readConfig);
+            return $this->readPdo = $this->createPdoFromConfig($merged);
+        }
+
+        return $this->getPdo();
+    }
+
+    /**
+     * Create a new PDO instance from specific connection config.
+     */
+    protected function createPdoFromConfig(array $cfg): PDO
+    {
+        $driver = $cfg['driver'] ?? 'mysql';
+        $host = $cfg['host'] ?? 'localhost';
+        $port = $cfg['port'] ?? '3306';
+        $dbname = $cfg['database'] ?? '';
+        $charset = $cfg['charset'] ?? 'utf8mb4';
+        $username = $cfg['username'] ?? 'root';
+        $password = $cfg['password'] ?? '';
 
         switch ($driver) {
             case 'sqlite':
@@ -103,6 +134,14 @@ class Connection
     }
 
     /**
+     * Create a new PDO instance from default config.
+     */
+    protected function createPdo(): PDO
+    {
+        return $this->createPdoFromConfig($this->config);
+    }
+
+    /**
      * Determine if the PDO exception means the connection was lost.
      */
     protected function isConnectionLost(PDOException $e): bool
@@ -122,11 +161,12 @@ class Connection
     }
 
     /**
-     * Drop the PDO handle so the next query reconnects.
+     * Drop the PDO handles so the next query reconnects.
      */
     public function disconnect(): void
     {
         $this->pdo = null;
+        $this->readPdo = null;
     }
 
     /**
@@ -166,6 +206,33 @@ class Connection
     }
 
     /**
+     * Execute a read query across read replicas and return a PDOStatement.
+     */
+    public function queryRead(string $sql, array $bindings = []): \PDOStatement
+    {
+        $start = microtime(true);
+
+        try {
+            $stmt = $this->getReadPdo()->prepare($sql);
+            $stmt->execute($bindings);
+        } catch (PDOException $e) {
+            if (!$this->inTransaction() && $this->isConnectionLost($e)) {
+                $this->readPdo = null;
+                $stmt = $this->getReadPdo()->prepare($sql);
+                $stmt->execute($bindings);
+            } else {
+                throw $e;
+            }
+        }
+
+        $elapsed = microtime(true) - $start;
+
+        $this->collector?->record($sql, $bindings, $elapsed);
+
+        return $stmt;
+    }
+
+    /**
      * Execute a statement (INSERT, UPDATE, DELETE) and return rows affected.
      */
     public function statement(string $sql, array $bindings = []): int
@@ -178,7 +245,7 @@ class Connection
      */
     public function select(string $sql, array $bindings = []): array
     {
-        return $this->query($sql, $bindings)->fetchAll();
+        return $this->queryRead($sql, $bindings)->fetchAll();
     }
 
     /**
@@ -186,7 +253,7 @@ class Connection
      */
     public function selectOne(string $sql, array $bindings = []): ?array
     {
-        $result = $this->query($sql, $bindings)->fetch();
+        $result = $this->queryRead($sql, $bindings)->fetch();
         return $result === false ? null : $result;
     }
 

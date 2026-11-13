@@ -78,6 +78,20 @@ class CacheManager
             return value($default);
         }
 
+        if ($this->driver === 'redis') {
+            $redis = $this->getRedisClient();
+            if ($redis) {
+                $raw = $redis->get($this->prefix . $key);
+                if ($raw !== false && $raw !== null) {
+                    $decoded = @unserialize((string) $raw);
+                    $val = ($decoded !== false || $raw === 'b:0;') ? $decoded : $raw;
+                    $this->memory[$key] = ['expires_at' => 0, 'value' => $val];
+                    return $val;
+                }
+                return value($default);
+            }
+        }
+
         // File driver
         $file = $this->getFilePath($key);
         if (!is_file($file)) {
@@ -125,6 +139,17 @@ class CacheManager
             return apcu_store($this->prefix . $key, $value, max(0, $ttlSeconds));
         }
 
+        if ($this->driver === 'redis') {
+            $redis = $this->getRedisClient();
+            if ($redis) {
+                $serialized = serialize($value);
+                if ($ttlSeconds > 0) {
+                    return (bool) $redis->setex($this->prefix . $key, $ttlSeconds, $serialized);
+                }
+                return (bool) $redis->set($this->prefix . $key, $serialized);
+            }
+        }
+
         $file = $this->getFilePath($key);
         $dir = dirname($file);
         if (!is_dir($dir)) {
@@ -164,6 +189,18 @@ class CacheManager
      */
     public function increment(string $key, int $step = 1, int $ttlSeconds = 3600): int
     {
+        if ($this->driver === 'redis') {
+            $redis = $this->getRedisClient();
+            if ($redis) {
+                $new = (int) $redis->incrBy($this->prefix . $key, $step);
+                if ($ttlSeconds > 0 && $redis->ttl($this->prefix . $key) === -1) {
+                    $redis->expire($this->prefix . $key, $ttlSeconds);
+                }
+                unset($this->memory[$key]);
+                return $new;
+            }
+        }
+
         $current = (int) $this->get($key, 0);
         $next = $current + $step;
         $this->put($key, $next, $ttlSeconds);
@@ -189,6 +226,10 @@ class CacheManager
             apcu_delete($this->prefix . $key);
         }
 
+        if ($this->driver === 'redis') {
+            $this->getRedisClient()?->del($this->prefix . $key);
+        }
+
         $file = $this->getFilePath($key);
         if (is_file($file)) {
             return @unlink($file);
@@ -208,11 +249,61 @@ class CacheManager
             apcu_clear_cache();
         }
 
+        if ($this->driver === 'redis') {
+            $redis = $this->getRedisClient();
+            if ($redis) {
+                $keys = $redis->keys($this->prefix . '*');
+                if (!empty($keys)) {
+                    $redis->del($keys);
+                }
+            }
+        }
+
         if (is_dir($this->cachePath)) {
             $this->deleteDirectoryContents($this->cachePath);
         }
 
         return true;
+    }
+
+    /**
+     * Redis connection handle for distributed caching.
+     */
+    protected ?\Redis $redisClient = null;
+
+    /**
+     * Get or initialize the Redis client.
+     */
+    protected function getRedisClient(): ?\Redis
+    {
+        if ($this->redisClient !== null) {
+            return $this->redisClient;
+        }
+
+        if (!class_exists('\Redis')) {
+            return null;
+        }
+
+        $host = (string) (env('REDIS_HOST') ?: '127.0.0.1');
+        $port = (int) (env('REDIS_PORT') ?: 6379);
+        $password = env('REDIS_PASSWORD') ?: null;
+        $database = (int) (env('REDIS_CACHE_DB') ?: 0);
+        $timeout = (float) (env('REDIS_TIMEOUT') ?: 1.5);
+
+        try {
+            $client = new \Redis();
+            $client->connect($host, $port, $timeout);
+            if ($password) {
+                $client->auth($password);
+            }
+            if ($database > 0) {
+                $client->select($database);
+            }
+            return $this->redisClient = $client;
+        } catch (\Throwable $e) {
+            error_log('Redis cache connection failed: ' . $e->getMessage());
+            return null;
+        }
     }
 
     /**
