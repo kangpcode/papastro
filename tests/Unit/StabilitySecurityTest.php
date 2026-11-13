@@ -114,3 +114,4 @@ class StabilitySecurityTest extends TestCase
         Security::sanitizeSqlIdentifier('users; DROP TABLE users;--');
     }
 }
+
