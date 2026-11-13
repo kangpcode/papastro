@@ -806,9 +806,73 @@ class UpgradeCommand extends Command
 
         $this->newLine();
         $this->line("  [2/5] Synchronizing framework core components...", 'cyan');
+
+        // --- Version synchronization across all entry points ---
+        $targetVersion = \Papastro\Foundation\Application::VERSION;
+        $versionFiles = [
+            $this->app->basePath('papastro.php'),
+            $this->app->basePath('public/index.php'),
+            $this->app->basePath('tests/bootstrap.php'),
+        ];
+        foreach ($versionFiles as $vf) {
+            if (file_exists($vf)) {
+                $content = file_get_contents($vf);
+                $content = preg_replace("/define\('PAPASTRO_VERSION',\s*'[^']*'\)/", "define('PAPASTRO_VERSION', '{$targetVersion}')", $content);
+                file_put_contents($vf, $content);
+            }
+        }
+        $appConfig = $this->app->configPath('app.php');
+        if (file_exists($appConfig)) {
+            $content = file_get_contents($appConfig);
+            $content = preg_replace("/'version'\s*=>\s*'[^']*'/", "'version' => '{$targetVersion}'", $content);
+            file_put_contents($appConfig, $content);
+        }
+        $this->success("Synchronized framework version to v{$targetVersion} across entry points and config");
+
+        // --- Vendor -> libs migration (rename legacy vendor directory) ---
+        $vendorDir = $this->app->basePath('vendor');
+        $libsDir = $this->app->basePath('libs');
+        if (is_dir($vendorDir) && !is_dir($libsDir)) {
+            rename($vendorDir, $libsDir);
+            $this->success("Migrated legacy 'vendor/' directory to 'libs/'");
+        }
+        // Update autoload references in entry points
+        foreach ($versionFiles as $vf) {
+            if (file_exists($vf)) {
+                $content = file_get_contents($vf);
+                $content = str_replace("'vendor/autoload.php'", "'libs/autoload.php'", $content);
+                $content = str_replace('"vendor/autoload.php"', '"libs/autoload.php"', $content);
+                file_put_contents($vf, $content);
+            }
+        }
+        $phpunitXml = $this->app->basePath('phpunit.xml');
+        if (file_exists($phpunitXml)) {
+            $content = file_get_contents($phpunitXml);
+            $content = str_replace('vendor/phpunit/phpunit/phpunit.xsd', 'libs/phpunit/phpunit/phpunit.xsd', $content);
+            $content = str_replace('php vendor/bin/phpunit', 'php libs/bin/phpunit', $content);
+            file_put_contents($phpunitXml, $content);
+        }
+        // .gitignore migration
+        $gitignore = $this->app->basePath('.gitignore');
+        if (file_exists($gitignore)) {
+            $content = file_get_contents($gitignore);
+            $content = str_replace("/vendor/", "/libs/", $content);
+            file_put_contents($gitignore, $content);
+        }
+
+        // --- plugins/ directory provisioning ---
+        $pluginsDir = $this->app->basePath('plugins');
+        if (!is_dir($pluginsDir)) {
+            mkdir($pluginsDir, 0755, true);
+            $this->success("Created 'plugins/' directory for third-party plug-and-play modules");
+        }
+        if (!file_exists($pluginsDir . DIRECTORY_SEPARATOR . '.gitkeep')) {
+            file_put_contents($pluginsDir . DIRECTORY_SEPARATOR . '.gitkeep', '');
+        }
+
         $paswayConfig = $this->app->configPath('pasway.php');
         if (!file_exists($paswayConfig)) {
-            $defaultPasway = "<?php\n/**\n * Papastro Framework v3.0.0 — Pasway Realtime Configuration\n */\nreturn [\n    'host' => env('PASWAY_HOST', '0.0.0.0'),\n    'port' => (int) env('PASWAY_PORT', 8080),\n    'app_key' => env('PASWAY_APP_KEY', 'papastro_key'),\n    'app_secret' => env('PASWAY_APP_SECRET', 'papastro_secret'),\n    'driver' => env('PASWAY_DRIVER', 'file'),\n];\n";
+            $defaultPasway = "<?php\n/**\n * Papastro Framework v{$targetVersion} — Pasway Realtime Configuration\n */\nreturn [\n    'host' => env('PASWAY_HOST', '0.0.0.0'),\n    'port' => (int) env('PASWAY_PORT', 8080),\n    'app_key' => env('PASWAY_APP_KEY', 'papastro_key'),\n    'app_secret' => env('PASWAY_APP_SECRET', 'papastro_secret'),\n    'driver' => env('PASWAY_DRIVER', 'file'),\n];\n";
             file_put_contents($paswayConfig, $defaultPasway);
             $this->success("Created missing config/pasway.php with default settings");
         } else {
