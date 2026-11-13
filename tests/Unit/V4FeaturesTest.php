@@ -30,9 +30,9 @@ class V4FeaturesTest extends TestCase
 
     public function testFrameworkVersionIsFour(): void
     {
-        $this->assertSame('4.0.0', Application::VERSION);
-        $this->assertSame('4.0.0', PAPASTRO_VERSION);
-        $this->assertSame('4.0.0', config('app.version'));
+        $this->assertSame('5.0.0', Application::VERSION);
+        $this->assertSame('5.0.0', PAPASTRO_VERSION);
+        $this->assertSame('5.0.0', config('app.version'));
     }
 
     public function testStreamResponseSseHeadersAndFormat(): void

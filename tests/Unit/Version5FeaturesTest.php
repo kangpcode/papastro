@@ -39,7 +39,10 @@ class Version5FeaturesTest extends TestCase
 
     public function testDatabaseUpsertAndCursorPagination(): void
     {
-        $db = $this->app->make(\Papastro\ORM\Connection::class);
+        $db = new \Papastro\ORM\Connection([
+            'driver'   => 'sqlite',
+            'database' => ':memory:',
+        ]);
 
         // Create temporary test table
         $db->statement("DROP TABLE IF EXISTS v5_products");
