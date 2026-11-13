@@ -1,10 +1,18 @@
 {
     "name": "kangpcode/papastro",
-    "description": "Papastro Framework — Modern High-Performance Full-Stack PHP Framework. The modern alternative to Go Fiber, Goravel, Laravel, Next.js, and Astro with Coroutines, Island Architecture, Multi-Database, and Octane Runtime.",
+    "description": "Papastro Framework — Ultra-High-Performance Full-Stack PHP Framework. The modern alternative to Laravel, CodeIgniter 4, Yii 2/3, Symfony, Go Fiber, Goravel, Next.js, and Astro with Go-style Coroutines, Astro Island Architecture, Multi-Database (MySQL, Postgres, Supabase, Mongo, SQLite), and Octane High-Scale Runtime.",
     "type": "project",
     "keywords": [
         "framework",
         "php",
+        "php-framework",
+        "fastest-php-framework",
+        "codeigniter-alternative",
+        "codeigniter4",
+        "yii-alternative",
+        "yii2",
+        "yii3",
+        "symfony-alternative",
         "laravel-alternative",
         "go-fiber-alternative",
         "goravel",
@@ -22,6 +30,7 @@
         "realtime",
         "multi-database",
         "supabase",
+        "mongodb",
         "redis",
         "pstro",
         "kangpcode"
