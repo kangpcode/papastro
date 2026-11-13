@@ -130,7 +130,10 @@
   <g transform="translate(40, 36)">
     <rect width="180" height="24" rx="12" fill="#064e3b" stroke="#059669" stroke-width="1" />
     <circle cx="14" cy="12" r="4" fill="#34d399" />
-    <circle cx="14" cy="12" r="4" fill="none" stroke="#34d399" stroke-width="1.5" class="beacon-circle" />
+    <circle cx="14" cy="12" r="4" fill="none" stroke="#34d399" stroke-width="1.5" class="beacon-circle">
+      <animate attributeName="r" values="4; 12" dur="1.8s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="1; 0" dur="1.8s" repeatCount="indefinite" />
+    </circle>
     <text x="26" y="16" class="font-sans" font-size="10" font-weight="700" fill="#34d399" letter-spacing="0.5">BENCHMARK TEST v4.0</text>
   </g>
 
@@ -184,7 +187,10 @@
     <rect x="230" y="2" width="0" height="20" rx="4" fill="url(#papastroGrad)">
       <animate attributeName="width" from="0" to="421" dur="1.3s" fill="freeze" calcMode="spline" keySplines="0.16 1 0.3 1" />
     </rect>
-    <rect x="270" y="2" width="30" height="20" fill="#ffffff" opacity="0.4" class="laser-scan" filter="blur(3px)" />
+    <rect x="230" y="2" width="40" height="20" rx="4" fill="#ffffff" opacity="0.35" class="laser-scan" filter="blur(3px)">
+      <animate attributeName="x" values="230; 611; 230" dur="2.8s" repeatCount="indefinite" />
+      <animate attributeName="opacity" values="0.1; 0.6; 0.1" dur="2.8s" repeatCount="indefinite" />
+    </rect>
     <text x="662" y="17" class="font-sans metric" fill="#38bdf8">105,400 <tspan class="submetric" fill="#a5f3fc">(0.65ms • 24MB) ★ FASTEST PHP</tspan></text>
   </g>
 
