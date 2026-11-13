@@ -1,0 +1,223 @@
+// Papastro UI Components
+@use "variables" as *;
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: all $transition-normal;
+  white-space: nowrap;
+
+  &.btn-primary {
+    background: $primary;
+    color: #fff;
+    box-shadow: 0 4px 14px 0 rgba(99, 102, 241, 0.39);
+
+    &:hover {
+      background: #4f46e5;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+    }
+  }
+
+  &.btn-secondary {
+    background: rgba(255, 255, 255, 0.05);
+    color: $text-light;
+    border: 1px solid $border-glass;
+    backdrop-filter: blur(8px);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+  }
+
+  &.btn-gradient {
+    background: $gradient-primary;
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+
+    &:hover {
+      opacity: 0.95;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 22px rgba(168, 85, 247, 0.6);
+    }
+  }
+
+  &.btn-sm {
+    padding: 0.45rem 0.9rem;
+    font-size: 0.825rem;
+  }
+
+  &.btn-lg {
+    padding: 0.95rem 2rem;
+    font-size: 1.05rem;
+  }
+}
+
+/* Glass Card */
+.glass-card {
+  background: $bg-card;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid $border-glass;
+  border-radius: $radius-lg;
+  transition: all $transition-normal;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.16);
+    box-shadow: $shadow-xl;
+  }
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  border-radius: $radius-full;
+
+  &.badge-primary {
+    background: rgba(99, 102, 241, 0.15);
+    color: #818cf8;
+    border: 1px solid rgba(99, 102, 241, 0.3);
+  }
+
+  &.badge-cyan {
+    background: rgba(6, 182, 212, 0.15);
+    color: #22d3ee;
+    border: 1px solid rgba(6, 182, 212, 0.3);
+  }
+
+  &.badge-emerald {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+  }
+
+  &.badge-amber {
+    background: rgba(245, 158, 11, 0.15);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+  }
+}
+
+/* Code Snippet Box */
+.code-box {
+  background: #080c14;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: $radius-md;
+  overflow: hidden;
+  font-family: $font-mono;
+  font-size: 0.875rem;
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.65rem 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+
+    .window-dots {
+      display: flex;
+      gap: 0.4rem;
+
+      span {
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        display: inline-block;
+
+        &:nth-child(1) { background: #ef4444; }
+        &:nth-child(2) { background: #f59e0b; }
+        &:nth-child(3) { background: #10b981; }
+      }
+    }
+
+    .code-title {
+      color: $text-dim;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .copy-btn {
+      color: $text-muted;
+      cursor: pointer;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: color $transition-fast;
+
+      &:hover {
+        color: #fff;
+      }
+    }
+  }
+
+  pre {
+    padding: 1.25rem 1.25rem;
+    overflow-x: auto;
+    color: $text-code;
+    line-height: 1.65;
+  }
+}
+
+/* Syntax Highlighting Tokens */
+.hl-keyword { color: #f43f5e; font-weight: 600; }
+.hl-func { color: #60a5fa; }
+.hl-string { color: #34d399; }
+.hl-comment { color: #64748b; font-style: italic; }
+.hl-variable { color: #fbbf24; }
+.hl-type { color: #c084fc; }
+.hl-attr { color: #38bdf8; }
+
+/* Toast Notification */
+.toast-container {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  pointer-events: none;
+}
+
+.toast {
+  background: #1e293b;
+  color: #fff;
+  padding: 0.85rem 1.35rem;
+  border-radius: $radius-md;
+  border: 1px solid $border-glass;
+  box-shadow: $shadow-xl;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  pointer-events: auto;
+  transform: translateY(20px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+  &.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .toast-icon {
+    color: $accent-emerald;
+  }
+}
