@@ -561,11 +561,14 @@ class NativeServer
         $content = file_get_contents($fullPath);
         $len = strlen($content);
 
+        $mtime = filemtime($fullPath);
+        $etag = '"' . dechex($mtime) . '-' . dechex($len) . '"';
+
         $out  = "HTTP/1.1 200 OK\r\n";
         $out .= "Content-Type: {$mime}\r\n";
         $out .= "Content-Length: {$len}\r\n";
-        $out .= "Connection: close\r\n";
-        $out .= "Cache-Control: public, max-age=86400\r\n";
+        $out .= "ETag: {$etag}\r\n";
+        $out .= "Cache-Control: public, max-age=31536000, immutable\r\n";
         $out .= "Server: Papastro-Octane/4.0.0\r\n\r\n";
         $out .= $content;
 

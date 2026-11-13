@@ -521,6 +521,16 @@ class Request
     }
 
     /**
+     * Get full URL including query string.
+     */
+    public function fullUrl(): string
+    {
+        $url = $this->url();
+        $query = $this->server['QUERY_STRING'] ?? '';
+        return $query !== '' ? "{$url}?{$query}" : $url;
+    }
+
+    /**
      * Validate request data.
      */
     public function validate(array $rules): array

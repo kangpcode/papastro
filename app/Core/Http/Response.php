@@ -82,6 +82,15 @@ class Response
     }
 
     /**
+     * Create an HTML Response.
+     */
+    public static function html(string $content = '', int $status = 200, array $headers = []): static
+    {
+        $headers['Content-Type'] = $headers['Content-Type'] ?? 'text/html; charset=UTF-8';
+        return static::make($content, $status, $headers);
+    }
+
+    /**
      * Create a JSON Response.
      */
     public static function json(mixed $data, int $status = 200, array $headers = []): static

@@ -230,6 +230,14 @@ class Route
     }
 
     /**
+     * Cache this route's response for high concurrency (Full-page & Edge CDN caching).
+     */
+    public function cache(int $seconds = 300): static
+    {
+        return $this->middleware("cache.page:{$seconds}");
+    }
+
+    /**
      * Set the route name.
      */
     public function name(string $name): static

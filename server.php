@@ -45,6 +45,14 @@ if ($uri !== '/') {
                 ];
                 header('Content-Type: ' . ($mimes[$ext] ?? 'application/octet-stream'));
                 header('Content-Length: ' . filesize($candidate));
+                $mtime = filemtime($candidate);
+                $etag = '"' . dechex($mtime) . '-' . dechex(filesize($candidate)) . '"';
+                header('ETag: ' . $etag);
+                header('Cache-Control: public, max-age=31536000, immutable');
+                if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) === $etag) {
+                    http_response_code(304);
+                    exit(0);
+                }
                 readfile($candidate);
                 exit(0);
             }
