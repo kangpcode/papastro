@@ -74,7 +74,7 @@ class NativeServer
         $this->running = true;
 
         echo "\033[36m";
-        echo "  [Runtime] Papastro Octane Server (v4.0.0)\n";
+        echo "  [Runtime] Papastro Octane Server (v5.0.0)\n";
         echo "  @author kangpcode (Dhafa Nazula Permadi)\n";
         echo "\033[0m";
         echo "  - Host & Port : http://{$this->host}:{$this->port}\n";
@@ -160,10 +160,14 @@ class NativeServer
      */
     protected function runWorkerLoop(): void
     {
-        // Child handles SIGTERM gracefully
+        // Child handles SIGTERM/SIGUSR2 with graceful connection draining
+        $draining = false;
         if (function_exists('pcntl_signal')) {
-            pcntl_signal(SIGTERM, function () {
-                exit(0);
+            pcntl_signal(SIGTERM, function () use (&$draining) {
+                $draining = true;
+            });
+            pcntl_signal(SIGUSR2, function () use (&$draining) {
+                $draining = true;
             });
             pcntl_signal(SIGINT, function () {
                 exit(0);
@@ -196,11 +200,14 @@ class NativeServer
         $kernel = $this->app->make(\Papastro\Http\Kernel::class);
         $requestsHandled = 0;
 
-        while (true) {
+        while (!$draining) {
             $conn = @stream_socket_accept($server, 1.0);
             if (!$conn) {
                 if (function_exists('pcntl_signal_dispatch')) {
                     pcntl_signal_dispatch();
+                }
+                if ($draining) {
+                    break;
                 }
                 continue;
             }
@@ -328,7 +335,7 @@ class NativeServer
                 $responseBody = (string) $response->getContent();
 
                 $clientWantsClose = strtolower($headers['connection'] ?? '') === 'close';
-                $shouldKeepAlive = !$clientWantsClose && ($keepAliveRequests + 1 < $maxKeepAlive);
+                $shouldKeepAlive = !$clientWantsClose && !$draining && ($keepAliveRequests + 1 < $maxKeepAlive);
 
                 $resHeaders = $response->getHeaders();
                 $resHeaders['Content-Length'] = (string) strlen($responseBody);
@@ -336,7 +343,7 @@ class NativeServer
                 if ($shouldKeepAlive) {
                     $resHeaders['Keep-Alive'] = 'timeout=5, max=' . ($maxKeepAlive - $keepAliveRequests);
                 }
-                $resHeaders['Server'] = 'Papastro-Octane/4.0.0';
+                $resHeaders['Server'] = 'Papastro-Octane/5.0.0';
 
                 $out = "HTTP/1.1 {$statusCode} {$statusText}\r\n";
                 foreach ($resHeaders as $hk => $hv) {
