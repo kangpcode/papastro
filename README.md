@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/kangpcode/papastro/releases"><img src="https://img.shields.io/badge/version-4.0.0-blue.svg?style=flat-square" alt="Version 4.0.0"></a>
+  <a href="https://github.com/kangpcode/papastro/releases"><img src="https://img.shields.io/badge/version-5.0.0-blue.svg?style=flat-square" alt="Version 5.0.0"></a>
   <a href="https://php.net"><img src="https://img.shields.io/badge/php-%5E8.1%20%7C%208.2%20%7C%208.3%20%7C%208.4%20%7C%208.5%20Ready-777bb4.svg?style=flat-square" alt="PHP ^8.1 | 8.2 | 8.3 | 8.4 | 8.5 Ready"></a>
   <a href="https://packagist.org/packages/kangpcode/papastro"><img src="https://img.shields.io/packagist/dt/kangpcode/papastro.svg?style=flat-square" alt="Total Downloads"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT%20Custom-green.svg?style=flat-square" alt="License"></a>
@@ -32,7 +32,7 @@
 
 ---
 
-# Papastro Framework v4.0.0
+# Papastro Framework v5.0.0
 
 > ### ✊ The Manifesto: PHP Will Never Perish with Time (PHP Strikes Back!)
 > For years, tech hype and social media narratives loudly proclaimed that *"PHP is dead"*, steering developers into bloated JavaScript runtimes plagued by memory leaks, build fatigue, and fragile dependency trees, or into complex compiled languages with painful iteration cycles.
@@ -46,7 +46,7 @@
 > **Papastro** is an ultra-high-concurrency, modern full-stack web framework designed for mission-critical web applications. It bridges the expressive elegance of **Backend PHP (Laravel-style)** with the blazing speed of **Modern Frontend (Astro Island Architecture)** in a scalable **Modular Monolith**, powered by **Pastroutine** (Go-style coroutines & CSP channels), **Pastream** (Realtime SSE & AI streaming), **PasFetch** (Native fluent HTTP client), **Fast SSG** (Zero-CPU prerendering), **Multi-Database** (MySQL, MariaDB, PostgreSQL, Supabase, MongoDB, SQLite, SQL Server), and the **Octane High-Scale Runtime**.
 
 - **Author & Creator:** [kangpcode (Dhafa Nazula Permadi)](https://github.com/kangpcode)
-- **Current Version:** 4.0.0 (Latest Stable Release)
+- **Current Version:** 5.0.0 (Latest Stable Release)
 - **Production Status:** Production Ready (Tuned for 10M–100M+ Requests/Day)
 - **License:** Free to use and develop — author watermark must remain intact in source code.
 
@@ -138,9 +138,49 @@ wrk -t16 -c1000 -d30s http://127.0.0.1:8000/
 
 ---
 
-## 🚀 Key Highlights in Version 4.0.0
+## 🚀 Key Highlights in Version 5.0.0
 
-### 1. Pastream — Realtime Server-Sent Events & AI Token Streaming
+### 1. PasRPC — Typed Island-to-Backend Remote Procedure Calls
+Zero-boilerplate typed RPC protocol directly connecting Astro Islands (`.pstro`) and frontend apps to PHP backend controllers:
+```php
+// Define RPC endpoint
+Route::rpc('/rpc/cart', CartController::class);
+
+// Client invokes with JSON: {"method": "addItem", "params": {"itemId": 42, "qty": 2}}
+// Controller automatically resolves parameters with type safety:
+class CartController {
+    public function addItem(int $itemId, int $qty): array {
+        return ['success' => true, 'cartTotal' => 120];
+    }
+}
+```
+
+### 2. Database UPSERT & O(1) Cursor Pagination
+Enterprise-grade query builder enhancements for high-scale databases (MySQL, PostgreSQL, Supabase, SQLite):
+```php
+// High-speed bulk upsert
+db()->table('products')->upsert([
+    ['sku' => 'LAPTOP-PRO', 'name' => 'MacBook Pro', 'price' => 1999],
+    ['sku' => 'LAPTOP-AIR', 'name' => 'MacBook Air', 'price' => 1199],
+], 'sku', ['name', 'price']);
+
+// O(1) index-seek cursor pagination for tables with millions of rows
+$results = db()->table('orders')->cursorPaginate(perPage: 25, cursorColumn: 'id');
+$nextCursor = $results['next_cursor'];
+```
+
+### 3. Graceful Zero-Downtime Worker Draining
+Native pre-forked Octane server (`NativeServer`) now drains in-flight HTTP connections gracefully on `SIGTERM` and `SIGUSR2` during deployments or hot-reloading (`php papastro runtime:reload`), ensuring **zero dropped requests**.
+
+### 4. Adaptive DDoS Shield & Layer-7 Rate Limiter
+Automatic IP sliding-window protection (`DdosShield`) that mitigates bot floods and layer-7 denial-of-service attacks with temporary blacklists:
+```php
+Route::middleware(DdosShield::class)->group(function () {
+    Route::post('/login', [AuthController::class, 'login']);
+});
+```
+
+### 5. Pastream — Realtime Server-Sent Events & AI Token Streaming
 Native SSE and chunked streaming engine for OpenAI, Gemini, Claude, Ollama, and live telemetry without buffering proxies:
 ```php
 Route::get('/ai/chat', function () {
@@ -228,7 +268,7 @@ php papastro runtime:start --watch --workers=4 --port=8000
 
 Install the official `.pstro` language support extension:
 ```bash
-code --install-extension extension-vscode/papastro-vscode-4.0.0.vsix
+code --install-extension extension-vscode/papastro-vscode-5.0.0.vsix
 ```
 
 Provides TextMate syntax highlighting for `.pstro`, PHP frontmatter formatting, and auto-complete snippets (`pstro-page`, `pstro-pascon`, `pstro-http`, `pstro-sse`).
@@ -245,7 +285,7 @@ Papastro Framework is released under the **MIT Custom License** created by **kan
 ```php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v4.0.0
+ *  Papastro Framework v5.0.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
