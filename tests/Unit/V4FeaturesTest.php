@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v4.0.0 — created by kangpcode (Dhafa Nazula Permadi)
+ *  Papastro Framework v5.0.0 — created by kangpcode (Dhafa Nazula Permadi)
  *  Free to use & extend. This watermark must remain in source code.
  * ------------------------------------------------------------------
  */

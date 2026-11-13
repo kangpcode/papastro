@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v4.0.0
+ *  Papastro Framework v5.0.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -25,7 +25,7 @@ class Application extends Container
     /**
      * The Papastro framework version.
      */
-    public const VERSION = '4.0.0';
+    public const VERSION = '5.0.0';
 
     /**
      * The base path for the Papastro installation.

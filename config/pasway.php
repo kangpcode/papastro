@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v4.0.0 — Pasway Realtime Configuration
+ *  Papastro Framework v5.0.0 — Pasway Realtime Configuration
  *  @author kangpcode (Dhafa Nazula Permadi) | @license see watermark
  * ------------------------------------------------------------------
  */

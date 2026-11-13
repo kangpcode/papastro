@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v4.0.0
+ *  Papastro Framework v5.0.0
  *  Pascon — Standalone Native SVG Icon System
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)

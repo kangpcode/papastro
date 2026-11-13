@@ -75,6 +75,11 @@ class RouteFacade
         return static::getRouter()->island($uri, $component);
     }
 
+    public static function rpc(string $uri, string $controller): Route
+    {
+        return static::getRouter()->rpc($uri, $controller);
+    }
+
     public static function group(array $attributes, \Closure $callback): void
     {
         static::getRouter()->group($attributes, $callback);

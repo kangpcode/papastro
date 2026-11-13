@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v4.0.0
+ *  Papastro Framework v5.0.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -196,7 +196,7 @@ class HandleExceptions
 <body>
     <div class="box">
         <div class="banner">
-            <h1>Papastro Framework v4.0.0 — Unhandled Exception</h1>
+            <h1>Papastro Framework v5.0.0 — Unhandled Exception</h1>
             <h2>{$message}</h2>
         </div>
         <div class="meta">

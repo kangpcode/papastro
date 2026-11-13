@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v4.0.0
+ *  Papastro Framework v5.0.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -174,6 +174,17 @@ class Router
         $route->islandComponent = $islandComponent;
 
         return $route;
+    }
+
+    /**
+     * Register a PasRPC endpoint for Astro Islands and frontend APIs.
+     */
+    public function rpc(string $uri, string $controllerClass): Route
+    {
+        return $this->addRoute(['POST', 'GET'], $uri, function (Request $request) use ($controllerClass) {
+            $gateway = new \Papastro\Http\Rpc\RpcGateway($this->app);
+            return $gateway->dispatch($request, $controllerClass);
+        });
     }
 
     /**

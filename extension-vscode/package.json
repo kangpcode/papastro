@@ -2,7 +2,7 @@
   "name": "papastro-vscode",
   "displayName": "Papastro - Language, Syntax & File Icons",
   "description": "Official language support, TextMate syntax highlighting, code snippets, and file icon theme for Papastro Hybrid Framework (.pstro). Compatible with VS Code, Antigravity IDE, Cursor, and VSCodium.",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "publisher": "kangpcode",
   "author": {
     "name": "kangpcode (Dhafa Nazula Permadi)",
@@ -20,7 +20,7 @@
   "scripts": {
     "package": "vsce package --no-git-tag-version",
     "publish:vscode": "vsce publish",
-    "publish:openvsx": "ovsx publish papastro-vscode-4.0.0.vsix"
+    "publish:openvsx": "ovsx publish papastro-vscode-5.0.0.vsix"
   },
   "galleryBanner": {
     "color": "#08305b",

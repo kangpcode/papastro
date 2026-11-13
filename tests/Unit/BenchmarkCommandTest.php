@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v4.0.0
+ *  Papastro Framework v5.0.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -37,7 +37,7 @@ class BenchmarkCommandTest extends TestCase
         $output = ob_get_clean();
 
         $this->assertSame(0, $code);
-        $this->assertStringContainsString('PAPASTRO v4.0.0 HIGH-CONCURRENCY LIVE BENCHMARK', $output);
+        $this->assertStringContainsString('PAPASTRO v5.0.0 HIGH-CONCURRENCY LIVE BENCHMARK', $output);
         $this->assertStringContainsString('Throughput (Single Core)', $output);
         $this->assertStringContainsString('Zero Leaks', $output);
     }

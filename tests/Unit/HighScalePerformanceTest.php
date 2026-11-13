@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v4.0.0 — created by kangpcode (Dhafa Nazula Permadi)
+ *  Papastro Framework v5.0.0 — created by kangpcode (Dhafa Nazula Permadi)
  *  Free to use & extend. This watermark must remain in source code.
  * ------------------------------------------------------------------
  */
@@ -57,7 +57,7 @@ class HighScalePerformanceTest extends TestCase
     {
         $middleware = new CompressResponse();
 
-        $largeBody = str_repeat('Papastro High Concurrency Framework v4.0.0. ', 100); // ~4.5KB
+        $largeBody = str_repeat('Papastro High Concurrency Framework v5.0.0. ', 100); // ~4.5KB
 
         // Without Accept-Encoding gzip -> No compression
         $req1 = new Request('GET', '/test');

@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v4.0.0
+ *  Papastro Framework v5.0.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
@@ -76,7 +76,7 @@ class SwooleServer
 
         $server->on('Start', function ($server) {
             echo "\033[32m";
-            echo "  [Swoole] Papastro Coroutine Server (v4.0.0)\n";
+            echo "  [Swoole] Papastro Coroutine Server (v5.0.0)\n";
             echo "  @author kangpcode (Dhafa Nazula Permadi)\n";
             echo "\033[0m";
             echo "  - Listening on: http://{$this->host}:{$this->port}\n";
