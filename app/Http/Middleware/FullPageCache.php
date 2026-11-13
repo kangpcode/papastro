@@ -126,3 +126,4 @@ class FullPageCache
         return 'full_page_cache_' . sha1("{$uri}|{$accept}");
     }
 }
+

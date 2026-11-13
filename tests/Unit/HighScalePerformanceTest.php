@@ -107,3 +107,4 @@ class HighScalePerformanceTest extends TestCase
         @rmdir($tempDir);
     }
 }
+
