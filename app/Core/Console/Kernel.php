@@ -45,6 +45,7 @@ class Kernel
             'optimize' => Commands\OptimizeCommand::class,
             'cache:clear' => Commands\CacheClearCommand::class,
             'route:cache' => Commands\RouteCacheCommand::class,
+            'route:clear' => Commands\RouteClearCommand::class,
             'route:list' => Commands\RouteListCommand::class,
 
             // Module
@@ -186,7 +187,7 @@ class Kernel
             'Maintenance' => ['down', 'up'],
             'SEO & PWA' => ['seo:sitemap', 'pwa:generate', 'pwa:precache'],
             'Debug' => ['debug:route', 'debug:island', 'debug:clear'],
-            'Cache & Optimize' => ['cache:clear', 'optimize', 'route:cache', 'route:list'],
+            'Cache & Optimize' => ['cache:clear', 'optimize', 'route:cache', 'route:clear', 'route:list'],
             'Concurrency & Engine' => ['pastroutine:test'],
             'App & Maintenance' => ['key:generate', 'upgrade'],
         ];

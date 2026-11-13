@@ -137,6 +137,23 @@ class RouteCacheCommand extends Command
 }
 
 /**
+ * papastro route:clear — clears cached routes
+ */
+class RouteClearCommand extends Command
+{
+    public function execute(array $args): int
+    {
+        $cachePath = $this->app->storagePath('cache/routes/routes.php');
+        if (file_exists($cachePath)) {
+            @unlink($cachePath);
+        }
+
+        $this->success('Route cache cleared successfully.');
+        return 0;
+    }
+}
+
+/**
  * papastro route:list — lists all routes
  */
 class RouteListCommand extends Command
