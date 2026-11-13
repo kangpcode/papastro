@@ -1,0 +1,15 @@
+# Jekyll Configuration for Papastro Framework Documentation
+title: Papastro Framework
+description: The Ultra High-Concurrency Full-Stack PHP Framework
+baseurl: "/papastro"
+url: "https://kangpcode.github.io"
+markdown: kramdown
+permalink: pretty
+kramdown:
+  input: GFM
+  hard_wrap: false
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor

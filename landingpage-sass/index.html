@@ -571,11 +571,11 @@ Route::post('/api/users', [UserController::class, 'store'])
 $priceFormatted = 'Rp ' . number_format($product->price, 0, ',', '.');
 ---
 <div class='product-card'>
-    <h2>{{ $product->name }}</h2>
-    <p class='price'>{{ $priceFormatted }}</p>
+    <h2>&#123;&#123; $product->name &#125;&#125;</h2>
+    <p class='price'>&#123;&#123; $priceFormatted &#125;&#125;</p>
 
     <!-- Astro Island: Hidrasi client hanya saat elemen masuk viewport -->
-    <island:cart-button client:visible product-id='{{ $product->id }}'>
+    <island:cart-button client:visible product-id='&#123;&#123; $product->id &#125;&#125;'>
         <button class='btn'>Beli Sekarang</button>
     </island:cart-button>
 </div>" data-copy-label="Island template copied!">Copy</button>
@@ -585,11 +585,11 @@ $priceFormatted = 'Rp ' . number_format($product->price, 0, ',', '.');
 <span class="hl-variable">$priceFormatted</span> = <span class="hl-string">'Rp '</span> . <span class="hl-func">number_format</span>(<span class="hl-variable">$product</span>->price, 0, <span class="hl-string">','</span>, <span class="hl-string">'.'</span>);
 ---
 &lt;<span class="hl-keyword">div</span> <span class="hl-attr">class</span>=<span class="hl-string">"product-card"</span>&gt;
-    &lt;<span class="hl-keyword">h2</span>&gt;{{ <span class="hl-variable">$product</span>->name }}&lt;/<span class="hl-keyword">h2</span>&gt;
-    &lt;<span class="hl-keyword">p</span> <span class="hl-attr">class</span>=<span class="hl-string">"price"</span>&gt;{{ <span class="hl-variable">$priceFormatted</span> }}&lt;/<span class="hl-keyword">p</span>&gt;
+    &lt;<span class="hl-keyword">h2</span>&gt;&#123;&#123; <span class="hl-variable">$product</span>->name &#125;&#125;&lt;/<span class="hl-keyword">h2</span>&gt;
+    &lt;<span class="hl-keyword">p</span> <span class="hl-attr">class</span>=<span class="hl-string">"price"</span>&gt;&#123;&#123; <span class="hl-variable">$priceFormatted</span> &#125;&#125;&lt;/<span class="hl-keyword">p</span>&gt;
 
     &lt;<span class="hl-comment">!-- Astro Island: JS dihidrasi secara pasif hanya ketika terlihat di layar --&gt;</span>
-    &lt;<span class="hl-type">island:cart-button</span> <span class="hl-attr">client:visible</span> <span class="hl-attr">product-id</span>=<span class="hl-string">"{{ $product->id }}"</span>&gt;
+    &lt;<span class="hl-type">island:cart-button</span> <span class="hl-attr">client:visible</span> <span class="hl-attr">product-id</span>=<span class="hl-string">"&#123;&#123; $product->id &#125;&#125;"</span>&gt;
         &lt;<span class="hl-keyword">button</span> <span class="hl-attr">class</span>=<span class="hl-string">"btn"</span>&gt;Beli Sekarang&lt;/<span class="hl-keyword">button</span>&gt;
     &lt;/<span class="hl-type">island:cart-button</span>&gt;
 &lt;/<span class="hl-keyword">div</span>&gt;</code></pre>
