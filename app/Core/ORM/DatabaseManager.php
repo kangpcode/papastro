@@ -111,3 +111,4 @@ class DatabaseManager
         return $this->connection()->$method(...$parameters);
     }
 }
+

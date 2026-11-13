@@ -85,3 +85,4 @@ class MultiDatabaseTest extends TestCase
         $this->assertInstanceOf(MongoConnection::class, $mongoConn);
     }
 }
+
