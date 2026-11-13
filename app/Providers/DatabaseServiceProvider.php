@@ -16,27 +16,33 @@ namespace App\Providers;
 
 use Papastro\Foundation\ServiceProvider;
 use Papastro\ORM\Connection;
+use Papastro\ORM\DatabaseManager;
 use Papastro\ORM\Model;
 
 class DatabaseServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->app->singleton(Connection::class, function ($app) {
-            $config = $app->make('config');
-            $driver = $config->get('database.default', 'mysql');
-            $dbConf = $config->get("database.connections.{$driver}", []);
-
-            $connection = new Connection($dbConf);
-
-            if ($app->debug() && $app->bound(\Papastro\Debugger\QueryCollector::class)) {
-                $connection->setQueryCollector($app->make(\Papastro\Debugger\QueryCollector::class));
-            }
-
-            return $connection;
+        // 1. Register DatabaseManager singleton for multi-database connection management
+        $this->app->singleton(DatabaseManager::class, function ($app) {
+            return new DatabaseManager($app);
         });
 
-        $this->app->alias(Connection::class, 'db');
+        // 2. Default Connection instance resolves through DatabaseManager
+        $this->app->singleton(Connection::class, function ($app) {
+            $manager = $app->make(DatabaseManager::class);
+            $conn = $manager->connection();
+            if ($conn instanceof Connection) {
+                return $conn;
+            }
+            $config = $app->make('config');
+            $driver = $config->get('database.default', 'sqlite');
+            $dbConf = $config->get("database.connections.{$driver}", []);
+            return new Connection($dbConf);
+        });
+
+        $this->app->alias(DatabaseManager::class, 'db');
+        $this->app->alias(DatabaseManager::class, 'db.manager');
     }
 
     public function boot(): void

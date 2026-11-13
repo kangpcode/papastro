@@ -413,3 +413,34 @@ if (!function_exists('pascon')) {
         return \Papastro\Pascon\Pascon::svg($name, $attributes);
     }
 }
+
+if (!function_exists('db')) {
+    /**
+     * Get a Database Connection or DatabaseManager instance.
+     * Supports: MySQL, MariaDB, PostgreSQL, Supabase, SQLite, MongoDB, SQL Server.
+     *
+     * @param string|null $connection
+     * @return \Papastro\ORM\DatabaseManager|\Papastro\ORM\Connection|\Papastro\ORM\MongoConnection|mixed
+     */
+    function db(?string $connection = null): mixed
+    {
+        $app = \Papastro\Foundation\Application::getInstance();
+        $manager = $app->make(\Papastro\ORM\DatabaseManager::class);
+
+        return $connection === null ? $manager : $manager->connection($connection);
+    }
+}
+
+if (!function_exists('mongodb')) {
+    /**
+     * Get a MongoDB Connection or Collection instance.
+     *
+     * @param string|null $collection
+     * @return \Papastro\ORM\MongoConnection|mixed
+     */
+    function mongodb(?string $collection = null): mixed
+    {
+        $mongo = db('mongodb');
+        return $collection === null ? $mongo : $mongo->collection($collection);
+    }
+}

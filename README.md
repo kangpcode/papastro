@@ -28,7 +28,7 @@
 
 1. [Brand & Identitas Visual](#brand--identitas-visual)
 2. [Visi dan Konsep Utama](#visi-dan-konsep-utama)
-3. [Fitur Unggulan v3.0.0](#fitur-unggulan-v300)
+3. [Fitur Unggulan v4.0.0](#fitur-unggulan-v300)
 4. [Auto-Update & Migrasi Versi Aman (Non-Destructive)](#auto-update--migrasi-versi-aman-non-destructive)
 5. [Pastroutine — Go-style Concurrency](#pastroutine--go-style-concurrency)
 6. [High-Concurrency Octane Runtime Server](#high-concurrency-octane-runtime-server)
@@ -105,7 +105,7 @@ Papastro dirancang untuk memberikan pengalaman pengembang (*Developer Experience
 - **Ekspansi Koleksi Pascon SVG**: Ikon vektor mandiri modern tanpa font icon eksternal (`<pascon:... />` dan `@pascon(...)`).
 - **Resilience & Anti-Crash**: Cadangan memori 32KB (anti-OOM), penanganan fatal error aman, dan auto-provisioning database SQLite.
 - **Ekstensi Resmi IDE (VS Code, Antigravity IDE & Cursor)**: Dukungan bahasa penuh untuk file `.pstro`, penyorotan sintaksis TextMate, auto-complete snippets, dan tema ikon file astronot resmi di [`extension-vscode/`](file:///home/kangpcode/wwwsite/papastro/extension-vscode).
-- **Auto-Update Non-Destructive**: Upgrade aman dari v1.2.0/v2.0.0/v3.0.0 ke v4.0.0 tanpa merusak modul aplikasi atau data yang sudah dibuat.
+- **Auto-Update Non-Destructive**: Upgrade aman dari v1.2.0/v2.0.0/v4.0.0 ke v4.0.0 tanpa merusak modul aplikasi atau data yang sudah dibuat.
 - **Pastroutine Concurrency Engine**: Menjalankan eksekusi konkuren ringan di PHP dengan channel pesan dan sinkronisasi thread-safe, dilengkapi fluent `catch()` dan `then()`.
 - **Octane-Style Persistent Runtime Server**: Menghilangkan bootstrap overhead PHP pada setiap request, dilengkapi `StateResetter` otomatis (anti memory-leak).
 - **Pasway Realtime Engine**: Server WebSocket terintegrasi dengan protokol Pusher & Laravel Echo out-of-the-box.
@@ -641,7 +641,7 @@ Papastro Framework didistribusikan di bawah ketentuan lisensi bebas penggunaan d
 ```php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v3.0.0
+ *  Papastro Framework v4.0.0
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
