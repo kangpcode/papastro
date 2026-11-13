@@ -1,5 +1,13 @@
 # Changelog — Papastro Extension for VS Code & Antigravity IDE
 
+## [4.0.0] - 2026-11-13
+
+### Added
+- **Pascon Tag Highlighting**: Support for `<pascon:... />` components and `@pascon(...)` directives.
+- **SSG Prerendering**: Support for prerender directives and frontmatter configuration.
+- **Snippets**: Added snippets for Pascon SVG vector icons, SSE streams, and HTTP client calls.
+- **Framework v4 Alignment**: Updated to match Papastro Framework v4.0.0 engine specifications.
+
 ## [3.0.0] - 2026-11-11
 
 ### Initial Release

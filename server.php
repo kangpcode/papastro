@@ -1,7 +1,7 @@
 <?php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v3.0.0 — Development Server Router
+ *  Papastro Framework v4.0.0 — Development Server Router
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)
  *  @copyright  Copyright (c) kangpcode

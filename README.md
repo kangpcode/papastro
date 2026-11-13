@@ -90,10 +90,15 @@ Papastro dirancang untuk memberikan pengalaman pengembang (*Developer Experience
 
 ---
 
-## Fitur Unggulan v3.0.0
+## Fitur Unggulan v4.0.0
 
+- **Pastream Realtime SSE & AI Streaming**: Streaming respon chunked dan Server-Sent Events untuk AI LLM tokens (OpenAI, Gemini, Claude, Ollama) dan live data updates dengan helper `stream()` dan `sse()`.
+- **PasFetch Fluent HTTP Client**: Klien HTTP native modern tanpa dependensi Guzzle dengan request pooling via coroutine Pastroutine (`http()`, `Http::pool()`).
+- **Fast SSG & Prerendering**: Pre-komputasi halaman statis dan islands ke file HTML di `public/` untuk pengiriman mikrodetik 0 CPU runtime (`Route::prerender()`, `php papastro prerender`).
+- **Zero-Config SQLite & Composer Setup**: SQLite dengan WAL mode default langsung pakai out-of-the-box dan wizard interaktif `php papastro setup`.
+- **Ekspansi Koleksi Pascon SVG**: Ikon vektor mandiri modern tanpa font icon eksternal (`<pascon:... />` dan `@pascon(...)`).
 - **Ekstensi Resmi IDE (VS Code, Antigravity IDE & Cursor)**: Dukungan bahasa penuh untuk file `.pstro`, penyorotan sintaksis TextMate, auto-complete snippets, dan tema ikon file astronot resmi di [`extension-vscode/`](file:///home/kangpcode/wwwsite/papastro/extension-vscode).
-- **Auto-Update Non-Destructive**: Upgrade aman dari v1.2.0/v2.0.0 ke v3.0.0 tanpa merusak modul aplikasi atau data yang sudah dibuat.
+- **Auto-Update Non-Destructive**: Upgrade aman dari v1.2.0/v2.0.0/v3.0.0 ke v4.0.0 tanpa merusak modul aplikasi atau data yang sudah dibuat.
 - **Pastroutine Concurrency Engine**: Menjalankan eksekusi konkuren ringan di PHP dengan channel pesan dan sinkronisasi thread-safe, dilengkapi fluent `catch()` dan `then()`.
 - **Octane-Style Persistent Runtime Server**: Menghilangkan bootstrap overhead PHP pada setiap request, dilengkapi `StateResetter` otomatis (anti memory-leak).
 - **Pasway Realtime Engine**: Server WebSocket terintegrasi dengan protokol Pusher & Laravel Echo out-of-the-box.
@@ -107,7 +112,7 @@ Papastro dirancang untuk memberikan pengalaman pengembang (*Developer Experience
 
 ## Auto-Update & Migrasi Versi Aman (Non-Destructive)
 
-Papastro v3.0.0 dilengkapi dengan engine pembaruan otomatis yang **non-destructive (tanpa merusak kode aplikasi pengguna)**. Ketika Anda atau pengguna lain memiliki proyek yang dibuat menggunakan **Papastro versi 1.2.0 atau di bawahnya**, Anda dapat langsung melakukan pembaruan ke versi terbaru dengan satu perintah:
+Papastro v4.0.0 dilengkapi dengan engine pembaruan otomatis yang **non-destructive (tanpa merusak kode aplikasi pengguna)**. Ketika Anda atau pengguna lain memiliki proyek yang dibuat menggunakan **Papastro versi terdahulu (v1.x, v2.x, v3.x)**, Anda dapat langsung melakukan pembaruan ke versi terbaru dengan satu perintah:
 
 ```bash
 php papastro upgrade
@@ -120,7 +125,7 @@ php papastro update
 2. **Rute & Halaman Kustom Aman**: File rute `routes/web.php`, `routes/api.php`, dan template di `resources/**` dipertahankan sepenuhnya.
 3. **Konfigurasi Lingkungan & Basis Data Aman**: File `.env` beserta seluruh variabel environment, kredensial koneksi, dan data database SQLite/MySQL/PostgreSQL tidak akan diubah atau di-reset.
 4. **Sinkronisasi Inti Framework Otomatis**:
-   - File inti engine (`app/Core/**`) dan CLI `papastro` diperbarui ke engine v3.0.0 terbaru.
+   - File inti engine (`app/Core/**`) dan CLI `papastro` diperbarui ke engine v4.0.0 terbaru.
    - Konfigurasi baru yang dibutuhkan (seperti `config/pasway.php`) akan dibuat otomatis jika belum ada, tanpa menyentuh konfigurasi lama.
    - Aset client terbaru (`public/pasway.js`, logo resmi di `art/` dan `public/assets/img/`) disinkronkan otomatis.
 5. **Migrasi Otomatis & Rebuild Cache**:
@@ -229,7 +234,7 @@ $squared = Parallel::map([1, 2, 3, 4, 5], fn($n) => $n * $n);
 
 ## High-Concurrency Octane Runtime Server
 
-Papastro v3.0.0 menghadirkan runtime server berbasis in-memory persistent worker:
+Papastro v4.0.0 menghadirkan runtime server berbasis in-memory persistent worker:
 
 ```bash
 # Jalankan server runtime native multi-worker
@@ -315,7 +320,7 @@ Pasway::presence('room.101')->broadcast('UserJoined', ['name' => 'Dhafa']);
 
 Berikut adalah hasil uji benchmark performa beban tinggi (*stress testing*) menggunakan `wrk -t12 -c400 -d30s` pada arsitektur server 8 Core CPU / 16 GB RAM:
 
-| Parameter Perbandingan | Papastro v3.0.0 (Octane) | Laravel 11 (Octane) | Next.js 14 (App Router) | Nuxt.js 3 (Nitro) | Astro 4 (Node SSR) |
+| Parameter Perbandingan | Papastro v4.0.0 (Octane) | Laravel 11 (Octane) | Next.js 14 (App Router) | Nuxt.js 3 (Nitro) | Astro 4 (Node SSR) |
 |------------------------|--------------------------|---------------------|-------------------------|-------------------|--------------------|
 | **Bahasa Utama** | **PHP 8.3 / 8.4 / 8.5** | PHP 8.3 | Node.js (TypeScript) | Node.js (TypeScript) | Node.js / TypeScript |
 | **Arsitektur Rendering** | **Hybrid SSR + Island Hydration** | Blade SSR | Full React SSR/CSR | Full Vue SSR/CSR | Island Architecture SSR |
@@ -385,9 +390,9 @@ php papastro setup --mode=modules  # kembali hanya modul (isi plugins/ tetap ama
 Untuk penyorotan sintaks file `.pstro`, auto-complete snippets, dan tema ikon file astronot resmi:
 ```bash
 # Instal file .vsix langsung ke editor (VS Code / Antigravity)
-code --install-extension extension-vscode/papastro-vscode-3.0.0.vsix
+code --install-extension extension-vscode/papastro-vscode-4.0.0.vsix
 ```
-*Atau di VS Code / Antigravity IDE: buka panel **Extensions** (`Ctrl+Shift+X`) → klik menu titik tiga (**...**) di sudut kanan atas → pilih **Install from VSIX...** → arahkan ke file `extension-vscode/papastro-vscode-3.0.0.vsix`.*
+*Atau di VS Code / Antigravity IDE: buka panel **Extensions** (`Ctrl+Shift+X`) → klik menu titik tiga (**...**) di sudut kanan atas → pilih **Install from VSIX...** → arahkan ke file `extension-vscode/papastro-vscode-4.0.0.vsix`.*
 
 ---
 

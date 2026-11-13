@@ -1,6 +1,6 @@
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v3.0.0 — Pasway Client SDK
+ *  Papastro Framework v4.0.0 — Pasway Client SDK
  *  Realtime WebSocket client (Echo & Pusher compatible)
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)

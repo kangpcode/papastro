@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/kangpcode/papastro"><img src="https://img.shields.io/badge/version-3.0.0-blue.svg?style=flat-square" alt="Version"></a>
+  <a href="https://github.com/kangpcode/papastro"><img src="https://img.shields.io/badge/version-4.0.0-blue.svg?style=flat-square" alt="Version"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg?style=flat-square" alt="License"></a>
   <img src="https://img.shields.io/badge/support-VS%20Code%20%7C%20Antigravity%20%7C%20Cursor-purple.svg?style=flat-square" alt="IDEs">
 </p>
@@ -66,7 +66,7 @@ Ketik prefix berikut untuk auto-complete template:
 1. Di VS Code / Antigravity IDE, buka tab **Extensions** (`Ctrl + Shift + X`).
 2. Klik menu titik tiga (**...**) di kanan atas panel Extensions.
 3. Pilih **Install from VSIX...**
-4. Arahkan ke file `papastro-vscode-3.0.0.vsix` di folder `extension-vscode/`.
+4. Arahkan ke file `papastro-vscode-4.0.0.vsix` di folder `extension-vscode/`.
 
 ### Opsi 2: Instalasi Manual Direktori
 Salin folder `extension-vscode` ke direktori ekstensi IDE Anda:
@@ -89,7 +89,7 @@ Restart IDE setelah penyalinan.
 cd extension-vscode
 npx --yes @vscode/vsce package --no-git-tag-version
 ```
-Perintah ini akan menghasilkan file `papastro-vscode-3.0.0.vsix`.
+Perintah ini akan menghasilkan file `papastro-vscode-4.0.0.vsix`.
 
 ---
 
@@ -106,7 +106,7 @@ Perintah ini akan menghasilkan file `papastro-vscode-3.0.0.vsix`.
    npx --yes @vscode/vsce login kangpcode
    npx --yes @vscode/vsce publish
    ```
-   *Atau unggah langsung file `papastro-vscode-3.0.0.vsix` melalui tombol **New Extension → None (VSIX)** di portal.*
+   *Atau unggah langsung file `papastro-vscode-4.0.0.vsix` melalui tombol **New Extension → None (VSIX)** di portal.*
 
 ### 2. Publikasi ke Open VSX Registry (Antigravity IDE, Cursor & VSCodium)
 *Menyediakan ekstensi untuk Google Antigravity IDE, Cursor, VSCodium, dan platform open-source:*
@@ -117,7 +117,7 @@ Perintah ini akan menghasilkan file `papastro-vscode-3.0.0.vsix`.
 4. Terbitkan paket via CLI:
    ```bash
    cd extension-vscode
-   npx --yes ovsx publish papastro-vscode-3.0.0.vsix -p <TOKEN_OPENVSX_ANDA>
+   npx --yes ovsx publish papastro-vscode-4.0.0.vsix -p <TOKEN_OPENVSX_ANDA>
    ```
 
 ---
