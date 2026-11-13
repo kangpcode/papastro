@@ -2,55 +2,61 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
         <loc>http://localhost:8000/</loc>
-        <lastmod>2026-08-07</lastmod>
+        <lastmod>2026-11-13</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
     </url>
     <url>
         <loc>http://localhost:8000/offline</loc>
-        <lastmod>2026-08-07</lastmod>
+        <lastmod>2026-11-13</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>http://localhost:8000/pasway/sse</loc>
+        <lastmod>2026-11-13</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>http://localhost:8000/api/health</loc>
-        <lastmod>2026-08-07</lastmod>
+        <lastmod>2026-11-13</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>http://localhost:8000/product</loc>
-        <lastmod>2026-08-07</lastmod>
+        <lastmod>2026-11-13</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>http://localhost:8000/api/product</loc>
-        <lastmod>2026-08-07</lastmod>
+        <lastmod>2026-11-13</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>http://localhost:8000/login</loc>
-        <lastmod>2026-08-07</lastmod>
+        <lastmod>2026-11-13</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>http://localhost:8000/register</loc>
-        <lastmod>2026-08-07</lastmod>
+        <lastmod>2026-11-13</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>http://localhost:8000/blog</loc>
-        <lastmod>2026-08-07</lastmod>
+        <lastmod>2026-11-13</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>http://localhost:8000/blog/create</loc>
-        <lastmod>2026-08-07</lastmod>
+        <lastmod>2026-11-13</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>

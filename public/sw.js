@@ -6,7 +6,7 @@
  * Strategy: cache-first
  */
 
-const CACHE_NAME    = "Papastro App-v2";
+const CACHE_NAME    = "Papastro App-v1";
 const PRECACHE_URLS = ["\/","\/offline"];
 const OFFLINE_PAGE  = "\/offline";
 
@@ -31,7 +31,7 @@ self.addEventListener('activate', event => {
     );
 });
 
-// ── Fetch: cache-first strategy with safe validation ─────────────
+// ── Fetch: cache-first strategy ─────────────────────────────────
 self.addEventListener('fetch', event => {
     // Only handle GET requests
     if (event.request.method !== 'GET') return;
@@ -41,17 +41,11 @@ self.addEventListener('fetch', event => {
 
     event.respondWith(
         caches.match(event.request).then(cached => {
-            // Only use cached response if it was successful (not a 404/500)
-            if (cached && cached.ok && cached.status === 200) {
-                return cached;
-            }
+            if (cached) return cached;
             return fetch(event.request)
                 .then(response => {
-                    // Only cache successful OK responses
-                    if (response && response.ok && response.status === 200) {
-                        const clone = response.clone();
-                        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-                    }
+                    const clone = response.clone();
+                    caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
                     return response;
                 })
                 .catch(() => caches.match(OFFLINE_PAGE));
