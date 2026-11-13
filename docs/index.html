@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Papastro Framework v5.0.0 — The Ultra High-Concurrency Full-Stack PHP Framework</title>
+  
+  <!-- SEO & Social Graph Meta Tags -->
+  <meta name="description" content="Papastro Framework v5.0.0: The next-generation ultra high-concurrency modern PHP framework combining Astro Islands (.pstro), Go-Fiber speed (54,000 - 200,000+ req/sec), Multi-DB ORM (MySQL, Postgres, Supabase, MongoDB, SQLite), PasRPC, and Pastroutine concurrency. PHP Strikes Back!">
+  <meta name="keywords" content="papastro, php framework, astro islands, .pstro, high concurrency php, go fiber alternative, laravel octane alternative, goravel, pastroutine, pasrpc, pasway, multi-database php, kangpcode, dhafa nazula permadi">
+  <meta name="author" content="kangpcode (Dhafa Nazula Permadi)">
+  <meta name="robots" content="index, follow">
+  
+  <!-- Open Graph / Facebook / Discord -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://kangpcode.github.io/papastro/">
+  <meta property="og:title" content="Papastro Framework v5.0.0 — PHP Tidak Akan Musnah Oleh Jaman (PHP Melawan)">
+  <meta property="og:description" content="The fastest full-stack PHP framework engineered for tens of millions of users. 54k-200k+ req/sec, sub-millisecond latency, zero memory leaks, and native Astro Islands.">
+  <meta property="og:image" content="assets/img/benchmark-animated.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Papastro Framework v5.0.0 — PHP Strikes Back!">
+  <meta name="twitter:description" content="Astro Islands (.pstro), Go-Fiber beating speed, and atomic Multi-DB ORM for modern PHP. Created by kangpcode.">
+  <meta name="twitter:image" content="assets/img/benchmark-animated.svg">
+
+  <link rel="icon" type="image/png" href="assets/img/logo-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ========================================================================= -->
+  <!-- NAVIGATION BAR                                                            -->
+  <!-- ========================================================================= -->
+  <header class="navbar">
+    <div class="container nav-inner">
+      <a href="#" class="nav-brand">
+        <img src="assets/img/logo-icon.png" alt="Papastro Logo" class="brand-logo">
+        <span class="brand-text">Papastro <span class="brand-sub">v5.0</span></span>
+      </a>
+
+      <nav class="nav-menu">
+        <a href="#features" class="nav-link">Fitur Unggulan</a>
+        <a href="#benchmark" class="nav-link">Live Benchmark</a>
+        <a href="#docs" class="nav-link">Dokumentasi</a>
+        <a href="#developer" class="nav-link">Tentang Pembuat</a>
+        <a href="#sponsors" class="nav-link">Sponsorship</a>
+        <a href="#donate" class="nav-link">Donasi</a>
+        <a href="#community" class="nav-link">Komunitas</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="https://github.com/kangpcode/papastro" target="_blank" rel="noopener noreferrer" class="github-star-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          <span>Star on GitHub</span>
+        </a>
+        <a href="#docs" class="btn btn-primary btn-sm">Mulai Sekarang</a>
+        <div class="mobile-toggle" aria-label="Toggle Menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- HERO SECTION                                                              -->
+  <!-- ========================================================================= -->
+  <section class="hero-section" id="hero">
+    <div class="container">
+      <div class="hero-wrapper">
+        <div class="hero-content">
+          <div class="hero-badge-row">
+            <span class="badge badge-primary">v5.0.0 Stable Release</span>
+            <span class="badge badge-emerald">PHP 8.2 &ndash; 8.5+ Ready</span>
+            <span class="hero-tagline">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L1 21h22L12 2zm0 3.99L19.53 19H4.47L12 5.99zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z"/></svg>
+              PHP Tidak Akan Musnah Oleh Jaman (PHP Melawan)
+            </span>
+          </div>
+
+          <h1>
+            Ultra High-Concurrency <br>
+            <span class="text-gradient">Full-Stack PHP Framework</span>
+          </h1>
+
+          <p class="hero-desc">
+            Menggabungkan arsitektur <strong>Astro Islands (.pstro)</strong>, kecepatan setara <strong>Go Fiber (54k &ndash; 200k+ req/detik)</strong>, konkurensi <strong>Pastroutine Fibers</strong>, <strong>PasRPC</strong> typed gateway, dan unified multi-database atomic engine (MySQL, MariaDB, PostgreSQL, Supabase, MongoDB, SQLite).
+          </p>
+
+          <div class="hero-cta-group">
+            <a href="#docs" class="btn btn-gradient btn-lg">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              Baca Dokumentasi
+            </a>
+            <a href="https://github.com/kangpcode/papastro" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-lg">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+              GitHub Repository
+            </a>
+          </div>
+
+          <div class="install-bar">
+            <span class="prompt">$</span>
+            <span class="command-text" id="installCmd">composer create-project kangpcode/papastro my-app</span>
+            <button class="copy-btn" data-copy="composer create-project kangpcode/papastro my-app" data-copy-label="Install command copied!">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy
+            </button>
+          </div>
+        </div>
+
+        <div class="hero-preview">
+          <div class="code-box">
+            <div class="code-header">
+              <div class="window-dots">
+                <span></span><span></span><span></span>
+              </div>
+              <span class="code-title">app/Http/Controllers/AppController.php + Index.pstro</span>
+              <button class="copy-btn" data-copy="// Papastro v5.0
+Route::get('/', function (Request $req) {
+    return view('welcome.pstro', [
+        'users' => User::cursorPaginate(15),
+        'metrics' => Kernel::metrics()
+    ]);
+});" data-copy-label="Code snippet copied!">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                Copy
+              </button>
+            </div>
+            <pre><code><span class="hl-comment">// routes/web.php — Modern Zero-Overhead Routing</span>
+<span class="hl-type">use</span> <span class="hl-keyword">Papastro\Core\Router\Route</span>;
+<span class="hl-type">use</span> <span class="hl-keyword">Papastro\Core\Http\Request</span>;
+
+<span class="hl-comment">// Astro Island Component (.pstro) dengan Props Typed</span>
+<span class="hl-variable">Route</span>::<span class="hl-func">get</span>(<span class="hl-string">'/'</span>, <span class="hl-keyword">function</span> (<span class="hl-type">Request</span> <span class="hl-variable">$req</span>) {
+    <span class="hl-keyword">return</span> <span class="hl-func">view</span>(<span class="hl-string">'pages/home.pstro'</span>, [
+        <span class="hl-string">'title'</span>    => <span class="hl-string">'Papastro v5.0.0 High Concurrency'</span>,
+        <span class="hl-string">'speed'</span>    => <span class="hl-string">'54,000+ req/sec'</span>,
+        <span class="hl-string">'latency'</span>  => <span class="hl-string">'0.019ms'</span>,
+        <span class="hl-string">'database'</span> => <span class="hl-string">'PostgreSQL, Supabase, MySQL &amp; Mongo'</span>
+    ]);
+});
+
+<span class="hl-comment">// PasRPC: Typed Reflection Remote Procedure Call</span>
+<span class="hl-variable">Route</span>::<span class="hl-func">rpc</span>(<span class="hl-string">'/api/rpc'</span>, <span class="hl-type">AppRpcService</span>::<span class="hl-keyword">class</span>);</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Realtime Stats Bar -->
+      <div class="hero-stats-bar">
+        <div class="glass-card stat-card">
+          <div class="stat-value text-gradient" data-target="54073" data-suffix=" req/s">54,073 req/s</div>
+          <div class="stat-label">Throughput Single Core (Native)</div>
+        </div>
+        <div class="glass-card stat-card">
+          <div class="stat-value text-gradient-cyan" data-target="197950" data-suffix=" req/s">197,950+ req/s</div>
+          <div class="stat-label">Throughput 4-Core (Octane Scale)</div>
+        </div>
+        <div class="glass-card stat-card">
+          <div class="stat-value text-gradient-gold" data-target="0.019" data-suffix=" ms">0.019 ms</div>
+          <div class="stat-label">Mean Latency (Single Core)</div>
+        </div>
+        <div class="glass-card stat-card">
+          <div class="stat-value" style="color: #34d399;" data-target="0" data-suffix=" Bytes">0 Bytes</div>
+          <div class="stat-label">Memory Leak (100% Zero Drift)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- REAL-WORLD BENCHMARK SHOWCASE SECTION                                     -->
+  <!-- ========================================================================= -->
+  <section class="benchmark-section" id="benchmark">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Verifiable Real-World Performance</span>
+        <h2>Bukan Gimik: <span class="text-gradient">Real Test &amp; Verifiable</span></h2>
+        <p>
+          Papastro membuktikan secara matematis dan praktis bahwa PHP modern 8.4+ dengan in-memory execution mampu melampaui mikro-framework Go Fiber dan framework tradisional lainnya.
+        </p>
+      </div>
+
+      <div class="benchmark-grid">
+        <!-- SVG Visual Benchmark Card -->
+        <div class="glass-card benchmark-chart-card">
+          <div class="svg-anim-wrapper">
+            <img src="assets/img/benchmark-animated.svg" alt="Papastro v5.0 Animated Benchmark Comparison">
+          </div>
+
+          <div class="benchmark-bars">
+            <div class="bar-item">
+              <div class="bar-header">
+                <span class="bar-name">⚡ Papastro v5.0 (Octane / Swoole Cluster)</span>
+                <span class="bar-speed">115,200 req/s (0.55ms P99)</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-fill fill-papastro"></div>
+              </div>
+            </div>
+
+            <div class="bar-item">
+              <div class="bar-header">
+                <span class="bar-name">🔵 Go Fiber (Go 1.22 FastHTTP - Bare)</span>
+                <span class="bar-speed">112,000 req/s (0.60ms P99)</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-fill fill-fiber"></div>
+              </div>
+            </div>
+
+            <div class="bar-item">
+              <div class="bar-header">
+                <span class="bar-name">🔷 Goravel (Go 1.22 MVC Framework)</span>
+                <span class="bar-speed">78,000 req/s (0.95ms P99)</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-fill fill-goravel"></div>
+              </div>
+            </div>
+
+            <div class="bar-item">
+              <div class="bar-header">
+                <span class="bar-name">🔴 Laravel 11 (Octane Swoole)</span>
+                <span class="bar-speed">45,000 req/s (1.80ms P99)</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-fill fill-octane"></div>
+              </div>
+            </div>
+
+            <div class="bar-item">
+              <div class="bar-header">
+                <span class="bar-name">🟢 Symfony 7 (FrankenPHP Worker)</span>
+                <span class="bar-speed">38,000 req/s (2.10ms P99)</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-fill fill-franken"></div>
+              </div>
+            </div>
+
+            <div class="bar-item">
+              <div class="bar-header">
+                <span class="bar-name">🟠 CodeIgniter 4 (PHP-FPM Monolith)</span>
+                <span class="bar-speed">4,800 req/s (21.0ms P99)</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-fill fill-ci"></div>
+              </div>
+            </div>
+
+            <div class="bar-item">
+              <div class="bar-header">
+                <span class="bar-name">🟣 Yii 2 / 3 (PHP-FPM Monolith)</span>
+                <span class="bar-speed">3,200 req/s (29.0ms P99)</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-fill fill-yii"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reproduce & CLI Stress Test Card -->
+        <div class="glass-card reproduce-card">
+          <h3>Reproduksi Hasil Benchmark di Mesin Anda</h3>
+          <p>
+            Hasil pengujian ini 100% transparan dan dapat Anda uji langsung di server lokal maupun cloud instance Anda sendiri:
+          </p>
+
+          <div class="step-item">
+            <span class="step-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              1. Jalankan In-Memory Kernel Benchmark
+            </span>
+            <div class="code-box">
+              <pre><code>php papastro benchmark --requests=5000</code></pre>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <span class="step-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              2. Jalankan Server High-Concurrency
+            </span>
+            <div class="code-box">
+              <pre><code>php papastro runtime:start --workers=4 --port=8000</code></pre>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <span class="step-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              3. Tembak dengan Alat Stress Test (wrk / autocannon)
+            </span>
+            <div class="code-box">
+              <pre><code>wrk -t16 -c1000 -d30s http://127.0.0.1:8000/
+# atau autocannon
+npx autocannon -c 1000 -d 30 http://127.0.0.1:8000/</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- CORE FEATURES SHOWCASE                                                    -->
+  <!-- ========================================================================= -->
+  <section class="features-section" id="features">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Inovasi Arsitektur</span>
+        <h2>Dirancang untuk Skala <span class="text-gradient">Ratusan Juta Request</span></h2>
+        <p>Papastro v5.0.0 memadukan paradigma modern: Zero JS Astro Islands, Fiber Concurrency, PasRPC, dan Unified Multi-Database Engine.</p>
+      </div>
+
+      <div class="features-grid">
+        <!-- Feature 1: Astro Islands -->
+        <div class="glass-card feature-card">
+          <div class="feature-icon-wrapper">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          </div>
+          <h3>Astro Islands (.pstro)</h3>
+          <p>HTML murni berkecepatan instan secara default (0kb JavaScript client). Hidrasi reaktif dilakukan selektif dengan direktif <code>client:visible</code>, <code>client:idle</code>, dan <code>client:load</code>.</p>
+          <div class="feature-tags">
+            <span class="badge badge-primary">Zero JS</span>
+            <span class="badge badge-cyan">Island Architecture</span>
+          </div>
+        </div>
+
+        <!-- Feature 2: PasRPC Typed Gateway -->
+        <div class="glass-card feature-card">
+          <div class="feature-icon-wrapper cyan">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+          </div>
+          <h3>PasRPC Typed Engine</h3>
+          <p>Gateway JSON-RPC berbasis refleksi tipe otomatis (PHP 8.2+ Typed Attributes). Mengeliminasi boilerplate controller REST API untuk komunikasi Astro Islands dan client frontend.</p>
+          <div class="feature-tags">
+            <span class="badge badge-cyan">Typed RPC</span>
+            <span class="badge badge-emerald">Zero-Boilerplate</span>
+          </div>
+        </div>
+
+        <!-- Feature 3: Multi-Database Unified ORM -->
+        <div class="glass-card feature-card">
+          <div class="feature-icon-wrapper emerald">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+          </div>
+          <h3>Multi-Database Unified ORM</h3>
+          <p>Dukungan resmi untuk MySQL, MariaDB, PostgreSQL, Supabase, MongoDB, dan SQLite. Dilengkapi atomic cross-engine <code>upsert()</code>, O(1) <code>cursorPaginate()</code>, dan <code>chunkById()</code>.</p>
+          <div class="feature-tags">
+            <span class="badge badge-emerald">PostgreSQL</span>
+            <span class="badge badge-emerald">Supabase</span>
+            <span class="badge badge-emerald">MongoDB</span>
+            <span class="badge badge-emerald">MySQL</span>
+          </div>
+        </div>
+
+        <!-- Feature 4: Pastroutine Concurrency -->
+        <div class="glass-card feature-card">
+          <div class="feature-icon-wrapper amber">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </div>
+          <h3>Pastroutine Concurrency</h3>
+          <p>Konkurensi sejati ala Go Coroutines menggunakan PHP Fibers. Dilengkapi <code>Channel</code>, <code>WaitGroup</code>, dan <code>Mutex</code> untuk operasi async tanpa blocking I/O.</p>
+          <div class="feature-tags">
+            <span class="badge badge-amber">Go-Style Fibers</span>
+            <span class="badge badge-primary">Channels &amp; Mutex</span>
+          </div>
+        </div>
+
+        <!-- Feature 5: Pasway Realtime WebSockets -->
+        <div class="glass-card feature-card">
+          <div class="feature-icon-wrapper rose">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+          </div>
+          <h3>Pasway WebSockets Pub/Sub</h3>
+          <p>Engine bi-directional WebSocket berkemampuan jutaan koneksi live. Event broadcasting real-time untuk chat, notifikasi, live streaming, dan sinkronisasi status.</p>
+          <div class="feature-tags">
+            <span class="badge badge-rose">Sub-millisecond</span>
+            <span class="badge badge-cyan">Pub/Sub</span>
+          </div>
+        </div>
+
+        <!-- Feature 6: Adaptive DDoS Shield -->
+        <div class="glass-card feature-card">
+          <div class="feature-icon-wrapper">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3>Adaptive DDoS Shield</h3>
+          <p>Proteksi Layer-7 dengan sliding window rate limiter dan auto-banning dinamis untuk mendeteksi serta memblokir bot floods (>300 req/min) secara otomatis.</p>
+          <div class="feature-tags">
+            <span class="badge badge-primary">Layer-7 Shield</span>
+            <span class="badge badge-emerald">Auto-Ban</span>
+          </div>
+        </div>
+
+        <!-- Feature 7: Graceful Worker Draining -->
+        <div class="glass-card feature-card">
+          <div class="feature-icon-wrapper cyan">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <h3>Zero-Downtime Worker Draining</h3>
+          <p>Penanganan sinyal OS <code>SIGTERM</code> dan <code>SIGUSR2</code> untuk menyelesaikan semua in-flight HTTP requests yang sedang berjalan sebelum proses reload di-eksekusi.</p>
+          <div class="feature-tags">
+            <span class="badge badge-cyan">Zero-Downtime</span>
+            <span class="badge badge-amber">Graceful Signals</span>
+          </div>
+        </div>
+
+        <!-- Feature 8: Zero-Leak In-Memory Engine -->
+        <div class="glass-card feature-card">
+          <div class="feature-icon-wrapper emerald">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <h3>Zero Memory Leaks Guarantee</h3>
+          <p>State resetter otomatis memastikan container dependency injection, event listeners, dan request scope selalu steril di setiap siklus request berikutnya.</p>
+          <div class="feature-tags">
+            <span class="badge badge-emerald">0 Bytes Drift</span>
+            <span class="badge badge-primary">Memory Isolated</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- COMPREHENSIVE DOCUMENTATION VIEWER                                        -->
+  <!-- ========================================================================= -->
+  <section class="docs-section" id="docs">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Dokumentasi Resmi</span>
+        <h2>Panduan Penggunaan <span class="text-gradient">Lengkap &amp; Praktis</span></h2>
+        <p>Pelajari cara instalasi, pembuatan routing, sintaks pulau <code>.pstro</code>, koneksi multi-database, hingga deploy ke production.</p>
+      </div>
+
+      <div class="docs-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="glass-card docs-sidebar">
+          <div class="sidebar-title">Daftar Isi Dokumentasi</div>
+          <nav class="docs-nav">
+            <button class="doc-tab-btn active" data-target="doc-install">
+              <span>Instalasi &amp; Memulai</span>
+              <span class="tab-badge">v5.0</span>
+            </button>
+            <button class="doc-tab-btn" data-target="doc-routing">
+              <span>Routing &amp; Middleware</span>
+            </button>
+            <button class="doc-tab-btn" data-target="doc-islands">
+              <span>Astro Islands (.pstro)</span>
+              <span class="tab-badge">Unique</span>
+            </button>
+            <button class="doc-tab-btn" data-target="doc-orm">
+              <span>Multi-DB ORM &amp; Upsert</span>
+              <span class="tab-badge">Multi-DB</span>
+            </button>
+            <button class="doc-tab-btn" data-target="doc-rpc">
+              <span>PasRPC Typed Engine</span>
+              <span class="tab-badge">New v5</span>
+            </button>
+            <button class="doc-tab-btn" data-target="doc-pastroutine">
+              <span>Pastroutine Concurrency</span>
+            </button>
+            <button class="doc-tab-btn" data-target="doc-pasway">
+              <span>Pasway WebSockets</span>
+            </button>
+            <button class="doc-tab-btn" data-target="doc-security">
+              <span>DDoS Shield &amp; Security</span>
+            </button>
+            <button class="doc-tab-btn" data-target="doc-cli">
+              <span>Console CLI &amp; Benchmark</span>
+            </button>
+            <button class="doc-tab-btn" data-target="doc-deploy">
+              <span>Deploy Production &amp; Docker</span>
+            </button>
+          </nav>
+        </aside>
+
+        <!-- Content Area -->
+        <div class="glass-card docs-content-area">
+          <!-- Pane 1: Install -->
+          <div class="doc-pane active" id="doc-install">
+            <h3>Instalasi &amp; Persyaratan Sistem</h3>
+            <p class="doc-lead">Papastro v5.0.0 dirancang untuk bekerja langsung pada PHP 8.2, 8.3, 8.4, hingga PHP 8.5+ tanpa dependensi ekstensi C yang rumit.</p>
+            
+            <h4>Persyaratan Minimal:</h4>
+            <ul>
+              <li><strong>PHP Runtime:</strong> PHP 8.2 atau lebih baru (direkomendasikan PHP 8.3 / 8.4).</li>
+              <li><strong>Ekstensi PHP:</strong> <code>pdo</code>, <code>mbstring</code>, <code>json</code>, <code>pcntl</code>, <code>sockets</code>.</li>
+              <li><strong>Database (Pilihan):</strong> SQLite, MySQL / MariaDB, PostgreSQL / Supabase, atau MongoDB.</li>
+              <li><strong>Package Manager:</strong> Composer 2.2+.</li>
+            </ul>
+
+            <h4>Perintah Instalasi Melalui Composer:</h4>
+            <div class="code-box">
+              <div class="code-header">
+                <div class="window-dots"><span></span><span></span><span></span></div>
+                <span class="code-title">Terminal</span>
+                <button class="copy-btn" data-copy="composer create-project kangpcode/papastro my-app
+cd my-app
+php papastro runtime:start --port=8000" data-copy-label="Install commands copied!">Copy</button>
+              </div>
+              <pre><code># Buat projek baru dari packagist
+composer create-project kangpcode/papastro my-app
+
+# Masuk ke direktori projek
+cd my-app
+
+# Jalankan server in-memory berkemampuan tinggi
+php papastro runtime:start --port=8000 --workers=4</code></pre>
+            </div>
+            <p>Buka browser Anda di <code>http://127.0.0.1:8000</code> untuk melihat aplikasi Papastro Anda berjalan!</p>
+          </div>
+
+          <!-- Pane 2: Routing -->
+          <div class="doc-pane" id="doc-routing">
+            <h3>Routing &amp; Middleware Pipeline</h3>
+            <p class="doc-lead">Router Papastro dioptimalkan secara kompilasi O(1) in-memory untuk waktu pencarian rute di bawah mikrodetik.</p>
+
+            <h4>Definisi Rute di <code>routes/web.php</code>:</h4>
+            <div class="code-box">
+              <div class="code-header">
+                <div class="window-dots"><span></span><span></span><span></span></div>
+                <span class="code-title">routes/web.php</span>
+                <button class="copy-btn" data-copy="use Papastro\Core\Router\Route;
+use Papastro\Core\Http\Request;
+use Papastro\Core\Http\Response;
+
+Route::get('/', function (Request $request) {
+    return Response::html('<h1>Halo Papastro v5!</h1>');
+});
+
+Route::post('/api/users', [UserController::class, 'store'])
+    ->middleware(['throttle:60,1', 'auth']);" data-copy-label="Route snippet copied!">Copy</button>
+              </div>
+              <pre><code><span class="hl-type">use</span> <span class="hl-keyword">Papastro\Core\Router\Route</span>;
+<span class="hl-type">use</span> <span class="hl-keyword">Papastro\Core\Http\Request</span>;
+<span class="hl-type">use</span> <span class="hl-keyword">Papastro\Core\Http\Response</span>;
+
+<span class="hl-comment">// Rute Closure sederhana</span>
+<span class="hl-variable">Route</span>::<span class="hl-func">get</span>(<span class="hl-string">'/'</span>, <span class="hl-keyword">function</span> (<span class="hl-type">Request</span> <span class="hl-variable">$request</span>) {
+    <span class="hl-keyword">return</span> <span class="hl-variable">Response</span>::<span class="hl-func">html</span>(<span class="hl-string">'&lt;h1&gt;Halo Papastro v5!&lt;/h1&gt;'</span>);
+});
+
+<span class="hl-comment">// Rute Controller dengan Middleware Pipeline</span>
+<span class="hl-variable">Route</span>::<span class="hl-func">post</span>(<span class="hl-string">'/api/users'</span>, [<span class="hl-type">UserController</span>::<span class="hl-keyword">class</span>, <span class="hl-string">'store'</span>])
+    -><span class="hl-func">middleware</span>([<span class="hl-string">'throttle:60,1'</span>, <span class="hl-string">'auth'</span>]);</code></pre>
+            </div>
+          </div>
+
+          <!-- Pane 3: Islands -->
+          <div class="doc-pane" id="doc-islands">
+            <h3>Astro Islands (.pstro Template Syntax)</h3>
+            <p class="doc-lead">Format <code>.pstro</code> memadukan kemudahan HTML dengan dynamic PHP server tags dan selective hydration pulau JavaScript.</p>
+
+            <h4>Contoh File <code>resources/views/product.pstro</code>:</h4>
+            <div class="code-box">
+              <div class="code-header">
+                <div class="window-dots"><span></span><span></span><span></span></div>
+                <span class="code-title">resources/views/product.pstro</span>
+                <button class="copy-btn" data-copy="---
+// Server-Side Code Block (Hanya dieksekusi di Server)
+$priceFormatted = 'Rp ' . number_format($product->price, 0, ',', '.');
+---
+<div class='product-card'>
+    <h2>{{ $product->name }}</h2>
+    <p class='price'>{{ $priceFormatted }}</p>
+
+    <!-- Astro Island: Hidrasi client hanya saat elemen masuk viewport -->
+    <island:cart-button client:visible product-id='{{ $product->id }}'>
+        <button class='btn'>Beli Sekarang</button>
+    </island:cart-button>
+</div>" data-copy-label="Island template copied!">Copy</button>
+              </div>
+              <pre><code>---
+<span class="hl-comment">// Server-Side Block (Hanya dieksekusi di Server — Zero Overhead ke Browser)</span>
+<span class="hl-variable">$priceFormatted</span> = <span class="hl-string">'Rp '</span> . <span class="hl-func">number_format</span>(<span class="hl-variable">$product</span>->price, 0, <span class="hl-string">','</span>, <span class="hl-string">'.'</span>);
+---
+&lt;<span class="hl-keyword">div</span> <span class="hl-attr">class</span>=<span class="hl-string">"product-card"</span>&gt;
+    &lt;<span class="hl-keyword">h2</span>&gt;{{ <span class="hl-variable">$product</span>->name }}&lt;/<span class="hl-keyword">h2</span>&gt;
+    &lt;<span class="hl-keyword">p</span> <span class="hl-attr">class</span>=<span class="hl-string">"price"</span>&gt;{{ <span class="hl-variable">$priceFormatted</span> }}&lt;/<span class="hl-keyword">p</span>&gt;
+
+    &lt;<span class="hl-comment">!-- Astro Island: JS dihidrasi secara pasif hanya ketika terlihat di layar --&gt;</span>
+    &lt;<span class="hl-type">island:cart-button</span> <span class="hl-attr">client:visible</span> <span class="hl-attr">product-id</span>=<span class="hl-string">"{{ $product->id }}"</span>&gt;
+        &lt;<span class="hl-keyword">button</span> <span class="hl-attr">class</span>=<span class="hl-string">"btn"</span>&gt;Beli Sekarang&lt;/<span class="hl-keyword">button</span>&gt;
+    &lt;/<span class="hl-type">island:cart-button</span>&gt;
+&lt;/<span class="hl-keyword">div</span>&gt;</code></pre>
+            </div>
+          </div>
+
+          <!-- Pane 4: ORM -->
+          <div class="doc-pane" id="doc-orm">
+            <h3>Multi-Database ORM &amp; Atomic Upsert</h3>
+            <p class="doc-lead">Beralih mulus antara PostgreSQL / Supabase, MySQL / MariaDB, MongoDB, dan SQLite tanpa merombak query aplikasi Anda.</p>
+
+            <h4>Atomic Cross-Engine Upsert:</h4>
+            <div class="code-box">
+              <div class="code-header">
+                <div class="window-dots"><span></span><span></span><span></span></div>
+                <span class="code-title">app/Services/SyncService.php</span>
+                <button class="copy-btn" data-copy="// Atomic Upsert di Papastro v5.0
+User::upsert([
+    ['email' => 'alice@papastro.dev', 'name' => 'Alice Doe', 'points' => 150],
+    ['email' => 'bob@papastro.dev', 'name' => 'Bob Smith', 'points' => 320],
+], ['email'], ['name', 'points']);
+
+// O(1) Seek Cursor Pagination untuk Jutaan Baris
+$page = User::cursorPaginate(15, 'id', $cursor);" data-copy-label="Upsert snippet copied!">Copy</button>
+              </div>
+              <pre><code><span class="hl-comment">// Atomic Upsert: Didukung pada SQLite, MySQL, MariaDB, Postgres, &amp; Supabase</span>
+<span class="hl-type">User</span>::<span class="hl-func">upsert</span>([
+    [<span class="hl-string">'email'</span> => <span class="hl-string">'alice@papastro.dev'</span>, <span class="hl-string">'name'</span> => <span class="hl-string">'Alice Doe'</span>, <span class="hl-string">'points'</span> => 150],
+    [<span class="hl-string">'email'</span> => <span class="hl-string">'bob@papastro.dev'</span>, <span class="hl-string">'name'</span> => <span class="hl-string">'Bob Smith'</span>, <span class="hl-string">'points'</span> => 320],
+], [<span class="hl-string">'email'</span>], [<span class="hl-string">'name'</span>, <span class="hl-string">'points'</span>]);
+
+<span class="hl-comment">// Navigasi O(1) Cursor Pagination Tanpa 'OFFSET' Lambat</span>
+<span class="hl-variable">$users</span> = <span class="hl-type">User</span>::<span class="hl-func">cursorPaginate</span>(15, <span class="hl-string">'id'</span>, <span class="hl-variable">$cursor</span>);</code></pre>
+            </div>
+          </div>
+
+          <!-- Pane 5: PasRPC -->
+          <div class="doc-pane" id="doc-rpc">
+            <h3>PasRPC Typed Engine (Baru di v5.0)</h3>
+            <p class="doc-lead">Eksekusi Remote Procedure Call langsung dari client frontend atau Astro Island tanpa manual endpoint per fungsi.</p>
+
+            <h4>Registrasi Gateway &amp; Implementasi Service:</h4>
+            <div class="code-box">
+              <div class="code-header">
+                <div class="window-dots"><span></span><span></span><span></span></div>
+                <span class="code-title">app/Services/UserRpcService.php</span>
+                <button class="copy-btn" data-copy="class UserRpcService {
+    public function getProfile(int $id): array {
+        return User::findOrFail($id)->toArray();
+    }
+}
+
+// routes/web.php
+Route::rpc('/api/rpc', UserRpcService::class);" data-copy-label="RPC snippet copied!">Copy</button>
+              </div>
+              <pre><code><span class="hl-keyword">class</span> <span class="hl-type">UserRpcService</span> {
+    <span class="hl-keyword">public function</span> <span class="hl-func">getProfile</span>(<span class="hl-type">int</span> <span class="hl-variable">$id</span>): <span class="hl-type">array</span> {
+        <span class="hl-keyword">return</span> <span class="hl-type">User</span>::<span class="hl-func">findOrFail</span>(<span class="hl-variable">$id</span>)-><span class="hl-func">toArray</span>();
+    }
+}
+
+<span class="hl-comment">// Rute JSON-RPC otomatis memetakan method 'getProfile' via Reflection</span>
+<span class="hl-variable">Route</span>::<span class="hl-func">rpc</span>(<span class="hl-string">'/api/rpc'</span>, <span class="hl-type">UserRpcService</span>::<span class="hl-keyword">class</span>);</code></pre>
+            </div>
+          </div>
+
+          <!-- Pane 6: Pastroutine -->
+          <div class="doc-pane" id="doc-pastroutine">
+            <h3>Pastroutine Go-Style Concurrency</h3>
+            <p class="doc-lead">Jalankan komputasi paralel dan async I/O menggunakan channel dan fiber scheduler di PHP.</p>
+
+            <div class="code-box">
+              <pre><code><span class="hl-type">use</span> <span class="hl-keyword">Papastro\Core\Pastroutine\Channel</span>;
+<span class="hl-type">use</span> <span class="hl-keyword">Papastro\Core\Pastroutine\WaitGroup</span>;
+
+<span class="hl-variable">$ch</span> = <span class="hl-keyword">new</span> <span class="hl-type">Channel</span>(10);
+<span class="hl-variable">$wg</span> = <span class="hl-keyword">new</span> <span class="hl-type">WaitGroup</span>();
+
+<span class="hl-variable">$wg</span>-><span class="hl-func">add</span>(2);
+
+<span class="hl-func">pastroutine</span>(<span class="hl-keyword">function</span> () <span class="hl-keyword">use</span> (<span class="hl-variable">$ch</span>, <span class="hl-variable">$wg</span>) {
+    <span class="hl-variable">$ch</span>-><span class="hl-func">send</span>(<span class="hl-string">'Pekerjaan 1 Selesai'</span>);
+    <span class="hl-variable">$wg</span>-><span class="hl-func">done</span>();
+});
+
+<span class="hl-func">pastroutine</span>(<span class="hl-keyword">function</span> () <span class="hl-keyword">use</span> (<span class="hl-variable">$ch</span>, <span class="hl-variable">$wg</span>) {
+    <span class="hl-variable">$ch</span>-><span class="hl-func">send</span>(<span class="hl-string">'Pekerjaan 2 Selesai'</span>);
+    <span class="hl-variable">$wg</span>-><span class="hl-func">done</span>();
+});
+
+<span class="hl-variable">$wg</span>-><span class="hl-func">wait</span>();</code></pre>
+            </div>
+          </div>
+
+          <!-- Pane 7: Pasway -->
+          <div class="doc-pane" id="doc-pasway">
+            <h3>Pasway Realtime WebSockets</h3>
+            <p class="doc-lead">Pub/Sub event broadcaster untuk menghubungkan ratusan ribu browser dan IoT device secara real-time.</p>
+
+            <div class="code-box">
+              <pre><code><span class="hl-type">use</span> <span class="hl-keyword">Papastro\Core\Pasway\Pasway</span>;
+
+<span class="hl-comment">// Broadcast event ke channel publik atau terproteksi</span>
+<span class="hl-type">Pasway</span>::<span class="hl-func">broadcast</span>(<span class="hl-string">'orders.live'</span>, [
+    <span class="hl-string">'order_id'</span> => 89201,
+    <span class="hl-string">'status'</span>   => <span class="hl-string">'paid'</span>,
+    <span class="hl-string">'amount'</span>   => 450000
+]);</code></pre>
+            </div>
+          </div>
+
+          <!-- Pane 8: Security -->
+          <div class="doc-pane" id="doc-security">
+            <h3>Security &amp; Adaptive DDoS Shield</h3>
+            <p class="doc-lead">Keamanan enterprise: proteksi injeksi SQL otomatis, anti CSRF token mismatch, dan rate limiter dinamis.</p>
+
+            <div class="code-box">
+              <pre><code><span class="hl-comment">// config/security.php — DDoS Shield Setting</span>
+<span class="hl-keyword">return</span> [
+    <span class="hl-string">'ddos_shield'</span> => [
+        <span class="hl-string">'enabled'</span>       => <span class="hl-keyword">true</span>,
+        <span class="hl-string">'max_per_min'</span>   => 300,
+        <span class="hl-string">'ban_duration'</span>  => 900, <span class="hl-comment">// 15 Menit auto ban</span>
+        <span class="hl-string">'whitelist'</span>     => [<span class="hl-string">'127.0.0.1'</span>, <span class="hl-string">'::1'</span>]
+    ],
+];</code></pre>
+            </div>
+          </div>
+
+          <!-- Pane 9: CLI -->
+          <div class="doc-pane" id="doc-cli">
+            <h3>Papastro Console CLI Commands</h3>
+            <p class="doc-lead">Kendali penuh dari terminal dengan perintah bawaan super cepat.</p>
+
+            <div class="code-box">
+              <pre><code># Generator Perangkat Projek
+php papastro make:model Product -m
+php papastro make:controller Api/OrderController
+php papastro make:island HeaderNavbar
+
+# Database Migrations
+php papastro migrate
+php papastro migrate:status
+
+# In-Memory Real Benchmark
+php papastro benchmark --requests=5000</code></pre>
+            </div>
+          </div>
+
+          <!-- Pane 10: Deploy -->
+          <div class="doc-pane" id="doc-deploy">
+            <h3>Deploy Production &amp; Docker</h3>
+            <p class="doc-lead">Jalankan di server Ubuntu, Debian, Docker, Kubernetes, atau VPS dengan performa maksimal.</p>
+
+            <div class="code-box">
+              <pre><code># Menjalankan sebagai Systemd Service / Supervisor Daemon
+[program:papastro]
+command=php /var/www/papastro/papastro runtime:start --workers=8 --port=8080
+autostart=true
+autorestart=true
+user=www-data
+redirect_stderr=true
+stdout_logfile=/var/log/papastro.log</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- DEVELOPER & INTELLECTUAL PROPERTY SECTION                                 -->
+  <!-- ========================================================================= -->
+  <section class="developer-section" id="developer">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Pembuat Resmi &amp; Arsitek</span>
+        <h2>Mengenal <span class="text-gradient">Sang Developer</span></h2>
+        <p>Inovasi di balik Papastro Framework dan bahasa komponen pulau <code>.pstro</code>.</p>
+      </div>
+
+      <div class="glass-card developer-card">
+        <div class="developer-avatar-wrapper">
+          <img src="assets/img/logo-icon.png" alt="kangpcode (Dhafa Nazula Permadi)" class="developer-avatar">
+          <div class="verified-badge" title="Official Creator Verified">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+        </div>
+
+        <div class="developer-info">
+          <div>
+            <div class="author-name">kangpcode (Dhafa Nazula Permadi)</div>
+            <div class="author-role">Founder, Creator &amp; Chief System Architect of Papastro</div>
+          </div>
+
+          <p class="author-bio">
+            Dhafa Nazula Permadi (dikenal di komunitas developer sebagai <strong>kangpcode</strong>) adalah software architect dan open-source enthusiast asal Indonesia yang mendedikasikan karyanya untuk meredefinisi masa depan PHP. Menolak anggapan bahwa PHP sudah usang, kangpcode merancang arsitektur Papastro dari awal agar PHP dapat berdiri sejajar bahkan melampaui ekosistem modern seperti Go Fiber, Next.js, dan Express.js dalam aspek kecepatan, efisiensi memori, dan kemudahan pengembangan.
+          </p>
+
+          <div class="ip-notice-box">
+            <strong>Hak Cipta &amp; Kepemilikan Resmi (.pstro):</strong><br>
+            Ekstensi file <code>.pstro</code>, parser pulau Astro Islands untuk PHP, dan seluruh kode fondasi Papastro Framework adalah hak kekayaan intelektual resmi ciptaan <strong>kangpcode (Dhafa Nazula Permadi)</strong>. Dirilis secara bebas untuk dunia di bawah lisensi terbuka <strong>MIT License</strong> agar dapat dikembangkan oleh komunitas developer global.
+          </div>
+
+          <div class="developer-socials">
+            <a href="https://github.com/kangpcode" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+              GitHub @kangpcode
+            </a>
+            <a href="mailto:dhafanavy@gmail.com" class="btn btn-secondary btn-sm">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              dhafanavy@gmail.com
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- SPONSORSHIP TIERS SECTION                                                 -->
+  <!-- ========================================================================= -->
+  <section class="sponsors-section" id="sponsors">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Partnership &amp; Sponsors</span>
+        <h2>Dukung Keberlanjutan <span class="text-gradient">Papastro Framework</span></h2>
+        <p>Bantu riset, pengembangan server runtime, dan ekosistem open-source Papastro agar terus berkembang dan memimpin revolusi performa PHP.</p>
+      </div>
+
+      <div class="sponsors-tiers-grid">
+        <!-- Platinum Tier -->
+        <div class="glass-card sponsor-tier-card tier-platinum">
+          <span class="badge badge-cyan tier-badge">Platinum Sponsor</span>
+          <div class="tier-price">$500 <span>/ bulan</span></div>
+          <p style="color: #94a3b8; font-size: 0.875rem;">Untuk perusahaan &amp; institusi yang mengadopsi Papastro pada skala masif.</p>
+          <ul class="tier-perks">
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Logo besar di bagian atas README &amp; Website</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Prioritas konsultasi teknis &amp; arsitektur</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Request fitur prioritas dalam roadmap</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Spotlight khusus di setiap rilis resmi</li>
+          </ul>
+          <a href="https://github.com/sponsors/kangpcode" target="_blank" rel="noopener noreferrer" class="btn btn-primary tier-btn">Pilih Platinum</a>
+        </div>
+
+        <!-- Gold Tier -->
+        <div class="glass-card sponsor-tier-card tier-gold">
+          <span class="badge badge-amber tier-badge">Gold Sponsor</span>
+          <div class="tier-price">$200 <span>/ bulan</span></div>
+          <p style="color: #94a3b8; font-size: 0.875rem;">Untuk startup dan agensi yang mempercayakan performa ke Papastro.</p>
+          <ul class="tier-perks">
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Logo di section Sponsor README &amp; Web</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Akses diskusi privat developer channel</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Shoutout di rilis major framework</li>
+          </ul>
+          <a href="https://github.com/sponsors/kangpcode" target="_blank" rel="noopener noreferrer" class="btn btn-secondary tier-btn">Pilih Gold</a>
+        </div>
+
+        <!-- Silver Tier -->
+        <div class="glass-card sponsor-tier-card tier-silver">
+          <span class="badge badge-primary tier-badge">Silver Sponsor</span>
+          <div class="tier-price">$50 <span>/ bulan</span></div>
+          <p style="color: #94a3b8; font-size: 0.875rem;">Dukungan rutin dari tim software house dan pengembang aktif.</p>
+          <ul class="tier-perks">
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Nama &amp; link di README GitHub</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Badge Backer VIP di Discord</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Akses early preview modul v6</li>
+          </ul>
+          <a href="https://github.com/sponsors/kangpcode" target="_blank" rel="noopener noreferrer" class="btn btn-secondary tier-btn">Pilih Silver</a>
+        </div>
+
+        <!-- Community Backer -->
+        <div class="glass-card sponsor-tier-card">
+          <span class="badge badge-emerald tier-badge">Community Backer</span>
+          <div class="tier-price">$10 <span>/ bulan</span></div>
+          <p style="color: #94a3b8; font-size: 0.875rem;">Segelas kopi penyemangat dari programmer untuk programmer.</p>
+          <ul class="tier-perks">
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Tercantum di daftar CONTRIBUTORS.md</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Peran Supporter di komunitas chat</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Rasa terima kasih abadi dari kangpcode</li>
+          </ul>
+          <a href="https://github.com/sponsors/kangpcode" target="_blank" rel="noopener noreferrer" class="btn btn-secondary tier-btn">Pilih Backer</a>
+        </div>
+      </div>
+
+      <!-- Enterprise Inquiry Box -->
+      <div class="enterprise-sponsor-box">
+        <h3>Butuh Custom Enterprise Sponsorship atau Pelatihan Khusus?</h3>
+        <p>Hubungi langsung tim inti Papastro untuk kemitraan korporasi, audit sistem, atau pelatihan arsitektur performa tinggi di perusahaan Anda.</p>
+        <a href="mailto:dhafanavy@gmail.com?subject=Enterprise%20Sponsorship%20Papastro" class="btn btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Hubungi via Email (dhafanavy@gmail.com)
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- DONATIONS & FINANCIAL SUPPORT                                             -->
+  <!-- ========================================================================= -->
+  <section class="donate-section" id="donate">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Dukungan Donasi</span>
+        <h2>Kanal Donasi <span class="text-gradient">Terbuka &amp; Fleksibel</span></h2>
+        <p>Anda dapat memberikan apresiasi dan donasi langsung menggunakan metode pembayaran lokal Indonesia maupun internasional.</p>
+      </div>
+
+      <div class="donate-grid">
+        <!-- Saweria (Indonesia QRIS & E-Wallet) -->
+        <div class="glass-card donate-card featured">
+          <div class="donate-icon">🇮🇩</div>
+          <div class="donate-title">Saweria (QRIS &amp; E-Wallet)</div>
+          <div class="donate-desc">
+            Dukung developer lokal via QRIS, GoPay, OVO, Dana, LinkAja, atau ShopeePay secara instan.
+          </div>
+          <div class="donate-action">
+            <a href="https://saweria.co/kangpcode" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="width: 100%;">
+              Donasi via Saweria
+            </a>
+          </div>
+        </div>
+
+        <!-- Trakteer.id -->
+        <div class="glass-card donate-card">
+          <div class="donate-icon">☕</div>
+          <div class="donate-title">Trakteer.id</div>
+          <div class="donate-desc">
+            Traktir secangkir kopi untuk mendukung begadang mengembangkan framework dan fitur-fitur baru.
+          </div>
+          <div class="donate-action">
+            <a href="https://trakteer.id/kangpcode" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="width: 100%;">
+              Traktir di Trakteer
+            </a>
+          </div>
+        </div>
+
+        <!-- GitHub Sponsors -->
+        <div class="glass-card donate-card">
+          <div class="donate-icon">💖</div>
+          <div class="donate-title">GitHub Sponsors</div>
+          <div class="donate-desc">
+            Dukungan resmi terintegrasi langsung dengan profil GitHub Anda (bulanan atau one-time).
+          </div>
+          <div class="donate-action">
+            <a href="https://github.com/sponsors/kangpcode" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="width: 100%;">
+              Sponsor di GitHub
+            </a>
+          </div>
+        </div>
+
+        <!-- PayPal -->
+        <div class="glass-card donate-card">
+          <div class="donate-icon">💳</div>
+          <div class="donate-title">PayPal Global</div>
+          <div class="donate-desc">
+            Metode donasi global menggunakan kartu kredit/debit dan saldo akun PayPal.
+          </div>
+          <div class="wallet-box">
+            <span class="wallet-address">dhafanavy@gmail.com</span>
+            <span class="copy-btn-sm" data-copy="dhafanavy@gmail.com" data-copy-label="PayPal email copied!" title="Copy PayPal Email">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </span>
+          </div>
+          <div class="donate-action">
+            <a href="https://paypal.me/kangpcode" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="width: 100%;">
+              Buka PayPal.Me
+            </a>
+          </div>
+        </div>
+
+        <!-- Crypto USDT (BEP20 / TRC20) -->
+        <div class="glass-card donate-card">
+          <div class="donate-icon">🪙</div>
+          <div class="donate-title">USDT (Crypto Web3)</div>
+          <div class="donate-desc">
+            Kirim USDT melalui jaringan Binance Smart Chain (BEP20) atau TRON (TRC20).
+          </div>
+          <div class="wallet-box">
+            <span class="wallet-address">0x5C808E56461D4C63E0bFA8a8c17E779603126b0D</span>
+            <span class="copy-btn-sm" data-copy="0x5C808E56461D4C63E0bFA8a8c17E779603126b0D" data-copy-label="USDT Wallet Address copied!" title="Copy USDT Address">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </span>
+          </div>
+          <div class="donate-action">
+            <button class="btn btn-secondary" style="width: 100%;" data-copy="0x5C808E56461D4C63E0bFA8a8c17E779603126b0D" data-copy-label="USDT Wallet Address copied!">
+              Salin Address USDT
+            </button>
+          </div>
+        </div>
+
+        <!-- Direct Bank Transfer -->
+        <div class="glass-card donate-card">
+          <div class="donate-icon">🏦</div>
+          <div class="donate-title">Transfer Bank Langsung</div>
+          <div class="donate-desc">
+            Transfer antar bank via BCA / Mandiri / Jenius atas nama Dhafa Nazula Permadi.
+          </div>
+          <div class="wallet-box">
+            <span class="wallet-address">BCA: Hubungi via Email</span>
+            <span class="copy-btn-sm" data-copy="dhafanavy@gmail.com" data-copy-label="Email copied!" title="Copy Email">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </span>
+          </div>
+          <div class="donate-action">
+            <a href="mailto:dhafanavy@gmail.com?subject=Rekening%20Donasi%20Papastro" class="btn btn-secondary" style="width: 100%;">
+              Minta No Rekening
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- COMMUNITY & CONTRIBUTORS                                                  -->
+  <!-- ========================================================================= -->
+  <section class="community-section" id="community">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Open Source &amp; Komunitas</span>
+        <h2>Bergabung Bersama <span class="text-gradient">Para Kontributor</span></h2>
+        <p>Papastro adalah gerakan bersama untuk membuktikan keunggulan PHP modern. Siapapun dipersilakan berkontribusi.</p>
+      </div>
+
+      <div class="community-grid">
+        <!-- Contribution Guidelines -->
+        <div class="glass-card contrib-guide-card">
+          <h3>Cara Mudah Berkontribusi</h3>
+          <p style="color: #94a3b8; font-size: 0.95rem;">
+            Kami menyambut setiap Pull Request untuk optimasi performa, penambahan driver database baru, modul ekstensi, maupun perbaikan dokumentasi:
+          </p>
+
+          <div class="contrib-steps">
+            <div class="step">
+              <div class="step-num">1</div>
+              <div class="step-body">
+                <strong>Fork &amp; Clone Repository</strong>
+                <p>Fork repository <code>kangpcode/papastro</code> ke akun GitHub Anda, lalu clone ke komputer lokal.</p>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num">2</div>
+              <div class="step-body">
+                <strong>Buat Feature Branch</strong>
+                <p>Gunakan format nama branch yang deskriptif, contohnya: <code>feature/redis-cluster</code> atau <code>fix/router-regex</code>.</p>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num">3</div>
+              <div class="step-body">
+                <strong>Pastikan 100% Unit Test Pass</strong>
+                <p>Jalankan <code>php libs/bin/phpunit</code> untuk memastikan 54+ pengujian lolos tanpa ada error.</p>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-num">4</div>
+              <div class="step-body">
+                <strong>Buka Pull Request</strong>
+                <p>Kirimkan Pull Request ke branch <code>main</code> dengan ringkasan perubahan yang jelas.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Community Channels -->
+        <div class="glass-card community-channels-card">
+          <h3>Kanal Diskusi &amp; Bantuan</h3>
+
+          <div class="channel-list">
+            <a href="https://github.com/kangpcode/papastro/discussions" target="_blank" rel="noopener noreferrer" class="channel-item">
+              <div class="channel-info">
+                <span class="channel-icon">💬</span>
+                <div>
+                  <div class="channel-title">GitHub Discussions</div>
+                  <div class="channel-desc">Tanya jawab arsitektur, ide fitur baru, dan showcase projek</div>
+                </div>
+              </div>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+
+            <a href="https://github.com/kangpcode/papastro/issues" target="_blank" rel="noopener noreferrer" class="channel-item">
+              <div class="channel-info">
+                <span class="channel-icon">🐛</span>
+                <div>
+                  <div class="channel-title">GitHub Issue Tracker</div>
+                  <div class="channel-desc">Laporkan bug, celah keamanan, atau request perbaikan teknis</div>
+                </div>
+              </div>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+
+            <a href="https://t.me/kangpcode" target="_blank" rel="noopener noreferrer" class="channel-item">
+              <div class="channel-info">
+                <span class="channel-icon">✈️</span>
+                <div>
+                  <div class="channel-title">Telegram Developer Channel</div>
+                  <div class="channel-desc">Diskusi santai dan rilis kilat langsung dengan developer</div>
+                </div>
+              </div>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+
+            <a href="https://packagist.org/packages/kangpcode/papastro" target="_blank" rel="noopener noreferrer" class="channel-item">
+              <div class="channel-info">
+                <span class="channel-icon">📦</span>
+                <div>
+                  <div class="channel-title">Packagist Package Portal</div>
+                  <div class="channel-desc">Statistik unduhan Composer dan dependensi resmi</div>
+                </div>
+              </div>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- FOOTER                                                                    -->
+  <!-- ========================================================================= -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand-col">
+          <div class="brand-row">
+            <img src="assets/img/logo-icon.png" alt="Papastro Logo">
+            <span>Papastro Framework</span>
+          </div>
+          <p class="brand-tagline">
+            The Next-Generation Ultra High-Concurrency Full-Stack PHP Framework. Menggabungkan kecepatan Go Fiber dengan arsitektur pulau Astro.
+          </p>
+          <div class="manifesto-box">
+            "PHP Tidak Akan Musnah Oleh Jaman (PHP Melawan) — PHP Strikes Back!"
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Framework</h4>
+          <ul>
+            <li><a href="#features">Fitur Unggulan</a></li>
+            <li><a href="#benchmark">Live Benchmark</a></li>
+            <li><a href="#docs">Dokumentasi</a></li>
+            <li><a href="https://packagist.org/packages/kangpcode/papastro" target="_blank" rel="noopener noreferrer">Composer Packagist</a></li>
+            <li><a href="https://open-vsx.org/extension/kangpcode/papastro-vscode" target="_blank" rel="noopener noreferrer">VS Code Extension</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Dukungan</h4>
+          <ul>
+            <li><a href="#developer">Profil Developer</a></li>
+            <li><a href="#sponsors">Sponsorship Tiers</a></li>
+            <li><a href="#donate">Donasi Saweria &amp; Trakteer</a></li>
+            <li><a href="https://github.com/sponsors/kangpcode" target="_blank" rel="noopener noreferrer">GitHub Sponsors</a></li>
+            <li><a href="mailto:dhafanavy@gmail.com">Kontak Email</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Komunitas</h4>
+          <ul>
+            <li><a href="https://github.com/kangpcode/papastro" target="_blank" rel="noopener noreferrer">GitHub Repo</a></li>
+            <li><a href="https://github.com/kangpcode/papastro/discussions" target="_blank" rel="noopener noreferrer">Discussions</a></li>
+            <li><a href="https://github.com/kangpcode/papastro/issues" target="_blank" rel="noopener noreferrer">Laporkan Masalah</a></li>
+            <li><a href="#community">Panduan Kontribusi</a></li>
+            <li><a href="https://t.me/kangpcode" target="_blank" rel="noopener noreferrer">Telegram Channel</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>
+          Hak Cipta &copy; 2026 <strong>kangpcode (Dhafa Nazula Permadi)</strong>. Diterbitkan di bawah lisensi resmi <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener noreferrer">MIT License</a>.
+        </div>
+        <div>
+          Hosted on <a href="https://pages.github.com/" target="_blank" rel="noopener noreferrer">GitHub Pages</a> &bull; Made with pride in Indonesia 🇮🇩
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container"></div>
+
+  <!-- JavaScript -->
+  <script src="js/main.js"></script>
+</body>
+</html>
+

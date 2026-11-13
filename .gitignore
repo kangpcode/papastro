@@ -9,3 +9,5 @@
 /storage/sessions/
 /.phpunit.cache/
 .env
+node_modules/
+landingpage-sass/node_modules/
