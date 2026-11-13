@@ -79,13 +79,47 @@ class Connection
      */
     protected function createPdoFromConfig(array $cfg): PDO
     {
-        $driver = $cfg['driver'] ?? 'mysql';
+        $driver = strtolower($cfg['driver'] ?? 'mysql');
         $host = $cfg['host'] ?? 'localhost';
-        $port = $cfg['port'] ?? '3306';
+        $port = $cfg['port'] ?? '';
         $dbname = $cfg['database'] ?? '';
         $charset = $cfg['charset'] ?? 'utf8mb4';
+        $collation = $cfg['collation'] ?? 'utf8mb4_unicode_ci';
         $username = $cfg['username'] ?? 'root';
         $password = $cfg['password'] ?? '';
+
+        // Support cloud connection strings: DATABASE_URL (Supabase, Railway, Neon, Render)
+        if (!empty($cfg['url'])) {
+            $parsed = parse_url($cfg['url']);
+            if ($parsed !== false) {
+                if (isset($parsed['scheme'])) {
+                    $scheme = strtolower($parsed['scheme']);
+                    $driver = match ($scheme) {
+                        'postgres', 'postgresql', 'supabase' => 'pgsql',
+                        'mysql', 'mariadb' => 'mysql',
+                        'sqlite' => 'sqlite',
+                        'sqlsrv' => 'sqlsrv',
+                        default => $driver,
+                    };
+                }
+                $host = $parsed['host'] ?? $host;
+                $port = isset($parsed['port']) ? (string) $parsed['port'] : $port;
+                $username = isset($parsed['user']) ? urldecode($parsed['user']) : $username;
+                $password = isset($parsed['pass']) ? urldecode($parsed['pass']) : $password;
+                if (!empty($parsed['path'])) {
+                    $dbname = ltrim($parsed['path'], '/');
+                }
+                if (!empty($parsed['query'])) {
+                    parse_str($parsed['query'], $urlQuery);
+                    if (isset($urlQuery['sslmode'])) {
+                        $cfg['sslmode'] = $urlQuery['sslmode'];
+                    }
+                    if (isset($urlQuery['schema'])) {
+                        $cfg['schema'] = $urlQuery['schema'];
+                    }
+                }
+            }
+        }
 
         switch ($driver) {
             case 'sqlite':
@@ -103,11 +137,32 @@ class Connection
                 }
                 $dsn = "sqlite:{$dbname}";
                 break;
+
             case 'pgsql':
+            case 'postgres':
+            case 'supabase':
+                $port = $port ?: '5432';
                 $dsn = "pgsql:host={$host};port={$port};dbname={$dbname}";
+                $sslmode = $cfg['sslmode'] ?? ($driver === 'supabase' ? 'require' : null);
+                if ($sslmode) {
+                    $dsn .= ";sslmode={$sslmode}";
+                }
+                if (!empty($cfg['schema'])) {
+                    $dsn .= ";options='--search_path={$cfg['schema']}'";
+                }
                 break;
-            default: // mysql
+
+            case 'sqlsrv':
+                $port = $port ?: '1433';
+                $dsn = "sqlsrv:Server={$host},{$port};Database={$dbname}";
+                break;
+
+            case 'mariadb':
+            case 'mysql':
+            default:
+                $port = $port ?: '3306';
                 $dsn = "mysql:host={$host};port={$port};dbname={$dbname};charset={$charset}";
+                break;
         }
 
         $options = [
@@ -116,10 +171,18 @@ class Connection
             PDO::ATTR_EMULATE_PREPARES => false,
         ];
 
+        if (!empty($cfg['persistent'])) {
+            $options[PDO::ATTR_PERSISTENT] = true;
+        }
+
+        if (in_array($driver, ['mysql', 'mariadb'])) {
+            $options[PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES '{$charset}' COLLATE '{$collation}'";
+        }
+
         try {
             $pdo = new PDO($dsn, $username, $password, $options);
         } catch (PDOException $e) {
-            throw new \RuntimeException("Database connection failed: " . $e->getMessage(), 0, $e);
+            throw new \RuntimeException("Database connection failed [{$driver}]: " . $e->getMessage(), 0, $e);
         }
 
         if ($driver === 'sqlite') {
