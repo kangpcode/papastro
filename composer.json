@@ -43,7 +43,7 @@
     },
     "scripts": {
         "post-create-project-cmd": [
-            "@php papastro install"
+            "@php papastro setup --create"
         ]
     },
     "extra": {

@@ -31,11 +31,11 @@ Plugins are loaded by `Papastro\Plugin\PluginLoader` (registered via
 and their own autoloaders, keeping the core framework and first-party modules
 untouched.
 
-This directory is only active when the project was installed in `full` mode
-(`PAPASTRO_MODE=full` and `PLUGINS_ENABLED=true` in `.env`). Projects installed
+This directory is only active when the project was created in `full` mode
+(`PAPASTRO_MODE=full` and `PLUGINS_ENABLED=true` in `.env`). Projects created
 in `modules` mode keep this folder untouched but ignore it. Switch modes with:
 
 ```bash
-php papastro install --mode=full     # enable plugins
-php papastro install --mode=modules  # modules only
+php papastro setup --mode=full     # enable plugins
+php papastro setup --mode=modules  # modules only
 ```

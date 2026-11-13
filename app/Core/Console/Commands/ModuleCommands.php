@@ -259,7 +259,7 @@ class MakePluginCommand extends Command
     {
         if (!$this->pluginsEnabled()) {
             $this->error('The plugin system is disabled for this project (modules-only mode).');
-            $this->info('Switch to full mode with: php papastro install --mode=full');
+            $this->info('Switch to full mode with: php papastro setup --mode=full');
             return 1;
         }
 
@@ -340,7 +340,7 @@ class PluginEnableCommand extends Command
     {
         if (!$this->pluginsEnabled()) {
             $this->error('The plugin system is disabled for this project (modules-only mode).');
-            $this->info('Switch to full mode with: php papastro install --mode=full');
+            $this->info('Switch to full mode with: php papastro setup --mode=full');
             return 1;
         }
 
@@ -366,7 +366,7 @@ class PluginDisableCommand extends Command
     {
         if (!$this->pluginsEnabled()) {
             $this->error('The plugin system is disabled for this project (modules-only mode).');
-            $this->info('Switch to full mode with: php papastro install --mode=full');
+            $this->info('Switch to full mode with: php papastro setup --mode=full');
             return 1;
         }
 
@@ -392,7 +392,7 @@ class PluginListCommand extends Command
     {
         if (!$this->pluginsEnabled()) {
             $this->warn('Plugin system is disabled for this project (modules-only mode).');
-            $this->info('Switch to full mode with: php papastro install --mode=full');
+            $this->info('Switch to full mode with: php papastro setup --mode=full');
             return 0;
         }
         $manager = $this->app->make(\Papastro\Plugin\PluginManager::class);
@@ -408,7 +408,7 @@ class PluginListCommand extends Command
         }
 
         foreach ($plugins as $p) {
-            $status = $p['enabled'] ? "\033[32m● enabled\033[0m" : "\\033[31m○ disabled\033[0m";
+            $status = $p['enabled'] ? "\033[32m● enabled\033[0m" : "\033[31m○ disabled\033[0m";
             $loaded = $p['loaded'] ? ' [loaded]' : '';
             echo "  {$p['name']} v{$p['version']} — {$status}{$loaded}" . PHP_EOL;
         }

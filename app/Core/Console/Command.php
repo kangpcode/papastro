@@ -89,7 +89,9 @@ abstract class Command
     protected function ask(string $question, string $default = ''): string
     {
         echo "\033[36m  ? {$question}" . ($default ? " [{$default}]" : '') . ": \033[0m";
-        $answer = trim(fgets(STDIN));
+        $line = fgets(STDIN);
+        $answer = trim($line === false ? '' : $line);
+
         return $answer === '' ? $default : $answer;
     }
 
@@ -100,7 +102,8 @@ abstract class Command
     {
         $hint = $default ? '[Y/n]' : '[y/N]';
         echo "\033[36m  ? {$question} {$hint}: \033[0m";
-        $answer = strtolower(trim(fgets(STDIN)));
+        $line = fgets(STDIN);
+        $answer = strtolower(trim($line === false ? '' : $line));
 
         if ($answer === '') return $default;
         return in_array($answer, ['y', 'yes', '1', 'true']);

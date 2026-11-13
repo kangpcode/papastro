@@ -17,20 +17,23 @@ namespace Papastro\Console\Commands;
 use Papastro\Console\Command;
 
 /**
- * First-time project setup: papastro install [--mode=modules|full]
+ * Project mode setup, run automatically by `composer create-project` and
+ * available later as `php papastro setup [--mode=modules|full]`.
  *
  * The selected mode is stored in .env so one project stays lean (modules only)
  * while another can opt into the plug-and-play plugin ecosystem.
  */
-class InstallCommand extends Command
+class SetupCommand extends Command
 {
     public const MODE_MODULES = 'modules';
     public const MODE_FULL = 'full';
 
     public function execute(array $args): int
     {
+        $creating = $this->hasFlag($args, 'create');
+
         $this->newLine();
-        $this->line('  Papastro Installer', 'purple');
+        $this->line($creating ? '  Creating your Papastro project' : '  Papastro Project Setup', 'purple');
         $this->line('  Hybrid PHP + Astro-style Modular Monolith Framework', 'gray');
         $this->newLine();
 
@@ -47,7 +50,7 @@ class InstallCommand extends Command
         $this->clearCachedConfiguration();
 
         $this->newLine();
-        $this->success("Installation mode: {$mode}");
+        $this->success("Project mode: {$mode}");
 
         if ($mode === self::MODE_MODULES) {
             $this->info('Only app/Modules is active — the plugin system is disabled.');
@@ -65,7 +68,7 @@ class InstallCommand extends Command
     }
 
     /**
-     * Resolve the installation mode from a flag, or ask the user once.
+     * Resolve the project mode from a flag, or ask the user once.
      */
     protected function resolveMode(array $args): ?string
     {
@@ -82,16 +85,19 @@ class InstallCommand extends Command
             return self::MODE_FULL;
         }
 
+        $current = $this->currentMode();
+
         if (!$this->isInteractive() || $this->hasFlag($args, 'no-interaction') || $this->hasFlag($args, 'quiet')) {
-            return self::MODE_FULL;
+            return $current;
         }
 
         $this->line('  Choose how this project will be built:', 'yellow');
-        $this->line('    [1] Modules only      app/Modules saja, tanpa plugin pihak ketiga', 'white');
-        $this->line('    [2] Modules + Plugins modul aplikasi + plugin plug-and-play', 'white');
+        $this->line('    [1] Modules only       app/Modules saja, tanpa plugin pihak ketiga', 'white');
+        $this->line('    [2] Modules + Plugins  modul aplikasi + plugin plug-and-play', 'white');
         $this->newLine();
 
-        $answer = strtolower($this->ask('Installation mode (1/2)', '2'));
+        $default = $current === self::MODE_MODULES ? '1' : '2';
+        $answer = strtolower($this->ask('Project mode (1/2)', $default));
 
         if (in_array($answer, ['1', 'modules', 'module', 'minimal'], true)) {
             return self::MODE_MODULES;
@@ -104,6 +110,23 @@ class InstallCommand extends Command
         $this->error("Unknown choice [{$answer}]. Use 1 (modules only) or 2 (modules + plugins).");
 
         return null;
+    }
+
+    /**
+     * Read the mode already stored in .env so setup never downgrades a project
+     * silently when it runs without input.
+     */
+    protected function currentMode(): string
+    {
+        $envPath = $this->app->basePath('.env');
+
+        if (!is_file($envPath)) {
+            return self::MODE_FULL;
+        }
+
+        $stored = strtolower($this->envValue((string) file_get_contents($envPath), 'PAPASTRO_MODE'));
+
+        return $stored === self::MODE_MODULES ? self::MODE_MODULES : self::MODE_FULL;
     }
 
     /**
@@ -171,7 +194,7 @@ class InstallCommand extends Command
             return false;
         }
 
-        $this->success('Saved installation mode to .env');
+        $this->success('Saved project mode to .env');
 
         return true;
     }

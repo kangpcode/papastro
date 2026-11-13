@@ -22,13 +22,13 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Installation Mode
+    | Project Mode
     |--------------------------------------------------------------------------
-    | Chosen during `php papastro install`:
+    | Chosen during `composer create-project` (or `php papastro setup`):
     |   modules → app/Modules only, the plugin system is disabled
     |   full    → app/Modules plus plug-and-play plugins
     */
-    'install_mode' => env('PAPASTRO_MODE', 'full'),
+    'mode' => env('PAPASTRO_MODE', 'full'),
 
     /*
     |--------------------------------------------------------------------------

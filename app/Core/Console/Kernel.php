@@ -37,9 +37,8 @@ class Kernel
     protected function registerDefaultCommands(): void
     {
         $this->commands = [
-            // Setup
-            'install' => Commands\InstallCommand::class,
-            'setup' => Commands\InstallCommand::class,
+            // Project
+            'setup' => Commands\SetupCommand::class,
 
             // Core
             'key:generate' => Commands\KeyGenerateCommand::class,
@@ -176,7 +175,7 @@ class Kernel
         $this->output("", 'default');
 
         $groups = [
-            'Setup' => ['install'],
+            'Project' => ['setup'],
             'Server & Runtime' => ['dev', 'serve', 'build', 'runtime:start', 'runtime:stop', 'runtime:reload', 'runtime:status', 'pasway:start'],
             'Module' => ['module:make', 'module:enable', 'module:disable', 'module:list'],
             'Plugin' => ['plugin:make', 'plugin:enable', 'plugin:disable', 'plugin:list'],

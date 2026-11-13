@@ -331,7 +331,7 @@ Berikut adalah hasil uji benchmark performa beban tinggi (*stress testing*) meng
 
 ---
 
-## Persyaratan Sistem dan Instalasi
+## Persyaratan Sistem dan Membuat Proyek
 
 ### Persyaratan Sistem
 - PHP versi 8.1 atau yang lebih baru — **Dukungan Penuh & Teruji untuk PHP 8.1, 8.2, 8.3, 8.4, dan PHP 8.5**.
@@ -339,22 +339,25 @@ Berikut adalah hasil uji benchmark performa beban tinggi (*stress testing*) meng
 - Ekstensi opsional untuk konkurensi maksimal: `pcntl`, `sockets`, `swoole`.
 - Composer 2.x.
 
-### Langkah Instalasi
+### Membuat Proyek Baru
+Seperti Laravel, proyek Papastro dibuat lewat Composer. Mode proyek dipilih sekali saat pembuatan, tidak ada langkah `install` terpisah:
 ```bash
 # Opsi 1: Buat proyek baru via Composer (Direkomendasikan)
 composer create-project kangpcode/papastro my-project
-# Installer otomatis menanyakan mode proyek:
+
+# Saat pembuatan, Papastro menanyakan mode proyek:
 #   [1] Modules only      → hanya app/Modules, tanpa plugin
 #   [2] Modules + Plugins → modul aplikasi + plugin plug-and-play
+# Setelah selesai, .env, APP_KEY, dan folder proyek sudah disiapkan otomatis.
 
 # Opsi 2: Clone repository GitHub
 git clone https://github.com/kangpcode/papastro.git my-project
 cd my-project && composer install
-php papastro install          # pilih mode secara interaktif
+php papastro setup            # pilih mode proyek secara interaktif
 
-# Atau tentukan mode langsung tanpa prompt
-php papastro install --mode=modules   # hanya app/Modules
-php papastro install --mode=full      # modules + plugins
+# Tentukan mode langsung tanpa prompt (clone / ganti mode)
+php papastro setup --mode=modules   # hanya app/Modules
+php papastro setup --mode=full      # modules + plugins
 
 # Jalankan migrasi basis data
 php papastro migrate
@@ -364,17 +367,18 @@ php papastro dev
 # atau server performa tinggi:
 php papastro runtime:start
 ```
+*Pada `composer create-project --no-interaction` (misalnya CI), mode default adalah `full`.*
 
 ### Mode Proyek: Modules Only vs Modules + Plugins
-Papastro bisa dipakai dengan **hanya `app/Modules`** atau **modul + plugin**, ditentukan saat instalasi pertama:
+Papastro bisa dipakai dengan **hanya `app/Modules`** atau **modul + plugin**, ditentukan saat proyek dibuat:
 
 - **`modules`** — hanya `app/Modules`. Sistem plugin dimatikan (`PLUGINS_ENABLED=false`) dan perintah `plugin:*` menolak dijalankan. Cocok untuk aplikasi internal yang ringan tanpa ekstensi pihak ketiga.
 - **`full`** — `app/Modules` + folder `plugins/` untuk plugin plug-and-play.
 
 Mode disimpan sebagai `PAPASTRO_MODE` di `.env`, jadi tidak perlu mengubah kode. Berpindah mode kapan saja tanpa kehilangan kode:
 ```bash
-php papastro install --mode=full     # aktifkan plugin
-php papastro install --mode=modules  # kembali hanya modul (isi plugins/ tetap aman, hanya diabaikan)
+php papastro setup --mode=full     # aktifkan plugin
+php papastro setup --mode=modules  # kembali hanya modul (isi plugins/ tetap aman, hanya diabaikan)
 ```
 
 ### Ekstensi Resmi IDE (VS Code, Antigravity IDE & Cursor)
@@ -574,7 +578,7 @@ php papastro plugin:enable AcmeWidget  # Aktifkan plugin
 php papastro plugin:disable AcmeWidget # Nonaktifkan plugin
 php papastro plugin:list               # Daftar status seluruh plugin
 ```
-*Perintah `plugin:*` hanya tersedia pada mode `full`. Jalankan `php papastro install --mode=full` untuk mengaktifkannya.*
+*Perintah `plugin:*` hanya tersedia pada mode `full`. Jalankan `php papastro setup --mode=full` untuk mengaktifkannya.*
 
 ### Generator Kode
 ```bash
@@ -604,7 +608,7 @@ php papastro pastroutine:test         # Jalankan benchmark dan uji kesehatan eng
 
 ### App & Auto-Update
 ```bash
-php papastro install                  # Setup awal: pilih mode modules / full, siapkan .env & APP_KEY
+php papastro setup                    # Pilih/ubah mode modules / full, siapkan .env & APP_KEY
 php papastro key:generate             # Generate application encryption key (AES-256)
 php papastro upgrade                  # Auto-update aman ke versi terbaru tanpa merusak kode pengguna
 php papastro update                   # Alias dari perintah upgrade
