@@ -14,9 +14,14 @@
 </p>
 
 <p align="center">
+  <a href="https://kangpcode.github.io/papastro/"><img src="https://img.shields.io/badge/Website%20Resmi-kangpcode.github.io%2Fpapastro-6366f1?style=for-the-badge&logo=githubpages&logoColor=white" alt="Website Resmi"></a>
+</p>
+
+<p align="center">
   <b>🌐 Bahasa / Language:</b>
   <a href="README.md">🇬🇧 English</a> &bull;
-  <b>🇮🇩 Bahasa Indonesia</b>
+  <b>🇮🇩 Bahasa Indonesia</b> &bull;
+  <a href="https://kangpcode.github.io/papastro/"><b>📖 Web &amp; Dokumentasi Resmi</b></a>
 </p>
 
 <p align="center">
