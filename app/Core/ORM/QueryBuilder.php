@@ -497,6 +497,174 @@ class QueryBuilder
     }
 
     /**
+     * Insert or update records using database-level UPSERT statements.
+     * Compatible with SQLite 3.24+, MySQL/MariaDB, and PostgreSQL/Supabase.
+     *
+     * @param array<array<string, mixed>>|array<string, mixed> $values
+     * @param array<string>|string $uniqueBy
+     * @param array<string>|null $update Columns to update on conflict
+     * @return int Number of affected rows
+     */
+    public function upsert(array $values, array|string $uniqueBy, ?array $update = null): int
+    {
+        if (empty($values)) {
+            return 0;
+        }
+
+        // Normalize to list of rows
+        if (!isset($values[0]) || !is_array($values[0])) {
+            $values = [$values];
+        }
+
+        $uniqueBy = (array) $uniqueBy;
+        $firstRow = $values[0];
+        $columns = array_keys($firstRow);
+
+        $sanitizedCols = array_map([Security::class, 'sanitizeSqlIdentifier'], $columns);
+        $sanitizedUnique = array_map([Security::class, 'sanitizeSqlIdentifier'], $uniqueBy);
+
+        if ($update === null) {
+            $update = array_diff($columns, $uniqueBy);
+        }
+        $sanitizedUpdate = array_map([Security::class, 'sanitizeSqlIdentifier'], $update);
+
+        $driver = $this->connection->getDriverName();
+
+        $rowsSql = [];
+        $bindings = [];
+        foreach ($values as $row) {
+            $placeholders = [];
+            foreach ($columns as $col) {
+                $placeholders[] = '?';
+                $bindings[] = $row[$col] ?? null;
+            }
+            $rowsSql[] = '(' . implode(', ', $placeholders) . ')';
+        }
+
+        $colList = implode(', ', $sanitizedCols);
+        $valuesList = implode(', ', $rowsSql);
+
+        if ($driver === 'mysql') {
+            $updateAssignments = [];
+            foreach ($sanitizedUpdate as $col) {
+                $updateAssignments[] = "{$col} = VALUES({$col})";
+            }
+            $updateSql = implode(', ', $updateAssignments);
+            $sql = "INSERT INTO `{$this->table}` ({$colList}) VALUES {$valuesList} ON DUPLICATE KEY UPDATE {$updateSql}";
+        } elseif ($driver === 'pgsql') {
+            $conflictTarget = implode(', ', $sanitizedUnique);
+            $updateAssignments = [];
+            foreach ($sanitizedUpdate as $col) {
+                $updateAssignments[] = "{$col} = EXCLUDED.{$col}";
+            }
+            $updateSql = !empty($updateAssignments) ? 'DO UPDATE SET ' . implode(', ', $updateAssignments) : 'DO NOTHING';
+            $sql = "INSERT INTO \"{$this->table}\" ({$colList}) VALUES {$valuesList} ON CONFLICT ({$conflictTarget}) {$updateSql}";
+        } else {
+            $conflictTarget = implode(', ', $sanitizedUnique);
+            $updateAssignments = [];
+            foreach ($sanitizedUpdate as $col) {
+                $updateAssignments[] = "{$col} = excluded.{$col}";
+            }
+            $updateSql = !empty($updateAssignments) ? 'DO UPDATE SET ' . implode(', ', $updateAssignments) : 'DO NOTHING';
+            $sql = "INSERT INTO \"{$this->table}\" ({$colList}) VALUES {$valuesList} ON CONFLICT ({$conflictTarget}) {$updateSql}";
+        }
+
+        return $this->connection->statement($sql, $bindings);
+    }
+
+    /**
+     * Paginate results using high-performance cursor pagination (O(1) index seek).
+     * Ideal for infinite scroll and high-scale datasets without OFFSET performance degradation.
+     *
+     * @param int $perPage
+     * @param string $cursorColumn
+     * @param string|null $cursor Base64 cursor token
+     * @param string $direction
+     * @return array{data: array, next_cursor: ?string, has_more: bool, per_page: int}
+     */
+    public function cursorPaginate(
+        int $perPage = 15,
+        string $cursorColumn = 'id',
+        ?string $cursor = null,
+        string $direction = 'asc'
+    ): array {
+        $perPage = max(1, min($perPage, 500));
+        $direction = strtolower($direction) === 'desc' ? 'desc' : 'asc';
+        $operator = $direction === 'asc' ? '>' : '<';
+
+        $builder = clone $this;
+        $cleanCol = Security::sanitizeSqlIdentifier($cursorColumn);
+
+        if ($cursor !== null) {
+            $decoded = base64_decode($cursor, true);
+            if ($decoded !== false && is_numeric($decoded)) {
+                $builder->where($cleanCol, $operator, (int) $decoded);
+            } elseif ($decoded !== false) {
+                $builder->where($cleanCol, $operator, $decoded);
+            }
+        }
+
+        $builder->orderBy($cleanCol, $direction);
+        $items = $builder->limit($perPage + 1)->get();
+
+        $hasMore = count($items) > $perPage;
+        if ($hasMore) {
+            array_pop($items);
+        }
+
+        $nextCursor = null;
+        if ($hasMore && !empty($items)) {
+            $lastItem = end($items);
+            $val = is_array($lastItem) ? ($lastItem[$cursorColumn] ?? null) : ($lastItem->$cursorColumn ?? null);
+            if ($val !== null) {
+                $nextCursor = base64_encode((string) $val);
+            }
+        }
+
+        return [
+            'data'        => $items,
+            'next_cursor' => $nextCursor,
+            'has_more'    => $hasMore,
+            'per_page'    => $perPage,
+        ];
+    }
+
+    /**
+     * Chunk results by ID for memory-safe batch processing.
+     */
+    public function chunkById(int $count, callable $callback, string $column = 'id', ?string $alias = null): bool
+    {
+        $cleanCol = Security::sanitizeSqlIdentifier($column);
+        $lastId = null;
+
+        do {
+            $builder = clone $this;
+            if ($lastId !== null) {
+                $builder->where($cleanCol, '>', $lastId);
+            }
+
+            $builder->orderBy($cleanCol, 'asc')->limit($count);
+            $results = $builder->get();
+
+            $countResults = count($results);
+            if ($countResults === 0) {
+                break;
+            }
+
+            if ($callback($results) === false) {
+                return false;
+            }
+
+            $lastItem = end($results);
+            $lastId = is_array($lastItem) ? ($lastItem[$column] ?? null) : ($lastItem->$column ?? null);
+
+            unset($results);
+        } while ($countResults === $count);
+
+        return true;
+    }
+
+    /**
      * Clone the query builder.
      */
     public function __clone()

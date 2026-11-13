@@ -110,6 +110,18 @@ class ModelQueryBuilder
         return $result;
     }
 
+    public function cursorPaginate(
+        int $perPage = 15,
+        string $cursorColumn = 'id',
+        ?string $cursor = null,
+        string $direction = 'asc'
+    ): array {
+        $result = $this->builder->cursorPaginate($perPage, $cursorColumn, $cursor, $direction);
+        $modelClass = $this->modelClass;
+        $result['data'] = array_map(fn ($row) => $modelClass::newFromBuilder($row), $result['data']);
+        return $result;
+    }
+
     public function find(mixed $id, string $primaryKey = 'id'): ?Model
     {
         return $this->where($primaryKey, $id)->first();
