@@ -220,6 +220,13 @@ class SetupCommand extends Command
         foreach (['cache/views', 'cache/routes', 'cache/config', 'logs', 'sessions'] as $dir) {
             $this->mkdir($this->app->storagePath($dir));
         }
+
+        $dbDir = $this->app->databasePath();
+        $this->mkdir($dbDir);
+        $sqliteFile = $this->app->databasePath('database.sqlite');
+        if (!file_exists($sqliteFile)) {
+            $this->touch($sqliteFile);
+        }
     }
 
     /**

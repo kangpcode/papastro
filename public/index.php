@@ -52,7 +52,16 @@ define('PAPASTRO_VERSION', '3.0.0');
 | Register The Auto Loader
 |--------------------------------------------------------------------------
 */
-require dirname(__DIR__) . '/libs/autoload.php';
+$baseDir = dirname(__DIR__);
+if (file_exists($baseDir . '/libs/autoload.php')) {
+    require $baseDir . '/libs/autoload.php';
+} elseif (file_exists($baseDir . '/vendor/autoload.php')) {
+    require $baseDir . '/vendor/autoload.php';
+} else {
+    http_response_code(500);
+    echo "Error: Composer dependencies not found. Please run 'composer install'.";
+    exit(1);
+}
 
 /*
 |--------------------------------------------------------------------------

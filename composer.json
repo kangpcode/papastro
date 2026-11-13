@@ -20,6 +20,14 @@
     "require-dev": {
         "phpunit/phpunit": "^10.0"
     },
+    "suggest": {
+        "ext-pcntl": "Required for multi-worker Native Octane-style runtime server",
+        "ext-sockets": "Required for high-performance socket runtime and Pasway WebSockets",
+        "ext-swoole": "Required for running Swoole coroutine runtime server",
+        "ext-pdo_sqlite": "Required for default SQLite database driver",
+        "ext-pdo_mysql": "Required for MySQL database driver",
+        "ext-pdo_pgsql": "Required for PostgreSQL database driver"
+    },
     "bin": [
         "papastro"
     ],

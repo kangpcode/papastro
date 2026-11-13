@@ -1,5 +1,6 @@
 /AGENTS.md
 /libs/
+/vendor/
 /storage/cache/
 /storage/framework/down
 /storage/framework/*.pid
