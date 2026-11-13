@@ -637,7 +637,7 @@ php papastro update                   # Alias dari perintah upgrade
 
 ## Lisensi dan Watermark Kepemilikan
 
-Papastro Framework didistribusikan di bawah ketentuan lisensi bebas penggunaan dengan kewajiban watermark kepemilikan.
+Papastro Framework didistribusikan di bawah ketenv3.0.0tuan lisensi bebas penggunaan dengan kewajiban watermark kepemilikan.
 
 ### Ketentuan Lisensi
 
@@ -674,7 +674,7 @@ Ekstensi file dan format spesifikasi template `.pstro` (**Papastro Astro Templat
 
 ---
 
-## Dukungan Multi-Database Enterprise (Mirip Laravel)
+## Dukungan Multi-Database Enterprise
 
 Papastro v4.0.0 mendukung arsitektur multi-database enterprise layaknya Laravel. Pengembang bebas menggunakan, mengombinasikan, dan beralih di antara berbagai engine database:
 
