@@ -717,6 +717,8 @@ class DownCommand extends Command
             'time'    => time(),
         ], JSON_PRETTY_PRINT));
 
+        $this->app->invalidateMaintenanceCache();
+
         $this->success("Application is now in maintenance mode.");
         $this->line("  Bypass Secret: {$secret}", 'yellow');
         $this->line("  Bypass URL   : /{$secret}", 'cyan');
@@ -735,6 +737,7 @@ class UpCommand extends Command
         $downFile = $this->app->storagePath('framework/down');
         if (file_exists($downFile)) {
             @unlink($downFile);
+            $this->app->invalidateMaintenanceCache();
             $this->success("Application is now live.");
         } else {
             $this->info("Application is already live.");

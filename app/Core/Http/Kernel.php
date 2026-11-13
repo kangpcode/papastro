@@ -52,6 +52,11 @@ class Kernel
     protected array $routeMiddleware = [];
 
     /**
+     * Whether route middleware aliases and groups have been synced to the Router.
+     */
+    protected bool $middlewareSynced = false;
+
+    /**
      * Create a new HTTP Kernel instance.
      */
     public function __construct(Application $app, \Papastro\Router\Router $router)
@@ -97,9 +102,17 @@ class Kernel
 
         $this->bootstrap();
 
-        // Sync route middleware aliases and groups to the Router
-        $this->router->setMiddlewareGroups($this->middlewareGroups);
-        $this->router->setRouteMiddleware($this->routeMiddleware);
+        // Sync route middleware aliases and groups to the Router once
+        if (!$this->middlewareSynced) {
+            $this->router->setMiddlewareGroups($this->middlewareGroups);
+            $this->router->setRouteMiddleware($this->routeMiddleware);
+            $this->middlewareSynced = true;
+        }
+
+        // Fast path: bypass pipeline object creation if no global middleware exists
+        if (empty($this->middleware)) {
+            return $this->router->dispatch($request);
+        }
 
         return (new Pipeline($this->app))
             ->send($request)

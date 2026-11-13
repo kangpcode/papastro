@@ -377,12 +377,29 @@ class Application extends Container
         return $this->environment() === 'production';
     }
 
+    protected ?bool $isDownCached = null;
+    protected int $lastDownCheck = 0;
+
     /**
      * Determine if the application is currently down for maintenance.
      */
     public function isDownForMaintenance(): bool
     {
-        return is_file($this->storagePath('cache/down.json'));
+        $now = time();
+        if ($this->isDownCached !== null && ($now - $this->lastDownCheck) < 1) {
+            return $this->isDownCached;
+        }
+        $this->lastDownCheck = $now;
+        return $this->isDownCached = (is_file($this->storagePath('framework/down')) || is_file($this->storagePath('cache/down.json')));
+    }
+
+    /**
+     * Invalidate maintenance mode cache.
+     */
+    public function invalidateMaintenanceCache(): void
+    {
+        $this->isDownCached = null;
+        $this->lastDownCheck = 0;
     }
 
     /**
@@ -390,7 +407,10 @@ class Application extends Container
      */
     public function maintenanceModeData(): array
     {
-        $path = $this->storagePath('cache/down.json');
+        $path = is_file($this->storagePath('framework/down'))
+            ? $this->storagePath('framework/down')
+            : $this->storagePath('cache/down.json');
+
         if (!is_file($path)) {
             return [];
         }
