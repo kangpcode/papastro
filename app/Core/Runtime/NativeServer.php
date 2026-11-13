@@ -175,6 +175,7 @@ class NativeServer
                 'so_reuseport' => 1,
                 'so_reuseaddr' => 1,
                 'backlog'      => 65535,
+                'tcp_nodelay'  => true,
             ],
         ]);
 
@@ -202,6 +203,15 @@ class NativeServer
                     pcntl_signal_dispatch();
                 }
                 continue;
+            }
+
+            // Optimize socket latency with TCP_NODELAY and SO_KEEPALIVE
+            if (function_exists('socket_import_stream')) {
+                $sock = @socket_import_stream($conn);
+                if ($sock) {
+                    @socket_set_option($sock, SOL_TCP, TCP_NODELAY, 1);
+                    @socket_set_option($sock, SOL_SOCKET, SO_KEEPALIVE, 1);
+                }
             }
 
             $keepAliveRequests = 0;
@@ -246,16 +256,22 @@ class NativeServer
                     $body .= $buf;
                 }
 
-                // Construct Papastro Request
-                $parsedUrl = parse_url($target);
-                $path = $parsedUrl['path'] ?? '/';
-                $queryString = $parsedUrl['query'] ?? '';
+                // Construct Papastro Request with fast URL separation
+                $qPos = strpos($target, '?');
+                if ($qPos !== false) {
+                    $path = substr($target, 0, $qPos);
+                    $queryString = substr($target, $qPos + 1);
+                    parse_str($queryString, $queryParams);
+                } else {
+                    $path = $target;
+                    $queryString = '';
+                    $queryParams = [];
+                }
 
                 // Fast static asset serving from public directory
                 if ($path !== '/' && $this->serveStaticFile($conn, $path)) {
                     break;
                 }
-                parse_str($queryString, $queryParams);
 
                 $parsedBody = [];
                 $contentType = $headers['content-type'] ?? '';
