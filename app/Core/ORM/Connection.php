@@ -61,6 +61,15 @@ class Connection
                 if ($dbname !== ':memory:' && !str_starts_with($dbname, '/') && !preg_match('/^[a-zA-Z]:\\\\/', $dbname)) {
                     $dbname = base_path($dbname);
                 }
+                if ($dbname !== ':memory:') {
+                    $dir = dirname($dbname);
+                    if (!is_dir($dir)) {
+                        @mkdir($dir, 0755, true);
+                    }
+                    if (!file_exists($dbname)) {
+                        @touch($dbname);
+                    }
+                }
                 $dsn = "sqlite:{$dbname}";
                 break;
             case 'pgsql':

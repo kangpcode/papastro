@@ -86,10 +86,14 @@ class LoadConfiguration
 class HandleExceptions
 {
     protected Application $app;
+    protected static ?string $reservedMemory = null;
 
     public function bootstrap(Application $app): void
     {
         $this->app = $app;
+
+        // Reserve 32KB of memory to guarantee graceful crash handling on Out-Of-Memory
+        static::$reservedMemory = str_repeat(' ', 32768);
 
         error_reporting(E_ALL);
 
@@ -108,13 +112,52 @@ class HandleExceptions
 
     public function handleException(\Throwable $e): void
     {
+        $isCli = PHP_SAPI === 'cli' || PHP_SAPI === 'phpdbg';
+        $isJson = (isset($_SERVER['HTTP_ACCEPT']) && str_contains($_SERVER['HTTP_ACCEPT'], 'application/json'))
+            || (isset($_SERVER['REQUEST_URI']) && str_starts_with(ltrim((string) parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/'), 'api/'));
+
         if ($this->app->debug()) {
+            if ($isCli) {
+                fwrite(STDERR, "\n\033[31;1m[" . get_class($e) . "]\033[0m " . $e->getMessage() . "\n");
+                fwrite(STDERR, "in \033[33m" . $e->getFile() . "\033[0m on line \033[33m" . $e->getLine() . "\033[0m\n\n");
+                fwrite(STDERR, $e->getTraceAsString() . "\n\n");
+                return;
+            }
+
+            if ($isJson) {
+                if (!headers_sent()) {
+                    @http_response_code(500);
+                    header('Content-Type: application/json; charset=UTF-8');
+                }
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => $e->getMessage(),
+                    'exception' => get_class($e),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+                return;
+            }
+
             $this->renderDebugException($e);
         } else {
             error_log($e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
+
+            if ($isCli) {
+                fwrite(STDERR, "\n\033[31mInternal Server Error\033[0m\n");
+                return;
+            }
+
             if (!headers_sent()) {
                 @http_response_code(500);
             }
+
+            if ($isJson) {
+                header('Content-Type: application/json; charset=UTF-8');
+                echo json_encode(['status' => 'error', 'message' => 'Internal Server Error']);
+                return;
+            }
+
             echo 'Internal Server Error';
         }
     }
@@ -123,30 +166,60 @@ class HandleExceptions
     {
         if (!headers_sent()) {
             @http_response_code(500);
+            header('Content-Type: text/html; charset=UTF-8');
         }
         $message = htmlspecialchars($e->getMessage());
+        $class = htmlspecialchars(get_class($e));
         $file = htmlspecialchars($e->getFile());
         $line = $e->getLine();
         $trace = htmlspecialchars($e->getTraceAsString());
 
         echo <<<HTML
-<!DOCTYPE html><html><head><title>Error</title>
-<style>body{font-family:monospace;background:#0f172a;color:#e2e8f0;padding:40px;}
-h1{color:#f87171;} pre{background:#1e293b;padding:20px;border-radius:8px;overflow:auto;}</style>
-</head><body>
-<h1>{$message}</h1>
-<p>in <strong>{$file}</strong> on line <strong>{$line}</strong></p>
-<pre>{$trace}</pre>
-</body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Papastro — Exception</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; background: #0f172a; color: #e2e8f0; padding: 40px; }
+        .box { max-width: 1000px; margin: 0 auto; background: #1e293b; border-radius: 12px; border: 1px solid #334155; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5); }
+        .banner { background: #dc2626; padding: 20px 24px; }
+        .banner h1 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: #fca5a5; margin-bottom: 6px; }
+        .banner h2 { font-size: 20px; color: #fff; font-weight: 700; word-break: break-word; }
+        .meta { padding: 16px 24px; background: #182234; border-bottom: 1px solid #334155; font-size: 13px; color: #94a3b8; }
+        .meta strong { color: #f8fafc; }
+        .content { padding: 24px; }
+        pre { background: #0b1120; padding: 18px; border-radius: 8px; font-size: 12px; line-height: 1.6; color: #cbd5e1; overflow-x: auto; border: 1px solid #1e293b; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <div class="banner">
+            <h1>Papastro Framework v4.0.0 — Unhandled Exception</h1>
+            <h2>{$message}</h2>
+        </div>
+        <div class="meta">
+            <span>Thrown in <strong>{$file}</strong> on line <strong>{$line}</strong> [{$class}]</span>
+        </div>
+        <div class="content">
+            <pre>{$trace}</pre>
+        </div>
+    </div>
+</body>
+</html>
 HTML;
     }
 
     public function handleShutdown(): void
     {
+        // Free reserved memory buffer so fatal OOM can still report gracefully
+        static::$reservedMemory = null;
+
         $error = error_get_last();
 
         if ($error && in_array($error['type'], [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE])) {
-            $this->handleError($error['type'], $error['message'], $error['file'], $error['line']);
+            $this->handleException(new \ErrorException($error['message'], 0, $error['type'], $error['file'], $error['line']));
         }
     }
 }

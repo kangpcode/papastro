@@ -17,31 +17,37 @@ $uri = rawurldecode(
 
 // Emulate Apache mod_rewrite / Nginx try_files for PHP built-in web server
 if ($uri !== '/') {
-    $publicDir = __DIR__ . '/public';
-    if (file_exists($publicDir . $uri) && is_file($publicDir . $uri)) {
-        return false;
-    }
-    // Subpath relative static asset fallback (e.g. /blog/icons/icon-192.png)
-    if (preg_match('#/(icons/.*|assets/.*|islands/.*|[^/]+\.(css|js|png|jpg|jpeg|gif|svg|webp|ico|json|woff2?|ttf|map))$#', $uri, $m)) {
-        $candidate = $publicDir . '/' . $m[1];
-        if (file_exists($candidate) && is_file($candidate)) {
-            $ext = strtolower(pathinfo($candidate, PATHINFO_EXTENSION));
-            $mimes = [
-                'css'   => 'text/css; charset=UTF-8',
-                'js'    => 'application/javascript; charset=UTF-8',
-                'json'  => 'application/json; charset=UTF-8',
-                'png'   => 'image/png',
-                'jpg'   => 'image/jpeg',
-                'jpeg'  => 'image/jpeg',
-                'gif'   => 'image/gif',
-                'svg'   => 'image/svg+xml',
-                'webp'  => 'image/webp',
-                'ico'   => 'image/x-icon',
-            ];
-            header('Content-Type: ' . ($mimes[$ext] ?? 'application/octet-stream'));
-            header('Content-Length: ' . filesize($candidate));
-            readfile($candidate);
-            exit(0);
+    $publicDir = realpath(__DIR__ . '/public');
+    if ($publicDir) {
+        $real = realpath($publicDir . $uri);
+        if ($real && str_starts_with($real, $publicDir) && is_file($real) && basename($real) !== 'index.php') {
+            return false;
+        }
+        // Subpath relative static asset fallback (e.g. /blog/icons/icon-192.png)
+        if (preg_match('#/(icons/.*|assets/.*|islands/.*|[^/]+\.(css|js|png|jpg|jpeg|gif|svg|webp|ico|json|woff2?|ttf|map))$#', $uri, $m)) {
+            $candidate = realpath($publicDir . '/' . $m[1]);
+            if ($candidate && str_starts_with($candidate, $publicDir) && is_file($candidate) && basename($candidate) !== 'index.php') {
+                $ext = strtolower(pathinfo($candidate, PATHINFO_EXTENSION));
+                $mimes = [
+                    'css'   => 'text/css; charset=UTF-8',
+                    'js'    => 'application/javascript; charset=UTF-8',
+                    'json'  => 'application/json; charset=UTF-8',
+                    'png'   => 'image/png',
+                    'jpg'   => 'image/jpeg',
+                    'jpeg'  => 'image/jpeg',
+                    'gif'   => 'image/gif',
+                    'svg'   => 'image/svg+xml',
+                    'webp'  => 'image/webp',
+                    'ico'   => 'image/x-icon',
+                    'woff'  => 'font/woff',
+                    'woff2' => 'font/woff2',
+                    'ttf'   => 'font/ttf',
+                ];
+                header('Content-Type: ' . ($mimes[$ext] ?? 'application/octet-stream'));
+                header('Content-Length: ' . filesize($candidate));
+                readfile($candidate);
+                exit(0);
+            }
         }
     }
 }

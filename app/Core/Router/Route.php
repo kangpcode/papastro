@@ -187,7 +187,12 @@ class Route
         if ($action instanceof Closure) {
             $result = $this->container->call($action, $this->parameters);
         } else {
-            [$controllerClass, $method] = explode('@', $action, 2);
+            if (str_contains($action, '@')) {
+                [$controllerClass, $method] = explode('@', $action, 2);
+            } else {
+                $controllerClass = $action;
+                $method = $this->action['method'] ?? '__invoke';
+            }
             $controller = $this->container->make($controllerClass);
             $result = $this->container->call([$controller, $method], $this->parameters);
         }

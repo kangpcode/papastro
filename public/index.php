@@ -15,12 +15,13 @@ declare(strict_types=1);
 if (PHP_SAPI === 'cli-server') {
     $uri = rawurldecode(parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?? '');
     if ($uri !== '/') {
-        if (file_exists(__DIR__ . $uri) && is_file(__DIR__ . $uri)) {
+        $real = realpath(__DIR__ . $uri);
+        if ($real && str_starts_with($real, __DIR__) && is_file($real) && basename($real) !== 'index.php') {
             return false;
         }
         if (preg_match('#/(icons/.*|assets/.*|islands/.*|[^/]+\.(css|js|png|jpg|jpeg|gif|svg|webp|ico|json|woff2?|ttf|map))$#', $uri, $m)) {
-            $candidate = __DIR__ . '/' . $m[1];
-            if (file_exists($candidate) && is_file($candidate)) {
+            $candidate = realpath(__DIR__ . '/' . $m[1]);
+            if ($candidate && str_starts_with($candidate, __DIR__) && is_file($candidate) && basename($candidate) !== 'index.php') {
                 $ext = strtolower(pathinfo($candidate, PATHINFO_EXTENSION));
                 $mimes = [
                     'css'   => 'text/css; charset=UTF-8',
@@ -33,6 +34,9 @@ if (PHP_SAPI === 'cli-server') {
                     'svg'   => 'image/svg+xml',
                     'webp'  => 'image/webp',
                     'ico'   => 'image/x-icon',
+                    'woff'  => 'font/woff',
+                    'woff2' => 'font/woff2',
+                    'ttf'   => 'font/ttf',
                 ];
                 header('Content-Type: ' . ($mimes[$ext] ?? 'application/octet-stream'));
                 header('Content-Length: ' . filesize($candidate));

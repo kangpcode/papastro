@@ -94,6 +94,11 @@ class ViewEngine
             return true;
         }
 
+        // In production, trust compiled views without stat overhead
+        if ($this->app->isProduction()) {
+            return false;
+        }
+
         return filemtime($sourcePath) > filemtime($compiledPath);
     }
 
@@ -146,23 +151,26 @@ class ViewEngine
             return $this->resolvedPaths[$template];
         }
 
+        // Prevent directory traversal attacks
+        $cleanTemplate = str_replace(['../', '..\\'], '', $template);
+
         // Module::template syntax
-        if (str_contains($template, '::')) {
-            [$module, $view] = explode('::', $template, 2);
+        if (str_contains($cleanTemplate, '::')) {
+            [$module, $view] = explode('::', $cleanTemplate, 2);
             $view = str_replace('.', DIRECTORY_SEPARATOR, $view);
 
             return $this->resolvedPaths[$template] = $this->app->appPath("Modules/{$module}/Pages/{$view}.pstro");
         }
 
         // layouts.name → resources/layouts/{name}.pstro
-        if (str_starts_with($template, 'layouts.')) {
-            $name = substr($template, strlen('layouts.'));
+        if (str_starts_with($cleanTemplate, 'layouts.')) {
+            $name = substr($cleanTemplate, strlen('layouts.'));
             $name = str_replace('.', DIRECTORY_SEPARATOR, $name);
             return $this->resolvedPaths[$template] = $this->app->resourcePath("layouts/{$name}.pstro");
         }
 
         // Convert dot notation to path
-        $normalized = str_replace('.', DIRECTORY_SEPARATOR, $template);
+        $normalized = str_replace('.', DIRECTORY_SEPARATOR, $cleanTemplate);
 
         // Default: resources/views
         return $this->resolvedPaths[$template] = $this->app->resourcePath("views/{$normalized}.pstro");
