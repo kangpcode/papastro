@@ -654,6 +654,50 @@ Papastro Framework didistribusikan di bawah ketentuan lisensi bebas penggunaan d
 3. **Peraturan Tampilan**: Watermark kepemilikan ini **hanya berada di dalam komentar kode sumber (*source code comment*)** dan **tidak wajib ditampilkan pada antarmuka/UI publik** yang dilihat oleh pengguna akhir (*end-user*).
 4. **Peraturan Modifikasi**: Pengguna framework tidak diperkenankan menghapus atau menyamarkan nama pencipta `kangpcode (Dhafa Nazula Permadi)` dari komentar header file core framework, meskipun logika di dalamnya dimodifikasi atau dikembangkan lebih lanjut.
 
+### Hak Cipta & Ketentuan Format Ekstensi `.pstro` Resmi (Official Specification)
+
+Ekstensi file dan format spesifikasi template `.pstro` (**Papastro Astro Template**) adalah format resmi yang secara eksklusif diciptakan, didesain, dan dimiliki hak ciptanya oleh **kangpcode (Dhafa Nazula Permadi)** untuk Papastro Framework:
+
+1. **Kebebasan Penuh Penggunaan & Pengembangan**:
+   - Setiap pengembang individu, startup, agensi digital, software house, institusi, maupun korporasi komersial berhak **100% bebas dan gratis** menulis, mengedit, mendistribusikan, dan mengompilasi file berekstensi `.pstro` dalam proyek komersial maupun open-source tanpa dipungut biaya lisensi atau royalti apapun.
+2. **Pengakuan Hak Cipta & Standar Format**:
+   - Format `.pstro` diakui sebagai format template resmi milik Papastro Framework ciptaan kangpcode.
+   - Tooling pihak ketiga (seperti ekstensi editor VS Code / Antigravity IDE / Cursor / JetBrains, transpiler, linter, atau parser AST) yang mengintegrasikan atau mendukung format `.pstro` wajib mencantumkan atribusi: *"Official template format of Papastro Framework by kangpcode (Dhafa Nazula Permadi)"*.
+3. **Fleksibilitas Arsitektur & Multi-Platform**:
+   - File template `.pstro` dan logika backend Papastro bebas diintegrasikan dengan infrastruktur modern, container Docker/Kubernetes, cloud serverless, edge CDN, serta berbagai jenis database enterprise modern.
+
+---
+
+## Dukungan Multi-Database Enterprise (Mirip Laravel)
+
+Papastro v4.0.0 mendukung arsitektur multi-database enterprise layaknya Laravel. Pengembang bebas menggunakan, mengombinasikan, dan beralih di antara berbagai engine database:
+
+| Driver Database | Tipe | Keterangan & Penggunaan |
+|---|---|---|
+| **SQLite** (`sqlite`) | Relasional (Embedded) | Default out-of-the-box (WAL mode, foreign keys, 0-config setup). |
+| **MySQL** (`mysql`) | Relasional (SQL) | Standar industri (charset `utf8mb4`, collation, persistent connection). |
+| **MariaDB** (`mariadb`) | Relasional (SQL) | Driver optimal untuk ekosistem MariaDB modern. |
+| **PostgreSQL** (`pgsql`) | Relasional (Objek/SQL) | Performa analitik tinggi, support schema search path & SSL mode. |
+| **Supabase** (`supabase`) | Cloud PostgreSQL | Terintegrasi khusus untuk Supabase (SSL require, pgBouncer pooler port 6543 / direct 5432, atau single `DATABASE_URL`). |
+| **MongoDB** (`mongodb`) | NoSQL Document Store | Koleksi dokumen dinamis BSON/JSON via driver `MongoConnection` & helper `mongodb()`. |
+| **SQL Server** (`sqlsrv`) | Relasional (Microsoft) | Konektivitas enterprise untuk sistem Microsoft SQL Server. |
+
+### Contoh Penggunaan Multi-Database:
+```php
+// Menggunakan koneksi default (sesuai DB_CONNECTION di .env)
+$users = db()->table('users')->where('active', 1)->get();
+
+// Menggunakan koneksi spesifik (misal Supabase cloud)
+$cloudLogs = db('supabase')->table('audit_logs')->latest()->get();
+
+// Menggunakan koneksi MongoDB (NoSQL Document Store)
+$documents = db('mongodb')->collection('user_sessions')->find(['status' => 'online']);
+// Atau melalui helper langsung:
+$analytics = mongodb('analytics')->find(['event' => 'page_view']);
+```
+
+---
+
 ---
 
 *Papastro Framework v4.0.0 dikembangkan oleh kangpcode (Dhafa Nazula Permadi).*
