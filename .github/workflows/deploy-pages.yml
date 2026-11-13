@@ -1,28 +1,19 @@
-name: Deploy Papastro GitHub Pages
+name: Deploy Papastro Website to GitHub Pages
 
 on:
   push:
     branches: [ "main" ]
-    paths:
-      - 'landingpage-sass/**'
-      - 'docs/**'
-      - '.github/workflows/deploy-pages.yml'
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: "pages"
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -33,7 +24,7 @@ jobs:
         with:
           node-version: 22
 
-      - name: Compile SASS & Assets
+      - name: Compile SASS & Prepare Site
         run: |
           cd landingpage-sass
           npm install
@@ -42,15 +33,12 @@ jobs:
           mkdir -p docs
           cp -r landingpage-sass/assets landingpage-sass/css landingpage-sass/js landingpage-sass/index.html landingpage-sass/.nojekyll docs/
 
-      - name: Setup GitHub Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload Pages Artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Deploy to GitHub Pages (gh-pages branch)
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          path: './docs'
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
+          keep_files: false
+          force_orphan: true
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
