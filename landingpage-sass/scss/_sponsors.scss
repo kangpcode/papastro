@@ -1,0 +1,114 @@
+// Papastro Sponsorship Tiers
+@use "variables" as *;
+
+.sponsors-section {
+  padding: 5rem 0;
+
+  .sponsors-tiers-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+
+    @media (max-width: $bp-lg) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: $bp-sm) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .sponsor-tier-card {
+    padding: 2.25rem 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    position: relative;
+    text-align: center;
+
+    &.tier-platinum {
+      border-color: rgba(6, 182, 212, 0.4);
+      background: linear-gradient(180deg, rgba(6, 182, 212, 0.1) 0%, rgba(18, 24, 38, 0.8) 100%);
+      box-shadow: $shadow-glow-cyan;
+    }
+
+    &.tier-gold {
+      border-color: rgba(245, 158, 11, 0.4);
+      background: linear-gradient(180deg, rgba(245, 158, 11, 0.1) 0%, rgba(18, 24, 38, 0.8) 100%);
+    }
+
+    &.tier-silver {
+      border-color: rgba(148, 163, 184, 0.3);
+    }
+
+    .tier-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin: 0 auto;
+    }
+
+    .tier-price {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #fff;
+      font-family: $font-mono;
+
+      span {
+        font-size: 0.85rem;
+        color: $text-muted;
+        font-weight: 400;
+      }
+    }
+
+    .tier-perks {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      font-size: 0.875rem;
+      color: $text-muted;
+      text-align: left;
+      margin: 1rem 0;
+
+      li {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        svg {
+          color: $accent-emerald;
+          flex-shrink: 0;
+        }
+      }
+    }
+
+    .tier-btn {
+      margin-top: auto;
+      width: 100%;
+    }
+  }
+
+  .enterprise-sponsor-box {
+    margin-top: 3.5rem;
+    padding: 2.5rem;
+    text-align: center;
+    background: rgba(18, 24, 38, 0.5);
+    border: 1px dashed rgba(255, 255, 255, 0.15);
+    border-radius: $radius-lg;
+
+    h3 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      color: $text-muted;
+      max-width: 600px;
+      margin: 0 auto 1.5rem auto;
+      font-size: 0.95rem;
+    }
+  }
+}

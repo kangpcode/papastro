@@ -1,0 +1,92 @@
+// Papastro Donations & Financial Support
+@use "variables" as *;
+
+.donate-section {
+  padding: 5rem 0;
+
+  .donate-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.75rem;
+
+    @media (max-width: $bp-lg) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: $bp-sm) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .donate-card {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    position: relative;
+    overflow: hidden;
+
+    &.featured {
+      border-color: rgba(99, 102, 241, 0.4);
+      background: linear-gradient(180deg, rgba(99, 102, 241, 0.12) 0%, rgba(18, 24, 38, 0.75) 100%);
+    }
+
+    .donate-icon {
+      font-size: 2rem;
+      width: 52px;
+      height: 52px;
+      border-radius: $radius-md;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .donate-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .donate-desc {
+      color: $text-muted;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .wallet-box {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: $radius-sm;
+      padding: 0.6rem 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+
+      .wallet-address {
+        font-family: $font-mono;
+        font-size: 0.8rem;
+        color: $accent-cyan;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .copy-btn-sm {
+        cursor: pointer;
+        color: $text-muted;
+        transition: color $transition-fast;
+
+        &:hover {
+          color: #fff;
+        }
+      }
+    }
+
+    .donate-action {
+      margin-top: auto;
+    }
+  }
+}
