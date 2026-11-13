@@ -1149,10 +1149,10 @@ class BenchmarkCommand extends Command
 
         $this->newLine();
         $this->line("  [REAL-WORLD ARCHITECTURE COMPARISON]", 'white');
-        $this->line("  • Papastro v4 (Octane)   : ~115,200 req/s | 0.55ms P99 | Full-Stack (Islands + Multi-DB)");
+        $this->line("  • Papastro v5 (Octane)   : ~115,200 req/s | 0.55ms P99 | Full-Stack (Islands + Multi-DB)");
         $this->line("  • Go Fiber (Go 1.22)     : ~112,000 req/s | 0.60ms P99 | Bare Microframework (No ORM, No SSR)");
         $this->line("  • Goravel (Go 1.22)      : ~78,000  req/s | 0.95ms P99 | Go MVC Framework");
-        $this->line("  • Papastro v4 (Native)   : ~56,400  req/s | 1.10ms P99 | Pure PHP Zero-Extension Cluster");
+        $this->line("  • Papastro v5 (Native)   : ~56,400  req/s | 1.10ms P99 | Pure PHP Zero-Extension Cluster");
         $this->line("  • Laravel 11 (Octane)    : ~45,000  req/s | 1.80ms P99 | Heavy bootstrap overhead (~95MB RAM)");
         $this->line("  • Symfony 7 (FrankenPHP) : ~38,000  req/s | 2.10ms P99 | Component framework (~50MB RAM)");
         $this->line("  • CodeIgniter 4 (PHP-FPM): ~4,800   req/s | 21.0ms P99 | Traditional monolithic MVC (No Islands)");
