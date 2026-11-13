@@ -249,3 +249,170 @@ class ModuleListCommand extends Command
         return 0;
     }
 }
+
+/**
+ * Generate a new plugin scaffold: papastro plugin:make AcmeWidget
+ */
+class MakePluginCommand extends Command
+{
+    public function execute(array $args): int
+    {
+        if (!$this->pluginsEnabled()) {
+            $this->error('The plugin system is disabled for this project (modules-only mode).');
+            $this->info('Switch to full mode with: php papastro install --mode=full');
+            return 1;
+        }
+
+        $name = $this->argument($args, 0);
+        if (!$name) {
+            $this->error('Plugin name is required. Usage: papastro plugin:make <Name>');
+            return 1;
+        }
+
+        $name = ucfirst($name);
+        $basePath = $this->app->basePath("plugins/{$name}");
+        $ns = "Plugins\\{$name}";
+
+        $this->info("Creating plugin: {$name}");
+        $this->newLine();
+
+        $dirs = ['Routes', 'Islands', 'Pages'];
+        foreach ($dirs as $dir) {
+            $this->mkdir("{$basePath}/{$dir}");
+        }
+
+        $this->writeFile("{$basePath}/plugin.json", json_encode([
+            'name' => $name,
+            'description' => "{$name} plugin",
+            'version' => '1.0.0',
+            'enabled' => true,
+            'requires' => [],
+            'author' => 'kangpcode',
+        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+
+        $this->writeFile("{$basePath}/Routes/web.php", $this->getHeader() . <<<PHP
+
+use Papastro\\Router\\RouteFacade as Route;
+
+Route::get('/{$this->toSlug($name)}', function () {
+    return '{$name} plugin works!';
+})->name('plugin.{$this->toSlug($name)}.index');
+PHP);
+
+        $this->writeFile("{$basePath}/{$name}ServiceProvider.php", $this->getHeader() . <<<PHP
+
+declare(strict_types=1);
+
+namespace {$ns};
+
+use Papastro\\Foundation\\ServiceProvider;
+
+class {$name}ServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+        // Register {$name} plugin bindings here.
+    }
+
+    public function boot(): void
+    {
+        // Boot {$name} plugin services here.
+    }
+}
+PHP);
+
+        $this->newLine();
+        $this->success("Plugin [{$name}] created successfully!");
+        $this->info("Path: plugins/{$name}/");
+        $this->info("Enable with: php papastro plugin:enable {$name}");
+        return 0;
+    }
+
+    protected function toSlug(string $name): string
+    {
+        return strtolower(preg_replace('/([A-Z])/', '-$1', lcfirst($name)));
+    }
+}
+
+class PluginEnableCommand extends Command
+{
+    public function execute(array $args): int
+    {
+        if (!$this->pluginsEnabled()) {
+            $this->error('The plugin system is disabled for this project (modules-only mode).');
+            $this->info('Switch to full mode with: php papastro install --mode=full');
+            return 1;
+        }
+
+        $name = $this->argument($args, 0);
+        if (!$name) {
+            $this->error('Plugin name required.');
+            return 1;
+        }
+        $manager = $this->app->make(\Papastro\Plugin\PluginManager::class);
+        if ($manager->enable($name)) {
+            $this->success("Plugin [{$name}] enabled.");
+        } else {
+            $this->error("Plugin [{$name}] not found.");
+            return 1;
+        }
+        return 0;
+    }
+}
+
+class PluginDisableCommand extends Command
+{
+    public function execute(array $args): int
+    {
+        if (!$this->pluginsEnabled()) {
+            $this->error('The plugin system is disabled for this project (modules-only mode).');
+            $this->info('Switch to full mode with: php papastro install --mode=full');
+            return 1;
+        }
+
+        $name = $this->argument($args, 0);
+        if (!$name) {
+            $this->error('Plugin name required.');
+            return 1;
+        }
+        $manager = $this->app->make(\Papastro\Plugin\PluginManager::class);
+        if ($manager->disable($name)) {
+            $this->success("Plugin [{$name}] disabled.");
+        } else {
+            $this->error("Plugin [{$name}] not found.");
+            return 1;
+        }
+        return 0;
+    }
+}
+
+class PluginListCommand extends Command
+{
+    public function execute(array $args): int
+    {
+        if (!$this->pluginsEnabled()) {
+            $this->warn('Plugin system is disabled for this project (modules-only mode).');
+            $this->info('Switch to full mode with: php papastro install --mode=full');
+            return 0;
+        }
+        $manager = $this->app->make(\Papastro\Plugin\PluginManager::class);
+        $plugins = $manager->all();
+
+        $this->newLine();
+        $this->line('  Plugins', 'yellow');
+        $this->line('  ' . str_repeat('─', 50), 'gray');
+
+        if (empty($plugins)) {
+            $this->warn('No plugins found in plugins/');
+            return 0;
+        }
+
+        foreach ($plugins as $p) {
+            $status = $p['enabled'] ? "\033[32m● enabled\033[0m" : "\\033[31m○ disabled\033[0m";
+            $loaded = $p['loaded'] ? ' [loaded]' : '';
+            echo "  {$p['name']} v{$p['version']} — {$status}{$loaded}" . PHP_EOL;
+        }
+        $this->newLine();
+        return 0;
+    }
+}

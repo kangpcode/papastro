@@ -22,6 +22,16 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Installation Mode
+    |--------------------------------------------------------------------------
+    | Chosen during `php papastro install`:
+    |   modules → app/Modules only, the plugin system is disabled
+    |   full    → app/Modules plus plug-and-play plugins
+    */
+    'install_mode' => env('PAPASTRO_MODE', 'full'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     | Options: local, staging, production
@@ -78,5 +88,20 @@ return [
         \App\Providers\EventServiceProvider::class,
         \App\Providers\ModuleServiceProvider::class,
         \App\Providers\PluginServiceProvider::class,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Plugins (third-party, plug-and-play)
+    |--------------------------------------------------------------------------
+    | Set PLUGINS_ENABLED=false in .env to disable the entire plugin system.
+    */
+    'plugins' => [
+        'enabled' => (bool) env('PLUGINS_ENABLED', true),
+        'auto_discover' => (bool) env('PLUGINS_AUTO_DISCOVER', true),
+
+        // Only used when auto_discover=false. Example: ['AcmeWidget']
+        'explicit' => [],
+        'disabled' => [],
     ],
 ];

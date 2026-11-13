@@ -38,12 +38,17 @@ class PluginLoader
     public function load(): void
     {
         $config = $this->app->make('config');
-        $disabled = $config->get('plugins.disabled', []);
 
-        if ($config->get('plugins.auto_discover', true)) {
+        if (!$config->get('app.plugins.enabled', true)) {
+            return;
+        }
+
+        $disabled = (array) $config->get('app.plugins.disabled', []);
+
+        if ($config->get('app.plugins.auto_discover', true)) {
             $this->autoDiscover($disabled);
         } else {
-            $this->loadExplicit($config->get('plugins.enabled', []), $disabled);
+            $this->loadExplicit((array) $config->get('app.plugins.explicit', []), $disabled);
         }
     }
 

@@ -343,14 +343,18 @@ Berikut adalah hasil uji benchmark performa beban tinggi (*stress testing*) meng
 ```bash
 # Opsi 1: Buat proyek baru via Composer (Direkomendasikan)
 composer create-project kangpcode/papastro my-project
+# Installer otomatis menanyakan mode proyek:
+#   [1] Modules only      → hanya app/Modules, tanpa plugin
+#   [2] Modules + Plugins → modul aplikasi + plugin plug-and-play
 
 # Opsi 2: Clone repository GitHub
 git clone https://github.com/kangpcode/papastro.git my-project
 cd my-project && composer install
+php papastro install          # pilih mode secara interaktif
 
-# Salin konfigurasi environment & buat application key
-cp .env.example .env
-php papastro key:generate
+# Atau tentukan mode langsung tanpa prompt
+php papastro install --mode=modules   # hanya app/Modules
+php papastro install --mode=full      # modules + plugins
 
 # Jalankan migrasi basis data
 php papastro migrate
@@ -359,6 +363,18 @@ php papastro migrate
 php papastro dev
 # atau server performa tinggi:
 php papastro runtime:start
+```
+
+### Mode Proyek: Modules Only vs Modules + Plugins
+Papastro bisa dipakai dengan **hanya `app/Modules`** atau **modul + plugin**, ditentukan saat instalasi pertama:
+
+- **`modules`** — hanya `app/Modules`. Sistem plugin dimatikan (`PLUGINS_ENABLED=false`) dan perintah `plugin:*` menolak dijalankan. Cocok untuk aplikasi internal yang ringan tanpa ekstensi pihak ketiga.
+- **`full`** — `app/Modules` + folder `plugins/` untuk plugin plug-and-play.
+
+Mode disimpan sebagai `PAPASTRO_MODE` di `.env`, jadi tidak perlu mengubah kode. Berpindah mode kapan saja tanpa kehilangan kode:
+```bash
+php papastro install --mode=full     # aktifkan plugin
+php papastro install --mode=modules  # kembali hanya modul (isi plugins/ tetap aman, hanya diabaikan)
 ```
 
 ### Ekstensi Resmi IDE (VS Code, Antigravity IDE & Cursor)
@@ -551,6 +567,15 @@ php papastro module:disable Produk    # Nonaktifkan modul
 php papastro module:list              # Daftar status seluruh modul
 ```
 
+### Plugin (Mode Full)
+```bash
+php papastro plugin:make AcmeWidget    # Generate plugin plug-and-play
+php papastro plugin:enable AcmeWidget  # Aktifkan plugin
+php papastro plugin:disable AcmeWidget # Nonaktifkan plugin
+php papastro plugin:list               # Daftar status seluruh plugin
+```
+*Perintah `plugin:*` hanya tersedia pada mode `full`. Jalankan `php papastro install --mode=full` untuk mengaktifkannya.*
+
 ### Generator Kode
 ```bash
 php papastro make:controller Blog/PostController --resource
@@ -579,6 +604,7 @@ php papastro pastroutine:test         # Jalankan benchmark dan uji kesehatan eng
 
 ### App & Auto-Update
 ```bash
+php papastro install                  # Setup awal: pilih mode modules / full, siapkan .env & APP_KEY
 php papastro key:generate             # Generate application encryption key (AES-256)
 php papastro upgrade                  # Auto-update aman ke versi terbaru tanpa merusak kode pengguna
 php papastro update                   # Alias dari perintah upgrade

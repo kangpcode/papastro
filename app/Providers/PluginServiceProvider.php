@@ -22,6 +22,11 @@ class PluginServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $config = $this->app->make('config');
+        if (!($config->get('app.plugins.enabled', true))) {
+            return;
+        }
+
         $this->app->singleton(PluginLoader::class, fn ($app) => new PluginLoader($app));
 
         $this->app->singleton(PluginManager::class, function ($app) {
@@ -34,6 +39,11 @@ class PluginServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        $config = $this->app->make('config');
+        if (!($config->get('app.plugins.enabled', true))) {
+            return;
+        }
+
         $this->app->make(PluginLoader::class)->load();
     }
 }

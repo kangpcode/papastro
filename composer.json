@@ -41,6 +41,11 @@
             "Tests\\": "tests/"
         }
     },
+    "scripts": {
+        "post-create-project-cmd": [
+            "@php papastro install"
+        ]
+    },
     "extra": {
         "branch-alias": {
             "dev-main": "3.0.x-dev"

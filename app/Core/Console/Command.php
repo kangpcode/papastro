@@ -107,6 +107,18 @@ abstract class Command
     }
 
     /**
+     * Determine if the plugin system is enabled for this project.
+     */
+    protected function pluginsEnabled(): bool
+    {
+        if (!$this->app->resolved('config')) {
+            return true;
+        }
+
+        return (bool) $this->app->make('config')->get('app.plugins.enabled', true);
+    }
+
+    /**
      * Get a named option from args (--name=value or --name value).
      */
     protected function option(array $args, string $name, mixed $default = null): mixed

@@ -37,6 +37,10 @@ class Kernel
     protected function registerDefaultCommands(): void
     {
         $this->commands = [
+            // Setup
+            'install' => Commands\InstallCommand::class,
+            'setup' => Commands\InstallCommand::class,
+
             // Core
             'key:generate' => Commands\KeyGenerateCommand::class,
             'optimize' => Commands\OptimizeCommand::class,
@@ -49,6 +53,12 @@ class Kernel
             'module:enable' => Commands\ModuleEnableCommand::class,
             'module:disable' => Commands\ModuleDisableCommand::class,
             'module:list' => Commands\ModuleListCommand::class,
+
+            // Plugin (optional, third-party)
+            'plugin:make' => Commands\MakePluginCommand::class,
+            'plugin:enable' => Commands\PluginEnableCommand::class,
+            'plugin:disable' => Commands\PluginDisableCommand::class,
+            'plugin:list' => Commands\PluginListCommand::class,
 
             // Generators
             'make:controller' => Commands\MakeControllerCommand::class,
@@ -166,8 +176,10 @@ class Kernel
         $this->output("", 'default');
 
         $groups = [
+            'Setup' => ['install'],
             'Server & Runtime' => ['dev', 'serve', 'build', 'runtime:start', 'runtime:stop', 'runtime:reload', 'runtime:status', 'pasway:start'],
             'Module' => ['module:make', 'module:enable', 'module:disable', 'module:list'],
+            'Plugin' => ['plugin:make', 'plugin:enable', 'plugin:disable', 'plugin:list'],
             'Generator' => ['make:controller', 'make:model', 'make:migration', 'make:island', 'make:page', 'make:middleware', 'make:service', 'make:event', 'make:listener'],
             'Database' => ['migrate', 'migrate:status', 'migrate:fresh', 'migrate:reset', 'migrate:rollback', 'db:seed'],
             'Queue' => ['queue:work', 'queue:failed', 'queue:retry', 'queue:clear'],
