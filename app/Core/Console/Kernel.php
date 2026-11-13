@@ -122,6 +122,8 @@ class Kernel
             'upgrade' => Commands\UpgradeCommand::class,
             'update' => Commands\UpgradeCommand::class,
             'pastroutine:test' => Commands\PastroutineTestCommand::class,
+            'benchmark' => Commands\BenchmarkCommand::class,
+            'test:benchmark' => Commands\BenchmarkCommand::class,
         ];
     }
 
@@ -188,7 +190,7 @@ class Kernel
             'SEO & PWA' => ['seo:sitemap', 'pwa:generate', 'pwa:precache'],
             'Debug' => ['debug:route', 'debug:island', 'debug:clear'],
             'Cache & Optimize' => ['cache:clear', 'optimize', 'route:cache', 'route:clear', 'route:list'],
-            'Concurrency & Engine' => ['pastroutine:test'],
+            'Concurrency & Engine' => ['pastroutine:test', 'benchmark'],
             'App & Maintenance' => ['key:generate', 'upgrade'],
         ];
 

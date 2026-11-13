@@ -94,6 +94,24 @@ While Go Fiber achieves high raw requests per second by operating as an unopinio
 4. **Go-Style Coroutines & Channels in PHP**: With `Pastroutine` and `Channel`, developers enjoy the concurrency patterns of Go (Goroutines and CSP channels) while staying in the developer-friendly, expressive ecosystem of PHP.
 5. **Developer Iteration Speed**: 0-second instant reload without waiting for Go compiler binaries (`go build`). Rapid prototype to production in minutes.
 
+### 🔬 Real, Verifiable Benchmark (No Gimmick)
+
+Papastro includes a built-in benchmark command so you can verify kernel throughput and latency on your own machine without third-party setup:
+
+```bash
+# Run live kernel benchmark test (10,000 to 50,000 real HTTP requests)
+php papastro benchmark --requests=20000
+```
+
+To run a live network stress test across persistent TCP keep-alive sockets:
+```bash
+# Terminal 1: Start pre-forked Octane workers
+php papastro runtime:start --workers=4 --port=8000
+
+# Terminal 2: Run high-concurrency stress test with wrk
+wrk -t16 -c1000 -d30s http://127.0.0.1:8000/
+```
+
 ---
 
 ## 🚀 Key Highlights in Version 4.0.0

@@ -361,6 +361,26 @@ Go Fiber dikenal sangat cepat karena arsitekturnya yang merupakan *microframewor
 4. **Coroutines & CSP Channel ala Go di PHP**: Melalui `Pastroutine` dan `Channel`, Anda menikmati keunggulan konkurensi Go tanpa meninggalkan kemudahan dan fleksibilitas PHP.
 5. **Kecepatan Iterasi (*Developer Velocity*)**: *Hot reload* instan 0 detik tanpa waktu tunggu kompilasi biner `go build`. Pengembangan dari prototipe hingga skala produksi jauh lebih cepat.
 
+### 🔬 Uji & Buktikan Sendiri: Perintah Benchmark Bawaan (Bukan Gimmick)
+
+Papastro menyertakan perintah benchmark resmi bawaan agar setiap developer dapat menguji langsung performa *throughput* dan *latensi* di komputer atau server masing-masing secara transparan:
+
+```bash
+# Jalankan uji benchmark kernel nyata (10.000 hingga 50.000 request HTTP riil)
+php papastro benchmark --requests=20000
+```
+
+Untuk menguji konkurensi jaringan soket TCP persisten secara langsung:
+```bash
+# Terminal 1: Nyalakan server pre-forked Octane
+php papastro runtime:start --workers=4 --port=8000
+
+# Terminal 2: Uji beban tinggi dengan wrk atau autocannon
+wrk -t16 -c1000 -d30s http://127.0.0.1:8000/
+# atau via Node.js autocannon:
+npx autocannon -c 1000 -d 30 http://127.0.0.1:8000/
+```
+
 ### Fitur Arsitektur & Rendering
 
 | Parameter Perbandingan | Papastro v4.0.0 (Octane) | Laravel 11 (Octane) | Next.js 14 (App Router) | Nuxt.js 3 (Nitro) | Astro 4 (Node SSR) |
