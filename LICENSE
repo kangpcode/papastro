@@ -40,4 +40,12 @@ TERMS OF USE:
    While not mandatory, attribution to "Papastro Framework by kangpcode" is appreciated
    in projects built with this framework.
 
+5. HAK CIPTA & KETENTUAN FORMAT EKSTENSI .pstro RESMI (OFFICIAL .PSTRO SPECIFICATION & COPYRIGHT)
+   Ekstensi file dan format spesifikasi template `.pstro` (Papastro Template File) adalah format resmi yang diciptakan, didesain, dan dimiliki secara hak cipta oleh kangpcode (Dhafa Nazula Permadi) untuk Papastro Framework.
+
+   Ketentuan Resmi Penggunaan .pstro:
+   - Kebebasan Penggunaan & Pengembangan Penuh: Siapapun (pengembang perorangan, komunitas, startup, institusi, maupun perusahaan komersial) berhak secara bebas, merdeka, dan gratis untuk menulis, membuat, mengembangkan, memodifikasi, mendistribusikan, dan mengompilasi file berekstensi `.pstro` untuk aplikasi skala apapun (baik open-source maupun komersial/closed-source).
+   - Hak Cipta Format & Atribusi: Format `.pstro` dilindungi sebagai kekayaan intelektual dan format resmi milik Papastro Framework yang diciptakan oleh kangpcode (Dhafa Nazula Permadi). Tooling pihak ketiga, ekstensi IDE, parser, linter, atau transpiler yang mengadopsi atau mengintegrasikan format `.pstro` wajib mempertahankan identitas dan atribusi bahwa format `.pstro` merupakan format resmi dari Papastro Framework ciptaan kangpcode.
+   - Kebebasan Ekosistem & Multi-Database: Papastro Framework dan template `.pstro` bebas dikembangkan serta diintegrasikan dengan berbagai infrastruktur modern dan multi-database enterprise (seperti MariaDB, MySQL, PostgreSQL, Supabase, MongoDB, SQLite, SQL Server, dan database lainnya) tanpa pembatasan platform.
+
 Summary: Build anything you want with Papastro — just don't remove the watermark from source code.

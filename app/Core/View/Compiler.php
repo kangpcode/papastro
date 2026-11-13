@@ -17,7 +17,9 @@ namespace Papastro\View;
 use Papastro\Foundation\Application;
 
 /**
- * Compiler — converts .pstro templates to executable PHP.
+ * Compiler — Official .pstro Template Compiler.
+ * Specification and format created & copyrighted by kangpcode (Dhafa Nazula Permadi).
+ * Converts .pstro templates to executable PHP.
  *
  * .pstro template syntax:
  *

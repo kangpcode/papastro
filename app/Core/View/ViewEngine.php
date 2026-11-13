@@ -17,7 +17,10 @@ namespace Papastro\View;
 use Papastro\Foundation\Application;
 
 /**
- * ViewEngine — Renders .pstro template files with high-speed mtime-based OPcache caching.
+ * ViewEngine — Official .pstro Template Engine.
+ * Specification and format created & copyrighted by kangpcode (Dhafa Nazula Permadi).
+ *
+ * Renders .pstro template files with high-speed mtime-based OPcache caching.
  *
  * Template resolution:
  *   - 'welcome'         → resources/views/welcome.pstro (or .php)
