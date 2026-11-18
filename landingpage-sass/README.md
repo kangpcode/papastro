@@ -1,6 +1,6 @@
 # Papastro Framework Official Landing Page & Documentation (GitHub Pages)
 
-Website resmi dan portal dokumentasi lengkap untuk **Papastro Framework v5.0.0 Stable**, dirancang khusus untuk di-hosting di **GitHub Pages**.
+Website resmi dan portal dokumentasi lengkap untuk **Papastro Framework v5.0.1 Stable**, dirancang khusus untuk di-hosting di **GitHub Pages**.
 
 > **Manifesto:** *"PHP Tidak Akan Musnah Oleh Jaman (PHP Melawan) — PHP Strikes Back!"*  
 > **Author & Creator:** [kangpcode (Dhafa Nazula Permadi)](https://github.com/kangpcode)  
