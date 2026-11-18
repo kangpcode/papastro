@@ -79,7 +79,50 @@ class Application extends Container
      */
     public function version(): string
     {
-        return static::VERSION;
+        return static::getFrameworkVersion();
+    }
+
+    /**
+     * Get the authoritative framework version dynamically.
+     * Auto-detects runtime constant or fallback to class constant without manual code edits.
+     */
+    public static function getFrameworkVersion(): string
+    {
+        return defined('PAPASTRO_VERSION') ? (string) constant('PAPASTRO_VERSION') : static::VERSION;
+    }
+
+    /**
+     * Determine if framework technology fingerprinting should be exposed.
+     * Checks config repositories ('app.expose_framework', 'security.expose_framework'),
+     * falling back to environment variable PAPASTRO_EXPOSE (defaults to true).
+     */
+    public static function shouldExposeFramework(): bool
+    {
+        if (function_exists('config')) {
+            try {
+                $appExpose = config('app.expose_framework');
+                if ($appExpose !== null) {
+                    return (bool) $appExpose;
+                }
+                $secExpose = config('security.expose_framework');
+                if ($secExpose !== null) {
+                    return (bool) $secExpose;
+                }
+            } catch (\Throwable) {
+                // Container or config repository not initialized yet
+            }
+        }
+
+        if (function_exists('env')) {
+            return (bool) env('PAPASTRO_EXPOSE', true);
+        }
+
+        $envVal = getenv('PAPASTRO_EXPOSE');
+        if ($envVal === false) {
+            return true;
+        }
+
+        return !in_array(strtolower((string) $envVal), ['0', 'false', 'off', 'no'], true);
     }
 
     /**
