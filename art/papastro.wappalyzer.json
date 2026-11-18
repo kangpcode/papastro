@@ -1,0 +1,41 @@
+{
+  "Papastro": {
+    "cats": [
+      18
+    ],
+    "description": "Ultra High-Concurrency Full-Stack PHP Framework combining Astro Islands (.pstro), Go-style Pastroutine Fibers, and PasRPC typed gateway.",
+    "website": "https://kangpcode.github.io/papastro",
+    "implies": [
+      "PHP"
+    ],
+    "headers": {
+      "X-Powered-By": "^Papastro(?:/([\\d.]+))?\\;version:\\1",
+      "Server": "^Papastro-Octane(?:/([\\d.]+))?\\;version:\\1"
+    },
+    "meta": {
+      "generator": "^Papastro\\s*(?:v)?([\\d.]+)?\\;version:\\1"
+    },
+    "js": {
+      "__PAPASTRO__.version": "\\;version:\\1",
+      "Papastro.version": "\\;version:\\1",
+      "pasrpc": ""
+    },
+    "dom": {
+      "[data-pstro-island]": {
+        "attributes": {
+          "data-papastro-v": "\\;version:\\1"
+        }
+      },
+      "[data-papastro-island]": {}
+    },
+    "html": [
+      "data-pstro-island",
+      "data-papastro-island"
+    ],
+    "scripts": [
+      "pasrpc",
+      "/islands/[^/]+\\.js"
+    ],
+    "icon": "Papastro.png"
+  }
+}
