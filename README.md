@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/kangpcode/papastro/releases"><img src="https://img.shields.io/badge/version-5.0.0-blue.svg?style=flat-square" alt="Version 5.0.0"></a>
+  <a href="https://github.com/kangpcode/papastro/releases"><img src="https://img.shields.io/badge/version-5.0.1-blue.svg?style=flat-square" alt="Version 5.0.1"></a>
   <a href="https://php.net"><img src="https://img.shields.io/badge/php-%5E8.1%20%7C%208.2%20%7C%208.3%20%7C%208.4%20%7C%208.5%20Ready-777bb4.svg?style=flat-square" alt="PHP ^8.1 | 8.2 | 8.3 | 8.4 | 8.5 Ready"></a>
   <a href="https://packagist.org/packages/kangpcode/papastro"><img src="https://img.shields.io/packagist/dt/kangpcode/papastro.svg?style=flat-square" alt="Total Downloads"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT%20Custom-green.svg?style=flat-square" alt="License"></a>
@@ -37,7 +37,7 @@
 
 ---
 
-# Papastro Framework v5.0.0
+# Papastro Framework v5.0.1
 
 > ### ✊ The Manifesto: PHP Will Never Perish with Time (PHP Strikes Back!)
 > For years, tech hype and social media narratives loudly proclaimed that *"PHP is dead"*, steering developers into bloated JavaScript runtimes plagued by memory leaks, build fatigue, and fragile dependency trees, or into complex compiled languages with painful iteration cycles.
@@ -51,7 +51,7 @@
 > **Papastro** is an ultra-high-concurrency, modern full-stack web framework designed for mission-critical web applications. It bridges the expressive elegance of **Backend PHP (Laravel-style)** with the blazing speed of **Modern Frontend (Astro Island Architecture)** in a scalable **Modular Monolith**, powered by **Pastroutine** (Go-style coroutines & CSP channels), **Pastream** (Realtime SSE & AI streaming), **PasFetch** (Native fluent HTTP client), **Fast SSG** (Zero-CPU prerendering), **Multi-Database** (MySQL, MariaDB, PostgreSQL, Supabase, MongoDB, SQLite, SQL Server), and the **Octane High-Scale Runtime**.
 
 - **Author & Creator:** [kangpcode (Dhafa Nazula Permadi)](https://github.com/kangpcode)
-- **Current Version:** 5.0.0 (Latest Stable Release)
+- **Current Version:** 5.0.1 (Latest Stable Release)
 - **Production Status:** Production Ready (Tuned for 10M–100M+ Requests/Day)
 - **License:** Free to use and develop — author watermark must remain intact in source code.
 
@@ -143,9 +143,16 @@ wrk -t16 -c1000 -d30s http://127.0.0.1:8000/
 
 ---
 
-## 🚀 Key Highlights in Version 5.0.0
+## 🚀 Key Highlights in Version 5.0.1
 
-### 1. PasRPC — Typed Island-to-Backend Remote Procedure Calls
+### 1. Built-in Technology Fingerprinting & Wappalyzer Detection
+Native compliance with technology scanners (Wappalyzer, Enthec Webappanalyzer):
+- Automatic HTTP response header `X-Powered-By: Papastro/{version}`
+- Head meta generator tag `<meta name="generator" content="Papastro v{version}" />`
+- Island DOM markers `data-pstro-island` and client runtime `window.__PAPASTRO__ = { version: "5.0.1" }`
+- Zero-leak toggle via `config/security.php` or `PAPASTRO_EXPOSE=false` in production.
+
+### 2. PasRPC — Typed Island-to-Backend Remote Procedure Calls
 Zero-boilerplate typed RPC protocol directly connecting Astro Islands (`.pstro`) and frontend apps to PHP backend controllers:
 ```php
 // Define RPC endpoint
@@ -273,7 +280,7 @@ php papastro runtime:start --watch --workers=4 --port=8000
 
 Install the official `.pstro` language support extension:
 ```bash
-code --install-extension extension-vscode/papastro-vscode-5.0.0.vsix
+code --install-extension extension-vscode/papastro-vscode-5.0.1.vsix
 ```
 
 Provides TextMate syntax highlighting for `.pstro`, PHP frontmatter formatting, and auto-complete snippets (`pstro-page`, `pstro-pascon`, `pstro-http`, `pstro-sse`).
@@ -290,7 +297,7 @@ Papastro Framework is released under the **MIT Custom License** created by **kan
 ```php
 /**
  * ------------------------------------------------------------------
- *  Papastro Framework v5.0.0
+ *  Papastro Framework v5.0.1
  *  Hybrid PHP + Astro-style Modular Monolith Framework
  *
  *  @author     kangpcode (Dhafa Nazula Permadi)

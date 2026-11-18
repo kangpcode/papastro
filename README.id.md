@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/kangpcode/papastro/releases"><img src="https://img.shields.io/badge/version-5.0.0-blue.svg?style=flat-square" alt="Version 5.0.0"></a>
+  <a href="https://github.com/kangpcode/papastro/releases"><img src="https://img.shields.io/badge/version-5.0.1-blue.svg?style=flat-square" alt="Version 5.0.1"></a>
   <a href="https://php.net"><img src="https://img.shields.io/badge/php-%5E8.1%20%7C%208.2%20%7C%208.3%20%7C%208.4%20%7C%208.5%20Ready-777bb4.svg?style=flat-square" alt="PHP ^8.1 | 8.2 | 8.3 | 8.4 | 8.5 Ready"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT%20Custom-green.svg?style=flat-square" alt="License"></a>
   <img src="https://img.shields.io/badge/architecture-Modular%20Monolith-orange.svg?style=flat-square" alt="Modular Monolith">
@@ -36,7 +36,7 @@
 
 ---
 
-# Papastro Framework v5.0.0
+# Papastro Framework v5.0.1
 
 > ### ✊ Manifesto: PHP Tidak Akan Musnah Oleh Jaman (PHP Melawan)
 > Selama bertahun-tahun, banyak narasi dan tren teknologi menggembar-gemborkan bahwa *"PHP sudah mati atau ketinggalan jaman"*, menggiring para developer ke tumpukan ekosistem JavaScript yang berat (*memory leak*, kelelahan *build pipeline*, dependensi rapuh), atau ke bahasa kompilasi mikro yang lambat dalam proses *development*.
@@ -50,7 +50,7 @@
 > **Papastro Framework** adalah framework web hybrid berskala tinggi yang menggabungkan keandalan **Backend PHP (bergaya Laravel)** dengan efisiensi **Frontend Modern (bergaya Astro Island Architecture)** dalam arsitektur **Modular Monolith Scalable**, dilengkapi dengan engine konkurensi **Pastroutine** (Go-style Coroutine), **Pastream** (Realtime SSE & AI Streaming Response), klien HTTP **PasFetch**, engine SSG **Prerenderer**, runtime ultra-cepat **Octane Server**, sistem realtime **Pasway**, dan ikon vektor mandiri **Pascon**.
 
 - **Pembuat:** kangpcode (Dhafa Nazula Permadi)
-- **Versi Framework:** 5.0.0 (Latest Stable Release)
+- **Versi Framework:** 5.0.1 (Latest Stable Release)
 - **Status Produksi:** Siap Produksi (Enterprise-grade High-Concurrency)
 - **Lisensi:** Bebas digunakan dan dikembangkan — watermark kepemilikan wajib dipertahankan pada kode sumber.
 
@@ -123,8 +123,9 @@ Papastro dirancang untuk memberikan pengalaman pengembang (*Developer Experience
 
 ---
 
-## Fitur Unggulan v5.0.0
+## Fitur Unggulan v5.0.1
 
+- **Built-in Technology Fingerprinting & Wappalyzer Detection**: Deteksi otomatis oleh scanner teknologi (Wappalyzer, Enthec Webappanalyzer) melalui header `X-Powered-By: Papastro/{version}`, tag meta `<meta name="generator" content="Papastro v{version}" />`, atribut DOM `data-pstro-island`, dan JavaScript client global `window.__PAPASTRO__ = { version: "5.0.1" }`. Konfigurasi on/off fleksibel via `config/security.php` (`PAPASTRO_EXPOSE`).
 - **PasRPC Typed Remote Procedure Calls**: Protokol RPC berkecepatan tinggi tanpa boilerplate untuk menghubungkan komponen Astro Islands (`.pstro`) dan aplikasi frontend langsung ke method controller PHP dengan resolusi tipe data otomatis (`Route::rpc('/rpc/cart', CartController::class)`).
 - **Database UPSERT & O(1) Cursor Pagination**: Dukungan query builder tingkat lanjut untuk *bulk upsert* (`upsert()`) lintas database (MySQL, PostgreSQL, Supabase, SQLite) serta paginasi kursor O(1) berbasis *index seek* (`cursorPaginate()`) dan pemrosesan *batch* memori aman (`chunkById()`).
 - **Graceful Zero-Downtime Worker Draining**: Server Octane pre-forked (`NativeServer`) kini mendukung *drain* koneksi aktif secara anggun (*graceful*) saat menerima sinyal `SIGTERM`/`SIGUSR2` pada proses *hot-reload* atau *deployment*, menjamin **nol request yang terputus (zero dropped requests)**.

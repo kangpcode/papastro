@@ -57,7 +57,7 @@ class HighScalePerformanceTest extends TestCase
     {
         $middleware = new CompressResponse();
 
-        $largeBody = str_repeat('Papastro High Concurrency Framework v5.0.0. ', 100); // ~4.5KB
+        $largeBody = str_repeat('Papastro High Concurrency Framework v5.0.1. ', 100); // ~4.5KB
 
         // Without Accept-Encoding gzip -> No compression
         $req1 = new Request('GET', '/test');

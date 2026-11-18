@@ -210,9 +210,10 @@ PHP;
      */
     protected function getPstroHeader(): string
     {
-        return <<<'PSTRO'
+        $ver = \Papastro\Foundation\Application::getFrameworkVersion();
+        return <<<PSTRO
 <!--
-  Papastro Framework v5.0.0 — created by kangpcode (Dhafa Nazula Permadi)
+  Papastro Framework v{$ver} — created by kangpcode (Dhafa Nazula Permadi)
   Free to use & extend. This watermark must remain in source code.
 -->
 PSTRO;
@@ -223,9 +224,10 @@ PSTRO;
      */
     protected function getIslandHeader(): string
     {
-        return <<<'JS'
+        $ver = \Papastro\Foundation\Application::getFrameworkVersion();
+        return <<<JS
 /*
-  Papastro Framework v5.0.0 — created by kangpcode (Dhafa Nazula Permadi)
+  Papastro Framework v{$ver} — created by kangpcode (Dhafa Nazula Permadi)
   Free to use & extend. This watermark must remain in source code.
  */
 JS;
