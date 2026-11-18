@@ -142,7 +142,18 @@ class ViewEngine
             throw $e;
         }
 
-        return (string) ob_get_clean();
+        $rendered = (string) ob_get_clean();
+
+        // Safety net: Ensure meta generator tag exists if full HTML document with <head> was rendered
+        if (\Papastro\Foundation\Application::shouldExposeFramework() &&
+            stripos($rendered, '<head') !== false &&
+            !preg_match('/<meta\s+name=[\'"]generator[\'"]/i', $rendered)) {
+            $version = \Papastro\Foundation\Application::getFrameworkVersion();
+            $meta = "<meta name=\"generator\" content=\"Papastro v{$version}\" />";
+            $rendered = (string) preg_replace('/(<head\b[^>]*>)/i', "$1\n    {$meta}", $rendered, 1);
+        }
+
+        return $rendered;
     }
 
     /**

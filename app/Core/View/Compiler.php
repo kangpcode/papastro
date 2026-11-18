@@ -75,7 +75,10 @@ class Compiler
         $content = $this->compileEchos($content);
         $content = $this->compileDirectives($content);
 
-        // 3. Assemble with frontmatter and optional layout wrapper
+        // 3. Inject meta generator tag if template contains a <head> tag
+        $content = $this->injectMetaGenerator($content);
+
+        // 4. Assemble with frontmatter and optional layout wrapper
         if ($layout !== null) {
             return $this->wrapWithLayout($frontmatterPhp, $content, $layout);
         }
@@ -242,6 +245,27 @@ PHP;
 \\Papastro\\Island\\IslandRenderer::renderPlaceholder('{$id}', '{$escapedComponent}', '{$escapedStrategy}', \$__islandProps);
 ?>
 PHP;
+    }
+
+    /**
+     * Automatically inject <meta name="generator" content="Papastro v..." /> inside <head>
+     * if the template renders a full HTML document with a <head> tag.
+     */
+    public function injectMetaGenerator(string $content): string
+    {
+        // Only inject if <head> tag exists and meta generator is not already explicitly declared
+        if (!preg_match('/<head\b[^>]*>/i', $content)) {
+            return $content;
+        }
+
+        if (preg_match('/<meta\s+name=[\'"]generator[\'"]/i', $content)) {
+            return $content;
+        }
+
+        $metaPhp = '<?php if (\Papastro\Foundation\Application::shouldExposeFramework()): ?><meta name="generator" content="Papastro v<?php echo \Papastro\Foundation\Application::getFrameworkVersion(); ?>" /><?php endif; ?>';
+
+        // Insert right after the opening <head ...> tag
+        return (string) preg_replace('/(<head\b[^>]*>)/i', "$1\n    {$metaPhp}", $content, 1);
     }
 
     /**
