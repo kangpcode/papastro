@@ -343,7 +343,17 @@ class NativeServer
                 if ($shouldKeepAlive) {
                     $resHeaders['Keep-Alive'] = 'timeout=5, max=' . ($maxKeepAlive - $keepAliveRequests);
                 }
-                $resHeaders['Server'] = 'Papastro-Octane/5.0.0';
+
+                $frameworkVersion = \Papastro\Foundation\Application::getFrameworkVersion();
+                if (\Papastro\Foundation\Application::shouldExposeFramework()) {
+                    if (!isset($resHeaders['X-Powered-By'])) {
+                        $resHeaders['X-Powered-By'] = 'Papastro/' . $frameworkVersion;
+                    }
+                    $resHeaders['Server'] = 'Papastro-Octane/' . $frameworkVersion;
+                } else {
+                    $resHeaders['Server'] = 'Papastro-Octane';
+                    unset($resHeaders['X-Powered-By']);
+                }
 
                 $out = "HTTP/1.1 {$statusCode} {$statusText}\r\n";
                 foreach ($resHeaders as $hk => $hv) {

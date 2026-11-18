@@ -125,8 +125,26 @@ class SwooleServer
 
             $swooleRes->status($response->getStatusCode());
 
-            foreach ($response->getHeaders() as $name => $value) {
-                $swooleRes->header($name, $value);
+            $frameworkVersion = \Papastro\Foundation\Application::getFrameworkVersion();
+            $exposeFramework = \Papastro\Foundation\Application::shouldExposeFramework();
+
+            $headers = $response->getHeaders();
+            if ($exposeFramework) {
+                if (!isset($headers['X-Powered-By'])) {
+                    $headers['X-Powered-By'] = 'Papastro/' . $frameworkVersion;
+                }
+                if (!isset($headers['Server'])) {
+                    $headers['Server'] = 'Papastro-Swoole/' . $frameworkVersion;
+                }
+            } else {
+                unset($headers['X-Powered-By']);
+                if (!isset($headers['Server'])) {
+                    $headers['Server'] = 'Papastro-Swoole';
+                }
+            }
+
+            foreach ($headers as $name => $value) {
+                $swooleRes->header($name, (string) $value);
             }
 
             foreach ($response->getCookies() as $cKey => $cookie) {

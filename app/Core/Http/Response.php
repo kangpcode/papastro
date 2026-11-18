@@ -405,6 +405,28 @@ class Response
     }
 
     /**
+     * Determine if framework technology fingerprinting should be exposed.
+     */
+    public static function shouldExposeFramework(): bool
+    {
+        if (class_exists(\Papastro\Foundation\Application::class)) {
+            return \Papastro\Foundation\Application::shouldExposeFramework();
+        }
+        return true;
+    }
+
+    /**
+     * Get the authoritative framework version string dynamically.
+     */
+    public static function frameworkVersion(): string
+    {
+        if (class_exists(\Papastro\Foundation\Application::class)) {
+            return \Papastro\Foundation\Application::getFrameworkVersion();
+        }
+        return defined('PAPASTRO_VERSION') ? (string) constant('PAPASTRO_VERSION') : '5.0.0';
+    }
+
+    /**
      * Convert the response to a string.
      */
     public function __toString(): string
