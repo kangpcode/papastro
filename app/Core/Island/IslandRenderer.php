@@ -46,11 +46,18 @@ class IslandRenderer
         $propsJson = htmlspecialchars(json_encode($props, JSON_UNESCAPED_UNICODE), ENT_QUOTES);
         $strategy  = htmlspecialchars($strategy);
         $component = htmlspecialchars($component);
+        $version   = htmlspecialchars(Application::getFrameworkVersion());
+        $expose    = Application::shouldExposeFramework();
+
+        $extraAttrs = '';
+        if ($expose) {
+            $extraAttrs = " data-pstro-island=\"{$component}\" data-papastro-v=\"{$version}\"";
+        }
 
         echo <<<HTML
 <div
     id="{$id}"
-    data-papastro-island="{$component}"
+    data-papastro-island="{$component}"{$extraAttrs}
     data-strategy="{$strategy}"
     data-props="{$propsJson}"
     class="papastro-island papastro-island--{$strategy}"
@@ -83,26 +90,42 @@ HTML;
      */
     public static function generateHydrationScript(): string
     {
-        return <<<'JS'
+        $version = Application::getFrameworkVersion();
+        $exposeJs = Application::shouldExposeFramework() ? 'true' : 'false';
+
+        return <<<JS
 <script>
 /*
  * Papastro Framework — Island Hydration Engine
  * created by kangpcode (Dhafa Nazula Permadi)
  * Free to use & extend. This watermark must remain in source code.
  */
-(function() {
+(function(window) {
     'use strict';
 
-    const islands = document.querySelectorAll('[data-papastro-island]');
+    const version = "{$version}";
+    const shouldExpose = {$exposeJs};
+
+    // Technology Fingerprint for scanners (Wappalyzer / Webappanalyzer)
+    if (shouldExpose) {
+        window.__PAPASTRO__ = window.__PAPASTRO__ || {
+            version: version,
+            framework: "Papastro",
+            creator: "kangpcode (Dhafa Nazula Permadi)",
+            website: "https://kangpcode.github.io/papastro"
+        };
+    }
+
+    const islands = document.querySelectorAll('[data-papastro-island], [data-pstro-island]');
 
     const loadIsland = async (el) => {
-        const component = el.dataset.papastroIsland;
+        const component = el.dataset.papastroIsland || el.dataset.pstroIsland;
         const props     = JSON.parse(el.dataset.props || '{}');
         const strategy  = el.dataset.strategy;
 
         try {
             // Dynamic import from /islands/{component}.js
-            const module = await import(`/islands/${component}.js`);
+            const module = await import(`/islands/\${component}.js`);
             const Island = module.default;
 
             // Clear loading placeholder
@@ -124,7 +147,7 @@ HTML;
                 bubbles: true
             }));
         } catch (err) {
-            console.error(`[Papastro] Failed to hydrate island [${component}]:`, err);
+            console.error(`[Papastro] Failed to hydrate island [\${component}]:`, err);
             el.classList.add('papastro-island--error');
         }
     };
@@ -173,9 +196,9 @@ HTML;
     window.Papastro = window.Papastro || {};
     window.Papastro.islands = islands;
     window.Papastro.loadIsland = loadIsland;
-    window.Papastro.version = '4.0.0';
+    window.Papastro.version = version;
 
-})();
+})(window);
 </script>
 JS;
     }

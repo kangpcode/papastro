@@ -22,6 +22,16 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Framework Exposure & Technology Fingerprint
+    |--------------------------------------------------------------------------
+    | Exposes 'X-Powered-By: Papastro/{version}', meta generator tags, and
+    | island markers for scanner detection (Wappalyzer, Webappanalyzer, etc.).
+    | Set to false in production if you wish to conceal framework identity.
+    */
+    'expose_framework' => (bool) env('PAPASTRO_EXPOSE', true),
+
+    /*
+    |--------------------------------------------------------------------------
     | Project Mode
     |--------------------------------------------------------------------------
     | Chosen during `composer create-project` (or `php papastro setup`):

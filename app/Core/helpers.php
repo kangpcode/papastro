@@ -16,6 +16,16 @@ declare(strict_types=1);
  * Global helper functions for the Papastro Framework.
  */
 
+if (!function_exists('papastro_version')) {
+    /**
+     * Get the authoritative framework version string.
+     */
+    function papastro_version(): string
+    {
+        return \Papastro\Foundation\Application::getFrameworkVersion();
+    }
+}
+
 if (!function_exists('app')) {
     function app(?string $abstract = null, array $parameters = []): mixed
     {

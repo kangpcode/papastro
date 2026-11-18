@@ -38,6 +38,40 @@ class RpcGateway
      */
     public function dispatch(Request $request, string $controllerClass, ?string $method = null): Response
     {
+        // Serve client JavaScript runtime if requested
+        if ($request->query('client') !== null || $request->header('Accept') === 'application/javascript') {
+            $version = Application::getFrameworkVersion();
+            $path = $request->path();
+            $js = <<<JS
+/**
+ * Papastro PasRPC Client Runtime v{$version}
+ * @author kangpcode (Dhafa Nazula Permadi)
+ */
+(function(window) {
+    'use strict';
+    window.__PAPASTRO__ = window.__PAPASTRO__ || {
+        version: "{$version}",
+        framework: "Papastro",
+        creator: "kangpcode (Dhafa Nazula Permadi)",
+        website: "https://kangpcode.github.io/papastro"
+    };
+    window.Papastro = window.Papastro || {};
+    window.Papastro.version = "{$version}";
+    window.pasrpc = async function(method, params = {}) {
+        const res = await fetch("{$path}", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+            body: JSON.stringify({ method, params })
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error?.message || 'RPC Error');
+        return data.result;
+    };
+})(window);
+JS;
+            return Response::make($js, 200, ['Content-Type' => 'application/javascript; charset=UTF-8']);
+        }
+
         $payload = $request->json();
         $targetMethod = $method ?: ($payload['method'] ?? $request->query('method', 'index'));
         $params = $payload['params'] ?? $payload['data'] ?? $payload;
@@ -114,6 +148,46 @@ class RpcGateway
                 ],
             ], 500);
         }
+    }
+
+    /**
+     * Generate inline JavaScript runtime for PasRPC and browser client APIs.
+     * Exposes window.__PAPASTRO__ = { version: "..." } and window.pasrpc.
+     */
+    public static function clientScript(string $endpoint = '/api/rpc'): string
+    {
+        $version = Application::getFrameworkVersion();
+        $expose = Application::shouldExposeFramework() ? 'true' : 'false';
+
+        return <<<HTML
+<script>
+(function(window) {
+    'use strict';
+    const version = "{$version}";
+    const shouldExpose = {$expose};
+    if (shouldExpose) {
+        window.__PAPASTRO__ = window.__PAPASTRO__ || {
+            version: version,
+            framework: "Papastro",
+            creator: "kangpcode (Dhafa Nazula Permadi)",
+            website: "https://kangpcode.github.io/papastro"
+        };
+        window.Papastro = window.Papastro || {};
+        window.Papastro.version = version;
+    }
+    window.pasrpc = async function(method, params = {}) {
+        const res = await fetch("{$endpoint}", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+            body: JSON.stringify({ method, params })
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error?.message || 'RPC Error');
+        return data.result;
+    };
+})(window);
+</script>
+HTML;
     }
 }
 
