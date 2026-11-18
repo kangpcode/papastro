@@ -450,7 +450,8 @@ class PrerenderCommand extends Command
     public function execute(array $args): int
     {
         $this->newLine();
-        $this->line("  Papastro Fast SSG Prerenderer (v5.0.0)", 'purple');
+        $ver = \Papastro\Foundation\Application::getFrameworkVersion();
+        $this->line("  Papastro Fast SSG Prerenderer (v{$ver})", 'purple');
         $this->line("  Pre-computes static HTML for instantaneous delivery", 'gray');
         $this->newLine();
 
@@ -1079,7 +1080,8 @@ class BenchmarkCommand extends Command
 
         $this->newLine();
         $this->line("  ==========================================================================", 'cyan');
-        $this->line("   PAPASTRO v5.0.0 HIGH-CONCURRENCY LIVE BENCHMARK (REAL & VERIFIABLE)", 'white');
+        $ver = \Papastro\Foundation\Application::getFrameworkVersion();
+        $this->line("   PAPASTRO v{$ver} HIGH-CONCURRENCY LIVE BENCHMARK (REAL & VERIFIABLE)", 'white');
         $this->line("   @author kangpcode (Dhafa Nazula Permadi)", 'gray');
         $this->line("  ==========================================================================", 'cyan');
         $this->newLine();

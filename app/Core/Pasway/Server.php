@@ -81,8 +81,9 @@ class Server
 
         $this->running = true;
 
+        $ver = \Papastro\Foundation\Application::getFrameworkVersion();
         echo "\033[35m";
-        echo "  [Pasway] Realtime WebSocket Server (v5.0.0)\n";
+        echo "  [Pasway] Realtime WebSocket Server (v{$ver})\n";
         echo "  @author kangpcode (Dhafa Nazula Permadi)\n";
         echo "\033[0m";
         echo "  - WebSocket Listening on : ws://{$this->host}:{$this->port}\n";

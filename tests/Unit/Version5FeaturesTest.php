@@ -33,8 +33,8 @@ class Version5FeaturesTest extends TestCase
 
     public function testVersionConstantIsFive(): void
     {
-        $this->assertSame('5.0.0', Application::VERSION);
-        $this->assertSame('5.0.0', $this->app->version());
+        $this->assertSame('5.0.1', Application::VERSION);
+        $this->assertSame('5.0.1', $this->app->version());
     }
 
     public function testDatabaseUpsertAndCursorPagination(): void

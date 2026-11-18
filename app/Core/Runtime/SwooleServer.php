@@ -75,8 +75,9 @@ class SwooleServer
         ]);
 
         $server->on('Start', function ($server) {
+            $ver = \Papastro\Foundation\Application::getFrameworkVersion();
             echo "\033[32m";
-            echo "  [Swoole] Papastro Coroutine Server (v5.0.0)\n";
+            echo "  [Swoole] Papastro Coroutine Server (v{$ver})\n";
             echo "  @author kangpcode (Dhafa Nazula Permadi)\n";
             echo "\033[0m";
             echo "  - Listening on: http://{$this->host}:{$this->port}\n";

@@ -423,7 +423,7 @@ class Response
         if (class_exists(\Papastro\Foundation\Application::class)) {
             return \Papastro\Foundation\Application::getFrameworkVersion();
         }
-        return defined('PAPASTRO_VERSION') ? (string) constant('PAPASTRO_VERSION') : '5.0.0';
+        return defined('PAPASTRO_VERSION') ? (string) constant('PAPASTRO_VERSION') : '5.0.1';
     }
 
     /**

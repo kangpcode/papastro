@@ -73,8 +73,9 @@ class NativeServer
 
         $this->running = true;
 
+        $ver = \Papastro\Foundation\Application::getFrameworkVersion();
         echo "\033[36m";
-        echo "  [Runtime] Papastro Octane Server (v5.0.0)\n";
+        echo "  [Runtime] Papastro Octane Server (v{$ver})\n";
         echo "  @author kangpcode (Dhafa Nazula Permadi)\n";
         echo "\033[0m";
         echo "  - Host & Port : http://{$this->host}:{$this->port}\n";

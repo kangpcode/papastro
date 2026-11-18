@@ -196,7 +196,7 @@ class HandleExceptions
 <body>
     <div class="box">
         <div class="banner">
-            <h1>Papastro Framework v5.0.0 — Unhandled Exception</h1>
+            <h1>Papastro Framework v" . \Papastro\Foundation\Application::getFrameworkVersion() . " — Unhandled Exception</h1>
             <h2>{$message}</h2>
         </div>
         <div class="meta">
