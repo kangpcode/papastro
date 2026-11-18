@@ -70,7 +70,13 @@ class Response
     {
         $this->content = $content;
         $this->statusCode = $statusCode;
-        $this->headers = array_merge(['Content-Type' => 'text/html; charset=UTF-8'], $headers);
+
+        $defaults = ['Content-Type' => 'text/html; charset=UTF-8'];
+        if (static::shouldExposeFramework()) {
+            $defaults['X-Powered-By'] = 'Papastro/' . static::frameworkVersion();
+        }
+
+        $this->headers = array_merge($defaults, $headers);
     }
 
     /**
@@ -178,11 +184,52 @@ class Response
     }
 
     /**
+     * Get a response header by name (case-insensitive).
+     */
+    public function getHeader(string $key, ?string $default = null): ?string
+    {
+        $clean = static::cleanHeader($key);
+        if (isset($this->headers[$clean])) {
+            return (string) $this->headers[$clean];
+        }
+        foreach ($this->headers as $k => $v) {
+            if (strcasecmp($k, $clean) === 0) {
+                return (string) $v;
+            }
+        }
+        return $default;
+    }
+
+    /**
+     * Remove a response header (case-insensitive).
+     */
+    public function withoutHeader(string $key): static
+    {
+        $clean = static::cleanHeader($key);
+        unset($this->headers[$clean]);
+        foreach (array_keys($this->headers) as $k) {
+            if (strcasecmp($k, $clean) === 0) {
+                unset($this->headers[$k]);
+            }
+        }
+        return $this;
+    }
+
+    /**
      * Determine if a header exists.
      */
     public function hasHeader(string $key): bool
     {
-        return array_key_exists(static::cleanHeader($key), $this->headers);
+        $clean = static::cleanHeader($key);
+        if (array_key_exists($clean, $this->headers)) {
+            return true;
+        }
+        foreach (array_keys($this->headers) as $k) {
+            if (strcasecmp($k, $clean) === 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
