@@ -713,8 +713,11 @@ Route::rpc('/api/rpc', UserRpcService::class);" data-copy-label="RPC snippet cop
             <p class="doc-lead">Keamanan enterprise: proteksi injeksi SQL otomatis, anti CSRF token mismatch, dan rate limiter dinamis.</p>
 
             <div class="code-box">
-              <pre><code><span class="hl-comment">// config/security.php — DDoS Shield Setting</span>
+              <pre><code><span class="hl-comment">// config/security.php — Fingerprint &amp; DDoS Shield Setting</span>
 <span class="hl-keyword">return</span> [
+    <span class="hl-comment">// Technology Fingerprint (Wappalyzer / Webappanalyzer auto-detection)</span>
+    <span class="hl-string">'expose_framework'</span> => <span class="hl-func">env</span>(<span class="hl-string">'PAPASTRO_EXPOSE'</span>, <span class="hl-keyword">true</span>),
+
     <span class="hl-string">'ddos_shield'</span> => [
         <span class="hl-string">'enabled'</span>       => <span class="hl-keyword">true</span>,
         <span class="hl-string">'max_per_min'</span>   => 300,
