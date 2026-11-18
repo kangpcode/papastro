@@ -10,6 +10,47 @@ License: Free to use & modify. Watermark must remain in source code.
 
 ---
 
+## [5.0.1] - 2026-11-19 — *Built-in Technology Fingerprinting, Wappalyzer Detection & Hardening*
+
+### Added
+#### 1. Native Technology Fingerprinting Engine (Wappalyzer & Enthec Compliant)
+- **Automatic HTTP Response Header**: Injects `X-Powered-By: Papastro/{version}` on all HTTP responses generated through `Response` and Octane/Swoole servers.
+- **HTML Meta Generator**: Automatically embeds `<meta name="generator" content="Papastro v{version}" />` in `<head>` when rendering full HTML `.pstro` templates.
+- **Island DOM Markers**: Added `data-pstro-island` and dynamic `data-papastro-v="{version}"` attributes to rendered Island containers.
+- **Client Runtime Exposure**: Exposes `window.__PAPASTRO__ = { version: "{version}" }` in client hydration scripts and PasRPC JavaScript gateways.
+- **Wappalyzer Signature Specification**: Official technology fingerprint signature created at `art/papastro.wappalyzer.json`.
+- **Global Helper**: Added `papastro_version()` helper function.
+
+### Changed
+- **Dynamic Version Resolution**: Unified version string retrieval across `Application::getFrameworkVersion()`, replacing static version strings in CLI commands and server banners.
+- **Configurable Security**: Added `config/security.php` and `'expose_framework' => env('PAPASTRO_EXPOSE', true)` to provide granular zero-leak production controls.
+
+---
+
+## [5.0.0] - 2026-11-18 — *PasRPC Typed Engine, Multi-DB Upsert, DDoS Shield & GitHub Pages Portal*
+
+### Added
+#### 1. PasRPC Typed Remote Procedure Call Gateway
+- Typed reflection JSON-RPC engine (`Route::rpc()`, `RpcGateway`) eliminating boilerplate REST API controllers.
+- Native parameter type introspection and automatic JSON-RPC 2.0 error handling.
+
+#### 2. Enterprise Multi-Database ORM & Query Builder
+- Cross-engine atomic `upsert()` for MySQL, PostgreSQL, Supabase, and SQLite.
+- High-efficiency `cursorPaginate()` for O(1) index-seek pagination on multi-million row datasets.
+- Memory-safe `chunkById()` batch processing.
+- Official connection pool drivers for Supabase SSL and MongoDB NoSQL.
+
+#### 3. Graceful Zero-Downtime Worker Draining
+- Added graceful `SIGTERM`/`SIGUSR2` worker draining to `NativeServer` ensuring zero dropped requests during hot-reloads and deploys.
+
+#### 4. Adaptive DDoS Shield & Layer-7 Rate Limiter
+- Added `DdosShield` middleware with dynamic sliding-window IP tracking, temporary ban states, and whitelist bypass.
+
+#### 5. Official Website & Documentation Portal (GitHub Pages)
+- Released official interactive documentation website powered by modular SASS architecture (`landingpage-sass/`) deployed to GitHub Pages (`kangpcode.github.io/papastro`).
+
+---
+
 ## [4.0.0] - 2026-11-13 — *Pastream SSE, PasFetch HTTP Client, Fast SSG & Zero-Config SQLite*
 
 ### Added
