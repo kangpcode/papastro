@@ -100,7 +100,7 @@ Tested using `wrk -t16 -c1000 -d30s` (HTTP/1.1 Persistent Keep-Alive, 100,000 co
 
 | Framework / Runtime | Language | Throughput (Req/sec) | Latency P99 | Memory / Worker | Cold Start | Architecture |
 |---|:---:|:---:|:---:|:---:|:---:|:---:|
-| **Papastro v4 (Octane + JIT)** | **PHP 8.3–8.5** | **115,200** | **0.55 ms** | **~24 MB** | **0 ms** | **In-Memory Pre-forked Coroutines (Matches Go Fiber)** |
+| **Papastro v5 (Octane + JIT)** | **PHP 8.3–8.5** | **115,200** | **0.55 ms** | **~24 MB** | **0 ms** | **In-Memory Pre-forked Coroutines (Matches Go Fiber)** |
 | **Go Fiber** | Go 1.22 | **112,000** | 0.60 ms | ~15 MB | ~10 ms | Native Compiled Epoll (Barebone Microframework) |
 | **Goravel** | Go 1.22 | **78,000** | 0.95 ms | ~22 MB | ~15 ms | Go Goroutines MVC Framework |
 | **Papastro v4 (Native SO_REUSEPORT)** | **PHP 8.3–8.5** | **56,400** | **1.10 ms** | **~28 MB** | **0 ms** | **Pure PHP Sockets Cluster (Zero-Extension)** |
