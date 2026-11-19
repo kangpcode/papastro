@@ -73,7 +73,7 @@ Papastro is engineered to solve modern web fatigue by providing a unified altern
 
 ## 📊 Framework Comparison Matrix
 
-| Feature | Papastro v4 | Laravel | Go Fiber / Goravel | Astro | Next.js / Nuxt.js | Express.js |
+| Feature | Papastro v5 | Laravel | Go Fiber / Goravel | Astro | Next.js / Nuxt.js | Express.js |
 |---|:---:|:---:|:---:|:---:|:---:|:---:|
 | **Language** | **PHP 8.1–8.5** | PHP 8.2+ | Go | JS / TS | JS / TS | JavaScript |
 | **Frontend Architecture** | **Astro Islands (`.pstro`)** | Blade (SSR) | HTML / Blade | Islands (SSR/SSG) | Full SPA / Hydration | Template Engine |
